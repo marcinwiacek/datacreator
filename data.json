@@ -1,6 +1,20 @@
 {
-    "firstName": ["s","def",""],
-    "lastName": ["s","",""],
-    "sex": ["c","MALE","FEMALE"],
-    "age": ["i","55","0","100"]
+  "params": [
+    {
+      "name":"profile",
+      "arrays":[]
+    }
+  ],
+  "struct": [
+    {"person": {
+        "firstName": ["s","def",""],
+        "lastName": ["s","",""],
+        "sex": ["c","MALE","FEMALE"],
+        "age": ["i","55","0","100"]
+      }
+    },
+    {"credit": {
+      }
+    }
+  ]
 }

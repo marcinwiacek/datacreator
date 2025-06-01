@@ -49,7 +49,7 @@ function sendHTML(req, res, text) {
 
 const onRequestHandler = async (req, res) => {
     if (req.method === 'GET') {
-        const params = url.parse(req.url, true).query;
+//        const params = url.parse(req.url, true).query;
     } else if (req.headers['content-type'] == "application/x-www-form-urlencoded") { // POST
         return;
     }
