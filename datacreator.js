@@ -67,6 +67,9 @@ const onRequestHandler = async (req, res) => {
         console.log(arrays);        
     }
     console.log(jsonObj.struct.person);
+        for (let valuesIndex in jsonObj.struct.person) {
+          output+=jsonObj.struct.person[valuesIndex]+"<br>";          
+        }
 
     sendHTML(req, res, output+"</body></html>");
 };
