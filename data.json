@@ -2,25 +2,24 @@
   "params": [
     {
       "name":"profile",
+      "values": ["scifi","selfpublishing"],
       "arrays":{
         "$.authors":"person",
         "$.books":"book"
       }
     }
   ],
-  "struct": [
-    {"person": {
+  "struct": {
+    "person": {
         "firstName": ["s","def",""],
         "lastName": ["s","",""],
         "sex": ["c","MALE","FEMALE"],
         "age": ["i","55","0","100"]
-      }
     },
-    {"book": {
+    "book": {
         "title": ["s","",""],
-        "year": ["i","","1900","2025"]
+        "year": ["i","","1900","2025"],
         "author": ["l","person"]
-      }
-    }
-  ]
+    }    
+  }
 }

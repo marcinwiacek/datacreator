@@ -54,9 +54,21 @@ const onRequestHandler = async (req, res) => {
         return;
     }
 
+    output = "<html><head></head><body>";
+    
     jsonObj = JSON.parse(readFileContentSync("/data.json"));
+    for (let paramIndex in jsonObj.params) {
+        var param = jsonObj.params[paramIndex];        
+        console.log(param.values);
+        for (let valuesIndex in param.values) {
+          output+=param.values[valuesIndex]+"<br>";          
+        }
+        var arrays = param.arrays;
+        console.log(arrays);        
+    }
+    console.log(jsonObj.struct.person);
 
-    sendHTML(req, res, "<html><head></head><body>it works</body></html>");
+    sendHTML(req, res, output+"</body></html>");
 };
 
 http2.createSecureServer({
