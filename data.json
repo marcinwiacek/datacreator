@@ -2,7 +2,10 @@
   "params": [
     {
       "name":"profile",
-      "arrays":[]
+      "arrays":{
+        "$.authors":"person",
+        "$.books":"book"
+      }
     }
   ],
   "struct": [
@@ -13,7 +16,10 @@
         "age": ["i","55","0","100"]
       }
     },
-    {"credit": {
+    {"book": {
+        "title": ["s","",""],
+        "year": ["i","","1900","2025"]
+        "author": ["l","person"]
       }
     }
   ]
