@@ -1,0 +1,14 @@
+{
+    "person": ["a", {
+        "firstName": ["s","def",""],
+        "lastName": ["s","",""],
+        "sex": ["c","MALE","FEMALE"],
+        "age": ["i","55","0","100"],
+        "id": ["u","abc"]
+    }],
+    "book": ["a",{
+        "title": ["s","",""],
+        "year": ["i","","1900","2025"],
+        "author": ["r","$.person[*].firstName"]
+    }]
+}

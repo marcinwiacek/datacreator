@@ -4,9 +4,24 @@
 </head>
 <body>
 <input type="file" id="file" name="file" />
+<div id=f></div>
 <script>
-function createPage(json) {
-    alert(json);
+function parseJson(json) {
+    var retVal="";
+    for (var i in json) {
+	if (json[i][0]=="a") {
+	    retVal+=i+"<input type=button value='add'><input type=button value='del'><br>";
+	    retVal+=parseJson(json[i][1]);
+        } else if (json[i][0]=="s") {
+	    retVal+=i+"<input><br>";
+//	    alert(i+" "+json[i]);
+	}
+    }
+    return retVal+"<br>";
+}
+
+function createPage(jsonTxt) {
+    document.getElementById("f").innerHTML=parseJson(JSON.parse(jsonTxt));
 }
 
 document.getElementById("file").addEventListener("change",
