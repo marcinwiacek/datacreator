@@ -8,9 +8,25 @@
 <div id=o></div>
 <script>
 var output = {};
+
 function updateInput(id,value) {
+    output = updateInput2(id,value,output);
+   document.getElementById("o").innerHTML=JSON.stringify(output);    
+}
+
+function updateInput2(id,value,out) {
     console.log(id);
     console.log(value);
+    var idObj = id.split(",");
+    console.log(idObj);
+    if (idObj.length==1) {
+        console.log("length 1"+idObj[0]);
+        out [idObj[0]]=value;
+        return out;       
+    } else {
+        var id2 = idObj.shift();
+    	return updateInput2(id2.toString(),value,out[id2[0]]);
+    }
 }
 
 function parseJson(json,out,id) {
@@ -25,15 +41,14 @@ function parseJson(json,out,id) {
 	    var arrEl = {};
 	    console.log(out);	   	 
 	    var id2=id.slice();
-	    id2.push(i);
-	       
+	    id2.push(i+"[0]");	       
 	    r=parseJson(json[i][1],arrEl,id2);
 	    retVal+=r[0];
 	     arr.push( r[1]);
         } else if (json[i][0]=="s") {
 	    var id2=id.slice();
 	    id2.push(i);
-	    retVal+=i+"<input oninput=updateInput('"+JSON.stringify(id2)+"',this.value);>id "+JSON.stringify(id2)+"<br>";
+	    retVal+=i+"<input oninput=updateInput('"+id2.toString()+"',this.value);>id "+JSON.stringify(id2)+"<br>";
 	    var el = "";
 	    out[i] = el;
 	}
