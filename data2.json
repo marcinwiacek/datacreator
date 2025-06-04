@@ -1,4 +1,5 @@
 {
+        "nicetohavestring": ["s","def",""],
     "person": ["a", {
         "firstName": ["s","def",""],
         "lastName": ["s","",""],
