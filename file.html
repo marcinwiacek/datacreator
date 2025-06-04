@@ -8,6 +8,11 @@
 <div id=o></div>
 <script>
 var output = {};
+function updateInput(id,value) {
+    console.log(id);
+    console.log(value);
+}
+
 function parseJson(json,out,id) {
     var retVal="";
     for (var i in json) {
@@ -28,7 +33,7 @@ function parseJson(json,out,id) {
         } else if (json[i][0]=="s") {
 	    var id2=id.slice();
 	    id2.push(i);
-	    retVal+=i+"<input>id "+JSON.stringify(id2)+"<br>";
+	    retVal+=i+"<input oninput=updateInput('"+JSON.stringify(id2)+"',this.value);>id "+JSON.stringify(id2)+"<br>";
 	    var el = "";
 	    out[i] = el;
 	}
