@@ -5,23 +5,35 @@
 <body>
 <input type="file" id="file" name="file" />
 <div id=f></div>
+<div id=o></div>
 <script>
-function parseJson(json) {
+var output = {};
+function parseJson(json,out) {
     var retVal="";
     for (var i in json) {
-	if (json[i][0]=="a") {
-	    retVal+=i+"<input type=button value='add'><input type=button value='del'><br>";
-	    retVal+=parseJson(json[i][1]);
+	if (json[i][0]=="a") {		
+	    retVal+=i+"<input type=button value='add'><br>";
+	    var arr = [];
+	    console.log(out);	   	    
+	    retVal+=parseJson(json[i][1],arr);
+	     out[i] = arr;
         } else if (json[i][0]=="s") {
 	    retVal+=i+"<input><br>";
+	    var el = "abc";
+	    out[i] = el;
 //	    alert(i+" "+json[i]);
 	}
     }
-    return retVal+"<br>";
+    return [retVal+"<br>",out];
 }
 
 function createPage(jsonTxt) {
-    document.getElementById("f").innerHTML=parseJson(JSON.parse(jsonTxt));
+    const d = parseJson(JSON.parse(jsonTxt),output);
+    output = d[1];
+    console.log(d);
+    console.log(d[1]);
+    document.getElementById("f").innerHTML=d[0];
+    document.getElementById("o").innerHTML=JSON.stringify(output);
 }
 
 document.getElementById("file").addEventListener("change",
