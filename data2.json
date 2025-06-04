@@ -4,7 +4,7 @@
         "lastName": ["s","",""],
         "sex": ["c","MALE","FEMALE"],
         "age": ["i","55","0","100"],
-        "id": ["u","abc"]
+        "id": ["u"]
     }],
     "book": ["a",{
         "title": ["s","",""],

@@ -14,14 +14,16 @@ function parseJson(json,out) {
 	if (json[i][0]=="a") {		
 	    retVal+=i+"<input type=button value='add'><br>";
 	    var arr = [];
+	    out[i] = arr;
+	    var arrEl = {};
 	    console.log(out);	   	    
-	    retVal+=parseJson(json[i][1],arr);
-	     out[i] = arr;
+	    r=parseJson(json[i][1],arrEl);
+	    retVal+=r[0];
+	     arr.push( r[1]);
         } else if (json[i][0]=="s") {
 	    retVal+=i+"<input><br>";
-	    var el = "abc";
+	    var el = "";
 	    out[i] = el;
-//	    alert(i+" "+json[i]);
 	}
     }
     return [retVal+"<br>",out];
