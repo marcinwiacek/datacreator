@@ -5,27 +5,27 @@
 <body>
 <input type="file" id="file" name="file" />
 <div id=f></div>
-<div id=o></div>
+<pre id=o></pre>
 <script>
 var output = {};
 
 function updateInput(id,value) {
-    output = updateInput2(id,value,output);
-   document.getElementById("o").innerHTML=JSON.stringify(output);    
+    updateInput2(id,value,output);
+    const x = JSON.stringify(output, null, 2);
+    document.getElementById("o").innerHTML = x;
 }
 
 function updateInput2(id,value,out) {
-    console.log(id);
-    console.log(value);
     var idObj = id.split(",");
-    console.log(idObj);
     if (idObj.length==1) {
         console.log("length 1"+idObj[0]);
         out [idObj[0]]=value;
-        return out;       
     } else {
-        var id2 = idObj.shift();
-    	return updateInput2(id2.toString(),value,out[id2[0]]);
+	var idObj2 = id.split(",");
+	idObj2.shift();
+        console.log("idobj "+idObj);
+	var info = idObj[0].split(/[\[,\]]/);
+    	updateInput2(idObj2.toString(),value,out[info[0]][info[1]]);
     }
 }
 
@@ -62,7 +62,8 @@ function createPage(jsonTxt) {
     console.log(d);
     console.log(d[1]);
     document.getElementById("f").innerHTML=d[0];
-    document.getElementById("o").innerHTML=JSON.stringify(output);
+    const x = JSON.stringify(output, null, 2);
+    document.getElementById("o").innerHTML = x;
 }
 
 document.getElementById("file").addEventListener("change",
