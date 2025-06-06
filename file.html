@@ -18,14 +18,18 @@ function addArray(id) {
 //find path in input and output
 function addArray2(id,out,json) {
     console.log(id);
-    console.log(json);
+//    console.log(json);
     var idObj = id.split(",");
     if (idObj.length==1) {
-	console.log(json[idObj[0]]);
+	console.log(json[idObj[0]][1]);
 	console.log(out[idObj[0]]);
 
-    const d = parseJson(json[idObj[0]],o,[]);
-    console.log( d[1]);
+	    var id2=id.slice();
+//	    id2.push(i);
+//["book[1]"]);
+console.log(id2);
+    const d = parseJson(json[idObj[0]][1],o,id2);
+    console.log( d);
 
     }
 }
