@@ -26,11 +26,12 @@ function addArray2(id,out,json) {
 
 	    var id2=id.slice();
 //	    id2.push(i);
-//["book[1]"]);
-console.log(id2);
-    const d = parseJson(json[idObj[0]][1],o,id2);
+console.log(["book[1]"]);
+console.log([id2+"[1]"]);
+    const d = parseJson(json[idObj[0]][1],o,[id2+"[1]"]);
     console.log( d);
-
+	    document.getElementById(id2).innerHTML=d[0]+
+	    document.getElementById(id2).innerHTML;
     }
 }
 
@@ -61,6 +62,7 @@ function parseJson(json,out,id) {
 	    var id2=id.slice();
 	    id2.push(i);	
 	    retVal+=i+"<input type=button value='add' onclick=addArray('"+id2.toString()+"');>id "+JSON.stringify(id2)+"<br>";
+	    retVal+="<div id='"+id2.toString()+"'>";
 	    var arr = [];
 	    out[i] = arr;
 	    var arrEl = {};
@@ -70,6 +72,7 @@ function parseJson(json,out,id) {
 	    r=parseJson(json[i][1],arrEl,id2);
 	    retVal+=r[0];
 	     arr.push( r[1]);
+	    retVal+="</div>";
         } else if (json[i][0]=="s") {
 	    var id2=id.slice();
 	    id2.push(i);
