@@ -1,11 +1,17 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <style>
+	.row {display:flex;}
+	.col {flex:50%;}
+    </style>
 </head>
 <body>
 <input type="file" id="file" name="file" />
-<div id=f></div>
-<pre id=o></pre>
+<p><div class=row>
+<div class=col id=f></div>
+<pre class=col id=o></pre>
+</div>
 <script>
 var jsonTxt = "";
 var output = {};
