@@ -33,6 +33,28 @@ function deleteArray2(id,out,json) {
 	console.log(info[0]);
 	console.log(info[1]);
 	out[info[0]].splice(info[1],1);
+	i = parseInt(info[1]);
+	i = i+1;
+	console.log(i);
+	console.log("id to search "+info[0]+"["+i+"]");
+	while (document.getElementById(info[0]+"["+i+"]")!=null) {
+	    var allEl = document.getElementsByClassName('input');
+	    for (var j = 0; j < allEl.length; j++) {
+		var item = allEl[j];
+		console.log("id is "+item.id);
+		var idObj = item.id.split(",");
+		var info = idObj[0].split(/[\[,\]]/);
+		item.id = info[1]+"["+(i-1)+"]";
+	    }
+	    var allEl = document.getElementsByClassName('div');
+	    for (var j = 0; j < allEl.length; j++) {
+		var item = allEl[j];
+		var idObj = item.id.split(",");
+		var info = idObj[0].split(/[\[,\]]/);
+		item.id = info[1]+"["+(i-1)+"]";
+	    }
+	    i = i+1;
+	}
     }
     return out;
 }
@@ -45,7 +67,7 @@ function addArray2(id,out,json) {
     var idObj = id.split(",");
     if (idObj.length==1) {
 	var id2=id.slice();
-	var i = 1;
+	var i = 0;
 	var newId = id2+"["+i+"]";
 	while (document.getElementById([newId]) != null) {
 	    i=i+1;
