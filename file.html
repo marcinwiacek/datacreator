@@ -19,6 +19,19 @@ var debug = true;
 
 function deleteArray(id) {
     console.log(id);
+    deleteArray2(id,output,JSON.parse(jsonTxt));
+    document.getElementById(id).outerHTML="";
+}
+
+function deleteArray2(id,out,json) {
+    var idObj = id.split(",");
+    if (idObj.length==1) {
+	var info = idObj[0].split(/[\[,\]]/);
+	console.log(out);
+	console.log(info[0]);
+	console.log(info[1]);
+	out[info[0]].splice(info[1],1);
+    }
 }
 
 function addArray(id) {
