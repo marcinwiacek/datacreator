@@ -14,28 +14,24 @@ function addArray(id) {
     addArray2(id,output,JSON.parse(jsonTxt));
 }
 
-//find path in input and output
 function addArray2(id,out,json) {
-    console.log(id);
     var idObj = id.split(",");
     if (idObj.length==1) {
-	console.log(json[idObj[0]][1]);
-	console.log(out[idObj[0]]);
 	var id2=id.slice();
-	console.log(["book[1]"]);
-	console.log([id2+"[1]"]);
 	var i = 1;
 	var newId = id2+"["+i+"]";
 	while (document.getElementById([newId]) != null) {
 	    i=i+1;
 	    newId = id2+"["+i+"]";
 	}
+	var o = {};
 	const d = parseJson(json[idObj[0]][1],o,[newId]);
-        console.log( d);
-	document.getElementById(id2).innerHTML=d[0]+
-	    "<div id='"+newId+"'>"+
+	out[idObj[0]].push(o);
+	document.getElementById(id2).innerHTML=
 	    document.getElementById(id2).innerHTML+
-	    "</div>";
+	    "<div id='"+newId+"'>"+d[0]+"<div>";
+	const x = JSON.stringify(out, null, 2);
+	document.getElementById("o").innerHTML = x;
     }
 }
 
@@ -48,12 +44,10 @@ function updateInput(id,value) {
 function updateInput2(id,value,out) {
     var idObj = id.split(",");
     if (idObj.length==1) {
-        console.log("length 1"+idObj[0]);
         out [idObj[0]]=value;
     } else {
 	var idObj2 = id.split(",");
 	idObj2.shift();
-        console.log("idobj "+idObj);
 	var info = idObj[0].split(/[\[,\]]/);
     	updateInput2(idObj2.toString(),value,out[info[0]][info[1]]);
     }
@@ -62,25 +56,24 @@ function updateInput2(id,value,out) {
 function parseJson(json,out,id) {
     var retVal="";
     for (var i in json) {
-	if (json[i][0]=="a") {	
+	if (json[i][0]=="a") {
 	    var id2=id.slice();
-	    id2.push(i);	
+	    id2.push(i);
 	    retVal+=i+"<input type=button value='add' onclick=addArray('"+id2.toString()+"');>id "+JSON.stringify(id2)+"<br>";
 	    retVal+="<div id='"+id2.toString()+"'>";
 	    var arr = [];
 	    out[i] = arr;
 	    var arrEl = {};
-	    console.log(out);	   	 
 	    var id2=id.slice();
-	    id2.push(i+"[0]");	       
+	    id2.push(i+"[0]");
 	    r=parseJson(json[i][1],arrEl,id2);
 	    retVal+=r[0];
-	    arr.push( r[1]);
+	    arr.push(r[1]);
 	    retVal+="</div>";
         } else if (json[i][0]=="s") {
 	    var id2=id.slice();
 	    id2.push(i);
-	    retVal+=i+"<input oninput=updateInput('"+id2.toString()+"',this.value);>id "+JSON.stringify(id2)+"<br>";
+	    retVal+=i+"<input oninput=updateInput('"+id2.toString()+"',this.value);>id "+JSON.stringify(id2)+"<p>";
 	    var el = "";
 	    out[i] = el;
 	}
