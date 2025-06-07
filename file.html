@@ -59,7 +59,7 @@ function parseJson(json,out,id) {
 	if (json[i][0]=="a") {
 	    var id2=id.slice();
 	    id2.push(i);
-	    retVal+=i+"<input type=button value='add' onclick=addArray('"+id2.toString()+"');>id "+JSON.stringify(id2)+"<br>";
+	    retVal+="<br>"+i+" <input type=button value='add' onclick=addArray('"+id2.toString()+"');>id "+JSON.stringify(id2);
 	    retVal+="<div id='"+id2.toString()+"'>";
 	    var arr = [];
 	    out[i] = arr;
@@ -73,7 +73,7 @@ function parseJson(json,out,id) {
         } else if (json[i][0]=="s") {
 	    var id2=id.slice();
 	    id2.push(i);
-	    retVal+=i+"<input oninput=updateInput('"+id2.toString()+"',this.value);>id "+JSON.stringify(id2)+"<p>";
+	    retVal+=i+" <input oninput=updateInput('"+id2.toString()+"',this.value);>id "+JSON.stringify(id2)+"<br>";
 	    var el = "";
 	    out[i] = el;
 	}
