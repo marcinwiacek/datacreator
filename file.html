@@ -11,6 +11,10 @@ var jsonTxt = "";
 var output = {};
 var debug = true;
 
+function deleteArray(id) {
+    console.log(id);
+}
+
 function addArray(id) {
     addArray2(id,output,JSON.parse(jsonTxt));
 }
@@ -31,7 +35,7 @@ function addArray2(id,out,json) {
 	document.getElementById(id2).innerHTML=
 	    document.getElementById(id2).innerHTML+
 	    "<div id='"+newId+"'>"+
-	    "<br><input type=button value='delete' onclick=deleteArray('"+id2.toString()+"');>"+
+	    "<br><input type=button value='delete' onclick=deleteArray('"+newId+"');>"+
 	    (debug?"id "+JSON.stringify(id2):"")+"<br>"+
 	    d[0]+"<div>";
 	const x = JSON.stringify(out, null, 2);
@@ -66,7 +70,7 @@ function parseJson(json,out,id) {
 	    retVal+="<br>"+i+" <input type=button value='add' onclick=addArray('"+id2.toString()+"');>";
 	    if (debug) retVal+="id "+JSON.stringify(id2);
 	    retVal+="<div id='"+id2.toString()+"'>";
-	    retVal+="<br><input type=button value='delete' onclick=deleteArray('"+id2.toString()+"');>";
+	    retVal+="<br><input type=button value='delete' onclick=deleteArray('"+id2.toString()+"[0]');>";
 	    if (debug) retVal+="id "+JSON.stringify(id2);
 	    retVal+="<br>";
 	    var arr = [];
