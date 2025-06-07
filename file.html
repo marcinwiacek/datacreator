@@ -11,21 +11,17 @@ var jsonTxt = "";
 var output = {};
 
 function addArray(id) {
-//    console.log(id);
     addArray2(id,output,JSON.parse(jsonTxt));
 }
 
 //find path in input and output
 function addArray2(id,out,json) {
     console.log(id);
-//    console.log(json);
     var idObj = id.split(",");
     if (idObj.length==1) {
 	console.log(json[idObj[0]][1]);
 	console.log(out[idObj[0]]);
-
-	    var id2=id.slice();
-//	    id2.push(i);
+	var id2=id.slice();
 	console.log(["book[1]"]);
 	console.log([id2+"[1]"]);
 	var i = 1;
@@ -39,7 +35,7 @@ function addArray2(id,out,json) {
 	document.getElementById(id2).innerHTML=d[0]+
 	    "<div id='"+newId+"'>"+
 	    document.getElementById(id2).innerHTML+
-	    "</div";
+	    "</div>";
     }
 }
 
@@ -79,7 +75,7 @@ function parseJson(json,out,id) {
 	    id2.push(i+"[0]");	       
 	    r=parseJson(json[i][1],arrEl,id2);
 	    retVal+=r[0];
-	     arr.push( r[1]);
+	    arr.push( r[1]);
 	    retVal+="</div>";
         } else if (json[i][0]=="s") {
 	    var id2=id.slice();
