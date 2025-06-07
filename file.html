@@ -29,7 +29,9 @@ function addArray2(id,out,json) {
 	out[idObj[0]].push(o);
 	document.getElementById(id2).innerHTML=
 	    document.getElementById(id2).innerHTML+
-	    "<div id='"+newId+"'>"+d[0]+"<div>";
+	    "<div id='"+newId+"'>"+
+	    "<br><input type=button value='delete' onclick=deleteArray('"+id2.toString()+"');>id "+JSON.stringify(id2)+"<br>"+
+	    d[0]+"<div>";
 	const x = JSON.stringify(out, null, 2);
 	document.getElementById("o").innerHTML = x;
     }
@@ -61,6 +63,7 @@ function parseJson(json,out,id) {
 	    id2.push(i);
 	    retVal+="<br>"+i+" <input type=button value='add' onclick=addArray('"+id2.toString()+"');>id "+JSON.stringify(id2);
 	    retVal+="<div id='"+id2.toString()+"'>";
+	    retVal+="<br><input type=button value='delete' onclick=deleteArray('"+id2.toString()+"');>id "+JSON.stringify(id2)+"<br>";
 	    var arr = [];
 	    out[i] = arr;
 	    var arrEl = {};
