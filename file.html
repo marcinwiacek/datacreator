@@ -28,7 +28,14 @@ function deleteArray2(id,out,json) {
     var idObj = id.split(",");
     if (idObj.length==1) {
 	var info = idObj[0].split(/[\[,\]]/);
-	out[info[0]].splice(info[1],1);
+	//fixme - it can be array inside array
+	var xParent = document.getElementById(info[0]);
+	var xChild = document.getElementById(idObj[0]);
+	var newIndex = -1;
+	for (i=0;i<xParent.children.length;i++) {
+	    if (xParent.children[i] === xChild) newIndex = i;
+	}
+	out[info[0]].splice(newIndex,1);
     }
     return out;
 }
@@ -77,12 +84,12 @@ function updateInput2(id,value,out) {
 	var idObj2 = id.split(",");
 	idObj2.shift();
 	var info = idObj[0].split(/[\[,\]]/);
-	//fixme
-	var x1 = document.getElementById(info[0]);
-	var x2 = document.getElementById(idObj[0]);
+	//fixme - it can be array inside array
+	var xParent = document.getElementById(info[0]);
+	var xChild = document.getElementById(idObj[0]);
 	var newIndex = -1;
-	for (i=0;i<x1.children.length;i++) {
-	    if (x1.children[i] === x2) newIndex = i;
+	for (i=0;i<xParent.children.length;i++) {
+	    if (xParent.children[i] === xChild) newIndex = i;
 	}
     	updateInput2(idObj2.toString(),value,out[info[0]][newIndex]);
     }
@@ -111,10 +118,28 @@ function parseJson(json,out,id) {
 	    arr.push(r[1]);
 	    retVal+="</div>";
 	    retVal+="</div>";
-        } else if (json[i][0]=="s") {
+        } else if (json[i][0]=="s") { //string
 	    var id2=id.slice();
 	    id2.push(i);
 	    retVal+=i+" <input oninput=updateInput('"+id2.toString()+"',this.value);>";
+	    if (debug) retVal+="id "+JSON.stringify(id2);
+	    retVal+="<br>";
+	    var el = "";
+	    out[i] = el;
+        } else if (json[i][0]=="c") { //combo box
+	    var id2=id.slice();
+	    id2.push(i);
+	    retVal+=i+" <select onchange=updateInput('"+id2.toString()+"',this.value);>";
+	    for (j=1;j<json[i].length;j++) retVal+="<option value='"+json[i][j]+"'>"+json[i][j]+"</option>";
+	    retVal+=i+" </select>";
+	    if (debug) retVal+="id "+JSON.stringify(id2);
+	    retVal+="<br>";
+	    var el = json[i][1];
+	    out[i] = el;
+        } else if (json[i][0]=="d") { //date
+	    var id2=id.slice();
+	    id2.push(i);
+	    retVal+=i+" <input oninput=updateInput('"+id2.toString()+"',this.value); type=date>";
 	    if (debug) retVal+="id "+JSON.stringify(id2);
 	    retVal+="<br>";
 	    var el = "";

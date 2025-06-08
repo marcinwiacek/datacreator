@@ -1,5 +1,6 @@
 {
     "niceToHaveString": ["s","def",""],
+    "today": ["d"],
     "person": ["a", {
         "firstName": ["s","def",""],
         "lastName": ["s","",""],
