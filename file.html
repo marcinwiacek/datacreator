@@ -20,7 +20,7 @@ var debug = true;
 function deleteArray(id) {
     console.log(id);
     output = deleteArray2(id,output,JSON.parse(jsonTxt));
-    document.getElementById(id).outerHTML="";
+    document.getElementById(id).remove();
     const x = JSON.stringify(output, null, 2);
     document.getElementById("o").innerHTML = x;
 }
@@ -38,21 +38,11 @@ function deleteArray2(id,out,json) {
 	console.log(i);
 	console.log("id to search "+info[0]+"["+i+"]");
 	while (document.getElementById(info[0]+"["+i+"]")!=null) {
-	    var allEl = document.getElementsByClassName('input');
-	    for (var j = 0; j < allEl.length; j++) {
-		var item = allEl[j];
-		console.log("id is "+item.id);
-		var idObj = item.id.split(",");
-		var info = idObj[0].split(/[\[,\]]/);
-		item.id = info[1]+"["+(i-1)+"]";
-	    }
-	    var allEl = document.getElementsByClassName('div');
-	    for (var j = 0; j < allEl.length; j++) {
-		var item = allEl[j];
-		var idObj = item.id.split(",");
-		var info = idObj[0].split(/[\[,\]]/);
-		item.id = info[1]+"["+(i-1)+"]";
-	    }
+	    var x = document.getElementById(info[0]+"["+i+"]").innerHTML;
+	    //FIXME!
+	    x = x.replaceAll(info[0]+"["+i+"]",info[0]+"["+(i-1)+"]");
+	    document.getElementById(info[0]+"["+i+"]").innerHTML=x;
+	    document.getElementById(info[0]+"["+i+"]").id = info[0]+"["+(i-1)+"]";
 	    i = i+1;
 	}
     }
