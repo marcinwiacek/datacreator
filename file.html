@@ -1,171 +1,180 @@
 <html>
+
 <head>
     <meta charset="utf-8">
     <style>
-	.row {display:flex;}
-	.col {flex:50%;}
+        .row {
+            display: flex;
+        }
+
+        .col {
+            flex: 50%;
+        }
     </style>
 </head>
+
 <body>
-<input type="file" id="file" name="file" />
-<p><div class=row>
-<div class=col id=f></div>
-<pre class=col id=o></pre>
-</div>
-<script>
-var jsonTxt = "";
-var output = {};
-var debug = false;
+    <input type="file" id="file" name="file" />
+    <p>
+    <div class=row>
+        <div class=col id=f></div>
+        <pre class=col id=o></pre>
+    </div>
+    <script>
+        var jsonTxt = "";
+        var output = {};
+        var debug = false;
 
-function deleteArray(id) {
-    output = deleteArray2(id,output,JSON.parse(jsonTxt));
-    document.getElementById(id).remove();
-    const x = JSON.stringify(output, null, 2);
-    document.getElementById("o").innerHTML = x;
-}
+        function deleteArray(id) {
+            output = deleteArray2(id, output, JSON.parse(jsonTxt));
+            document.getElementById(id).remove();
+            const x = JSON.stringify(output, null, 2);
+            document.getElementById("o").innerHTML = x;
+        }
 
-function deleteArray2(id,out,json) {
-    var idObj = id.split(",");
-    if (idObj.length==1) {
-	var info = idObj[0].split(/[\[,\]]/);
-	//fixme - it can be array inside array
-	var xParent = document.getElementById(info[0]);
-	var xChild = document.getElementById(idObj[0]);
-	var newIndex = -1;
-	for (i=0;i<xParent.children.length;i++) {
-	    if (xParent.children[i] === xChild) newIndex = i;
-	}
-	out[info[0]].splice(newIndex,1);
-    }
-    return out;
-}
+        function deleteArray2(id, out, json) {
+            var idObj = id.split(",");
+            if (idObj.length == 1) {
+                var info = idObj[0].split(/[\[,\]]/);
+                //fixme - it can be array inside array
+                var xParent = document.getElementById(info[0]);
+                var xChild = document.getElementById(idObj[0]);
+                var newIndex = -1;
+                for (i = 0; i < xParent.children.length; i++) {
+                    if (xParent.children[i] === xChild) newIndex = i;
+                }
+                out[info[0]].splice(newIndex, 1);
+            }
+            return out;
+        }
 
-function addArray(id) {
-    output = addArray2(id,output,JSON.parse(jsonTxt));
-}
+        function addArray(id) {
+            output = addArray2(id, output, JSON.parse(jsonTxt));
+        }
 
-function addArray2(id,out,json) {
-    var idObj = id.split(",");
-    if (idObj.length==1) {
-	var id2=id.slice();
-	var i = 0;
-	var newId = id2+"["+i+"]";
-	while (document.getElementById([newId]) != null) {
-	    i=i+1;
-	    newId = id2+"["+i+"]";
-	}
-	var o = {};
-	const d = parseJson(json[idObj[0]][1],o,[newId]);
-	out[idObj[0]].push(o);
-	newDivElement = document.createElement('div');
-	newDivElement.id = newId;
-	newDivElement.innerHTML = 
-	    "<br><input type=button value='delete' onclick=deleteArray('"+newId+"');>"+
-	    (debug?"id "+JSON.stringify(id2):"")+"<br>"+
-	    d[0];
-	document.getElementById(id2).appendChild(newDivElement);
-	const x = JSON.stringify(out, null, 2);
-	document.getElementById("o").innerHTML = x;
-    }
-    return out;
-}
+        function addArray2(id, out, json) {
+            var idObj = id.split(",");
+            if (idObj.length == 1) {
+                var id2 = id.slice();
+                var i = 0;
+                var newId = id2 + "[" + i + "]";
+                while (document.getElementById([newId]) != null) {
+                    i = i + 1;
+                    newId = id2 + "[" + i + "]";
+                }
+                var o = {};
+                const d = parseJson(json[idObj[0]][1], o, [newId]);
+                out[idObj[0]].push(o);
+                newDivElement = document.createElement('div');
+                newDivElement.id = newId;
+                newDivElement.innerHTML =
+                    "<br><input type=button value='delete' onclick=deleteArray('" + newId + "');>" +
+                    (debug ? "id " + JSON.stringify(id2) : "") + "<br>" +
+                    d[0];
+                document.getElementById(id2).appendChild(newDivElement);
+                const x = JSON.stringify(out, null, 2);
+                document.getElementById("o").innerHTML = x;
+            }
+            return out;
+        }
 
-function updateInput(id,value) {
-    updateInput2(id,value,output);
-    const x = JSON.stringify(output, null, 2);
-    document.getElementById("o").innerHTML = x;
-}
+        function updateInput(id, value) {
+            updateInput2(id, value, output);
+            const x = JSON.stringify(output, null, 2);
+            document.getElementById("o").innerHTML = x;
+        }
 
-function updateInput2(id,value,out) {
-    var idObj = id.split(",");
-    if (idObj.length==1) {
-        out [idObj[0]]=value;
-    } else {
-	var idObj2 = id.split(",");
-	idObj2.shift();
-	var info = idObj[0].split(/[\[,\]]/);
-	//fixme - it can be array inside array
-	var xParent = document.getElementById(info[0]);
-	var xChild = document.getElementById(idObj[0]);
-	var newIndex = -1;
-	for (i=0;i<xParent.children.length;i++) {
-	    if (xParent.children[i] === xChild) newIndex = i;
-	}
-    	updateInput2(idObj2.toString(),value,out[info[0]][newIndex]);
-    }
-}
+        function updateInput2(id, value, out) {
+            var idObj = id.split(",");
+            if (idObj.length == 1) {
+                out[idObj[0]] = value;
+            } else {
+                var idObj2 = id.split(",");
+                idObj2.shift();
+                var info = idObj[0].split(/[\[,\]]/);
+                //fixme - it can be array inside array
+                var xParent = document.getElementById(info[0]);
+                var xChild = document.getElementById(idObj[0]);
+                var newIndex = -1;
+                for (i = 0; i < xParent.children.length; i++) {
+                    if (xParent.children[i] === xChild) newIndex = i;
+                }
+                updateInput2(idObj2.toString(), value, out[info[0]][newIndex]);
+            }
+        }
 
-function parseJson(json,out,id) {
-    var retVal="";
-    for (var i in json) {
-	if (json[i][0]=="a") {
-	    var id2=id.slice();
-	    id2.push(i);
-	    retVal+="<br>"+i+" <input type=button value='add' onclick=addArray('"+id2.toString()+"');>";
-	    if (debug) retVal+="id "+JSON.stringify(id2);
-	    retVal+="<div id='"+id2.toString()+"' style='margin-left: 30px;'>";
-	    retVal+="<div id='"+i+"[0]'>";
-	    retVal+="<br><input type=button value='delete' onclick=deleteArray('"+id2.toString()+"[0]');>";
-	    if (debug) retVal+="id "+JSON.stringify(id2);
-	    retVal+="<br>";
-	    var arr = [];
-	    out[i] = arr;
-	    var arrEl = {};
-	    var id2=id.slice();
-	    id2.push(i+"[0]");
-	    r=parseJson(json[i][1],arrEl,id2);
-	    retVal+=r[0];
-	    arr.push(r[1]);
-	    retVal+="</div>";
-	    retVal+="</div>";
-        } else if (json[i][0]=="s") { //string
-	    var id2=id.slice();
-	    id2.push(i);
-	    retVal+=i+" <input oninput=updateInput('"+id2.toString()+"',this.value);>";
-	    if (debug) retVal+="id "+JSON.stringify(id2);
-	    retVal+="<br>";
-	    var el = "";
-	    out[i] = el;
-        } else if (json[i][0]=="c") { //combo box
-	    var id2=id.slice();
-	    id2.push(i);
-	    retVal+=i+" <select onchange=updateInput('"+id2.toString()+"',this.value);>";
-	    for (j=1;j<json[i].length;j++) retVal+="<option value='"+json[i][j]+"'>"+json[i][j]+"</option>";
-	    retVal+=i+" </select>";
-	    if (debug) retVal+="id "+JSON.stringify(id2);
-	    retVal+="<br>";
-	    var el = json[i][1];
-	    out[i] = el;
-        } else if (json[i][0]=="d") { //date
-	    var id2=id.slice();
-	    id2.push(i);
-	    retVal+=i+" <input oninput=updateInput('"+id2.toString()+"',this.value); type=date>";
-	    if (debug) retVal+="id "+JSON.stringify(id2);
-	    retVal+="<br>";
-	    var el = "";
-	    out[i] = el;
-	}
-    }
-    return [retVal,out];
-}
+        function parseJson(json, out, id) {
+            var retVal = "";
+            for (var i in json) {
+                if (json[i][0] == "a") {
+                    var id2 = id.slice();
+                    id2.push(i);
+                    retVal += "<br>" + i + " <input type=button value='add' onclick=addArray('" + id2.toString() + "');>";
+                    if (debug) retVal += "id " + JSON.stringify(id2);
+                    retVal += "<div id='" + id2.toString() + "' style='margin-left: 30px;'>";
+                    retVal += "<div id='" + i + "[0]'>";
+                    retVal += "<br><input type=button value='delete' onclick=deleteArray('" + id2.toString() + "[0]');>";
+                    if (debug) retVal += "id " + JSON.stringify(id2);
+                    retVal += "<br>";
+                    var arr = [];
+                    out[i] = arr;
+                    var arrEl = {};
+                    var id2 = id.slice();
+                    id2.push(i + "[0]");
+                    r = parseJson(json[i][1], arrEl, id2);
+                    retVal += r[0];
+                    arr.push(r[1]);
+                    retVal += "</div>";
+                    retVal += "</div>";
+                } else if (json[i][0] == "s") { //string
+                    var id2 = id.slice();
+                    id2.push(i);
+                    retVal += i + " <input oninput=updateInput('" + id2.toString() + "',this.value);>";
+                    if (debug) retVal += "id " + JSON.stringify(id2);
+                    retVal += "<br>";
+                    var el = "";
+                    out[i] = el;
+                } else if (json[i][0] == "c") { //combo box
+                    var id2 = id.slice();
+                    id2.push(i);
+                    retVal += i + " <select onchange=updateInput('" + id2.toString() + "',this.value);>";
+                    for (j = 1; j < json[i].length; j++) retVal += "<option value='" + json[i][j] + "'>" + json[i][j] + "</option>";
+                    retVal += i + " </select>";
+                    if (debug) retVal += "id " + JSON.stringify(id2);
+                    retVal += "<br>";
+                    var el = json[i][1];
+                    out[i] = el;
+                } else if (json[i][0] == "d") { //date
+                    var id2 = id.slice();
+                    id2.push(i);
+                    retVal += i + " <input oninput=updateInput('" + id2.toString() + "',this.value); type=date>";
+                    if (debug) retVal += "id " + JSON.stringify(id2);
+                    retVal += "<br>";
+                    var el = "";
+                    out[i] = el;
+                }
+            }
+            return [retVal, out];
+        }
 
-function createPage() {
-    const d = parseJson(JSON.parse(jsonTxt),output,[]);
-    output = d[1];
-    document.getElementById("f").innerHTML=d[0];
-    const x = JSON.stringify(output, null, 2);
-    document.getElementById("o").innerHTML = x;
-}
+        function createPage() {
+            const d = parseJson(JSON.parse(jsonTxt), output, []);
+            output = d[1];
+            document.getElementById("f").innerHTML = d[0];
+            const x = JSON.stringify(output, null, 2);
+            document.getElementById("o").innerHTML = x;
+        }
 
-document.getElementById("file").addEventListener("change",
-    function(evt) {
-	const fReader = new FileReader();
-        fReader.onload = function(e) {
-	    jsonTxt = e.target.result;
-	    createPage();
-        };
-        fReader.readAsText(evt.target.files[0]);
-    });
-</script>
+        document.getElementById("file").addEventListener("change",
+            function(evt) {
+                const fReader = new FileReader();
+                fReader.onload = function(e) {
+                    jsonTxt = e.target.result;
+                    createPage();
+                };
+                fReader.readAsText(evt.target.files[0]);
+            });
+    </script>
 </body>
+
 </html>
