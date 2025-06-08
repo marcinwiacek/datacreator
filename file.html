@@ -105,7 +105,7 @@ function parseJson(json,out,id) {
 	    id2.push(i);
 	    retVal+="<br>"+i+" <input type=button value='add' onclick=addArray('"+id2.toString()+"');>";
 	    if (debug) retVal+="id "+JSON.stringify(id2);
-	    retVal+="<div id='"+id2.toString()+"'>";
+	    retVal+="<div id='"+id2.toString()+"' style='margin-left: 30px;'>";
 	    retVal+="<div id='"+i+"[0]'>";
 	    retVal+="<br><input type=button value='delete' onclick=deleteArray('"+id2.toString()+"[0]');>";
 	    if (debug) retVal+="id "+JSON.stringify(id2);
@@ -130,7 +130,7 @@ function parseJson(json,out,id) {
 	    out[i] = el;
 	}
     }
-    return [retVal+"<br>",out];
+    return [retVal,out];
 }
 
 function createPage() {
