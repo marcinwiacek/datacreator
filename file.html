@@ -66,11 +66,13 @@ function addArray2(id,out,json) {
 	var o = {};
 	const d = parseJson(json[idObj[0]][1],o,[newId]);
 	out[idObj[0]].push(o);
-	document.getElementById(id2).innerHTML+=
-	    "<div id='"+newId+"'>"+
+	newDivElement = document.createElement('div');
+	newDivElement.id = newId;
+	newDivElement.innerHTML = 
 	    "<br><input type=button value='delete' onclick=deleteArray('"+newId+"');>"+
 	    (debug?"id "+JSON.stringify(id2):"")+"<br>"+
-	    d[0]+"<div>";
+	    d[0];
+	document.getElementById(id2).appendChild(newDivElement);
 	const x = JSON.stringify(out, null, 2);
 	document.getElementById("o").innerHTML = x;
     }
