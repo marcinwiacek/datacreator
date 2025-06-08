@@ -1,9 +1,9 @@
 {
-    "nicetohavestring": ["s","def",""],
+    "niceToHaveString": ["s","def",""],
     "person": ["a", {
         "firstName": ["s","def",""],
         "lastName": ["s","",""],
-        "sex": ["c","MALE","FEMALE"],
+        "sex": ["c","male","female"],
         "age": ["i","55","0","100"],
         "id": ["u"]
     }],
