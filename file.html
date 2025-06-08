@@ -28,8 +28,7 @@
         function deleteArray(id) {
             output = deleteArray2(id, output, JSON.parse(jsonTxt));
             document.getElementById(id).remove();
-            const x = JSON.stringify(output, null, 2);
-            document.getElementById("o").innerHTML = x;
+            document.getElementById("o").innerHTML = JSON.stringify(output, null, 2);
         }
 
         function deleteArray2(id, out, json) {
@@ -80,8 +79,7 @@
 
         function updateInput(id, value) {
             updateInput2(id, value, output);
-            const x = JSON.stringify(output, null, 2);
-            document.getElementById("o").innerHTML = x;
+            document.getElementById("o").innerHTML = JSON.stringify(output, null, 2);
         }
 
         function updateInput2(id, value, out) {
@@ -159,20 +157,19 @@
 
         function createPage() {
             const d = parseJson(JSON.parse(jsonTxt), output, []);
-            output = d[1];
             document.getElementById("f").innerHTML = d[0];
-            const x = JSON.stringify(output, null, 2);
-            document.getElementById("o").innerHTML = x;
+            output = d[1];
+            document.getElementById("o").innerHTML = JSON.stringify(output, null, 2);
         }
 
         document.getElementById("file").addEventListener("change",
-            function(evt) {
+            function(e) {
                 const fReader = new FileReader();
-                fReader.onload = function(e) {
-                    jsonTxt = e.target.result;
+                fReader.onload = function(e2) {
+                    jsonTxt = e2.target.result;
                     createPage();
                 };
-                fReader.readAsText(evt.target.files[0]);
+                fReader.readAsText(e.target.files[0]);
             });
     </script>
 </body>
