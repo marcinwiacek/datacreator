@@ -1,7 +1,5 @@
 {
-    "niceToHaveString": ["s","def",""],
-    "today": ["d"],
-    "type": ["p", ["private people"], {
+    "type": ["p", "private people", {
         "person": ["a", {
             "firstName": ["s","def",""],
             "lastName": ["s","",""],
@@ -9,12 +7,14 @@
             "age": ["i","55","0","100"],
             "id": ["u"]
         }]
-    }, ["companies"], {
+    }, "companies", {
         "company": ["a", {
 	    "name": ["s","",""],
 	    "technology": ["s","",""]
 	}]
     }],
+    "niceToHaveString": ["s","def",""],
+    "today": ["d"],
     "book": ["a",{
         "title": ["s","",""],
         "year": ["i","","1900","2025"],
