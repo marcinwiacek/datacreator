@@ -53,35 +53,35 @@
 
         function addArray2(id, out, json) {
             var idObj = id.split(",");
-		var arr = [];
-		if (json[idObj[0]][0]=="p") {
-                    for (j = 1; j < json[idObj[0]].length; j+=2) {
-			if (json[idObj[0]][j] == document.getElementById(idObj[0]).value) arr = json[idObj[0]][j+1];
-		    }
-		    arr = arr[idObj[1]][1];
-		    idObj.shift();
-		} else if (json[idObj[0]][0]=="a") {
-		    arr = json[idObj[0]][1];
-		}
-                var id2 = id.slice();
-                var i = 0;
-                var newId = id2 + "[" + i + "]";
-                while (document.getElementById([newId]) != null) {
-                    i = i + 1;
-                    newId = id2 + "[" + i + "]";
+            var arr = [];
+            if (json[idObj[0]][0] == "p") {
+                for (j = 1; j < json[idObj[0]].length; j += 2) {
+                    if (json[idObj[0]][j] == document.getElementById(idObj[0]).value) arr = json[idObj[0]][j + 1];
                 }
-                var o = {};
-                const d = parseJson(arr, o, [newId]);
-                out[idObj[0]].push(o);
-                newDivElement = document.createElement('div');
-                newDivElement.id = newId;
-                newDivElement.innerHTML =
-                    "<br><input type=button value='delete' onclick=deleteArray('" + newId + "');>" +
-                    (debug ? "id " + JSON.stringify(id2) : "") + "<br>" +
-                    d[0];
-                document.getElementById(id2).appendChild(newDivElement);
-                const x = JSON.stringify(out, null, 2);
-                document.getElementById("o").innerHTML = x;
+                arr = arr[idObj[1]][1];
+                idObj.shift();
+            } else if (json[idObj[0]][0] == "a") {
+                arr = json[idObj[0]][1];
+            }
+            var id2 = id.slice();
+            var i = 0;
+            var newId = id2 + "[" + i + "]";
+            while (document.getElementById([newId]) != null) {
+                i = i + 1;
+                newId = id2 + "[" + i + "]";
+            }
+            var o = {};
+            const d = parseJson(arr, o, [newId]);
+            out[idObj[0]].push(o);
+            newDivElement = document.createElement('div');
+            newDivElement.id = newId;
+            newDivElement.innerHTML =
+                "<br><input type=button value='delete' onclick=deleteArray('" + newId + "');>" +
+                (debug ? "id " + JSON.stringify(id2) : "") + "<br>" +
+                d[0];
+            document.getElementById(id2).appendChild(newDivElement);
+            const x = JSON.stringify(out, null, 2);
+            document.getElementById("o").innerHTML = x;
             return out;
         }
 
@@ -92,8 +92,8 @@
         function updateParam2(id, value, json) {
             var idObj = id.split(",");
             if (idObj.length == 1) {
-		var x = json[idObj[0]];
-		console.log(x);
+                var x = json[idObj[0]];
+                console.log(x);
             }
         }
 
@@ -173,18 +173,18 @@
                 } else if (json[i][0] == "p") { //parameter
                     var id2 = id.slice();
                     id2.push(i);
-                    retVal += i + " <select id='"+id2.toString()+"' onchange=updateParam('" + id2.toString() + "',this.value);>";
-                    for (j = 1; j < json[i].length; j+=2) retVal += "<option value='" + json[i][j] + "'>" + json[i][j] + "</option>";
+                    retVal += i + " <select id='" + id2.toString() + "' onchange=updateParam('" + id2.toString() + "',this.value);>";
+                    for (j = 1; j < json[i].length; j += 2) retVal += "<option value='" + json[i][j] + "'>" + json[i][j] + "</option>";
                     retVal += i + " </select>";
-                    retVal += "<div id='"+id2.toString()+"_div' style='margin-left: 30px;'>";
+                    retVal += "<div id='" + id2.toString() + "_div' style='margin-left: 30px;'>";
                     if (debug) retVal += "id " + JSON.stringify(id);
                     retVal += "<br>";
                     var arrEl = {};
                     r = parseJson(json[i][2], arrEl, id2);
                     retVal += r[0];
-        	    for (var j in r[1]) {
-			out[j] = r[1][j];
-		    }
+                    for (var j in r[1]) {
+                        out[j] = r[1][j];
+                    }
                     retVal += "</div>";
                 }
             }
