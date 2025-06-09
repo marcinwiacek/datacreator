@@ -79,7 +79,7 @@ console.log(id2);
             newDivElement = document.createElement('div');
             newDivElement.id = newId;
             newDivElement.innerHTML =
-                "<br><input type=button value='delete' onclick=deleteArray('" + newId + "');>" +
+                "<input type=button value='delete' onclick=deleteArray('" + newId + "');>" +
                 (debug ? "id " + JSON.stringify(id2) : "") + "<br>" +
                 d[0];
             document.getElementById(id2).appendChild(newDivElement);
@@ -103,27 +103,35 @@ console.log(id);
 
         function updateInput(id, value) {
 console.log(id);
-            updateInput2(id, value, output);
+            updateInput2(id, value, output, JSON.parse(jsonTxt));
             document.getElementById("o").innerHTML = JSON.stringify(output, null, 2);
         }
 
-        function updateInput2(id, value, out) {
+        function updateInput2(id, value, out, json) {
             var idObj = id.split(",");
+console.log(json);
+console.log(idObj[0]);
+console.log(json[idObj[0]]);
+            if (json[idObj[0]][0] == "p") {
+		idObj.shift();
+	    }
+
             if (idObj.length == 1) {
                 out[idObj[0]] = value;
             } else {
                 var idObj2 = id.split(",");
-                idObj2.shift();
+                idObj2.pop();
                 var info = idObj[0].split(/[\[,\]]/);
                 //fixme - it can be array inside array
-                var xParent = document.getElementById(info[0]);
-                var xChild = document.getElementById(idObj[0]);
+                var xParent = document.getElementById(idObj2.toString());
+                var xChild = document.getElementById(id);
                 var newIndex = -1;
                 for (i in xParent.children) {
                     if (xParent.children[i] === xChild) newIndex = i;
                 }
 console.log(info[0]);
-                updateInput2(idObj2.toString(), value, out[info[0]][newIndex]);
+console.log(JSON.stringify(out));
+                updateInput2(idObj2.toString(), value, out[info[0]][newIndex], json[info[0]]);
             }
         }
 
@@ -133,11 +141,11 @@ console.log(info[0]);
                 if (json[i][0] == "a") {
                     var id2 = id.slice();
                     id2.push(i);
-                    retVal += "<br>" + i + " <input type=button value='add' onclick=addArray('" + id2.toString() + "');>";
+                    retVal +=  i + " <input type=button value='add' onclick=addArray('" + id2.toString() + "');>";
                     if (debug) retVal += "id " + JSON.stringify(id2);
                     retVal += "<div id='" + id2.toString() + "' style='margin-left: 30px;'>";
                     retVal += "<div id='" + id2.toString() + "[0]'>";
-                    retVal += "<br><input type=button value='delete' onclick=deleteArray('" + id2.toString() + "[0]');>";
+                    retVal += "<input type=button value='delete' onclick=deleteArray('" + id2.toString() + "[0]');>";
                     if (debug) retVal += "id " + JSON.stringify(id2);
                     retVal += "<br>";
                     var arr = [];
@@ -184,7 +192,7 @@ console.log(info[0]);
                     retVal += i + " </select>";
                     retVal += "<div id='" + id2.toString() + "' style='margin-left: 30px;'>";
                     if (debug) retVal += "id " + JSON.stringify(id);
-                    retVal += "<br>";
+//                    retVal += "<br>";
                     var arrEl = {};
                     r = parseJson(json[i][2], arrEl, id2);
                     retVal += r[0];
