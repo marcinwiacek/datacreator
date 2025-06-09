@@ -1,12 +1,19 @@
 {
     "niceToHaveString": ["s","def",""],
     "today": ["d"],
-    "person": ["a", {
-        "firstName": ["s","def",""],
-        "lastName": ["s","",""],
-        "sex": ["c","male","female"],
-        "age": ["i","55","0","100"],
-        "id": ["u"]
+    "type": ["p", ["private people"], {
+        "person": ["a", {
+            "firstName": ["s","def",""],
+            "lastName": ["s","",""],
+            "sex": ["c","male","female"],
+            "age": ["i","55","0","100"],
+            "id": ["u"]
+        }]
+    }, ["companies"], {
+        "company": ["a", {
+	    "name": ["s","",""],
+	    "technology": ["s","",""]
+	}]
     }],
     "book": ["a",{
         "title": ["s","",""],

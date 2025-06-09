@@ -77,6 +77,18 @@
             return out;
         }
 
+        function updateParam(id, value) {
+            updateParam2(id, value, JSON.parse(jsonTxt));
+        }
+
+        function updateParam2(id, value, json) {
+            var idObj = id.split(",");
+            if (idObj.length == 1) {
+		var x = json[idObj[0]];
+		console.log(x);
+            }
+        }
+
         function updateInput(id, value) {
             updateInput2(id, value, output);
             document.getElementById("o").innerHTML = JSON.stringify(output, null, 2);
@@ -150,6 +162,25 @@
                     retVal += "<br>";
                     var el = "";
                     out[i] = el;
+                } else if (json[i][0] == "p") { //parameter
+                    var id2 = id.slice();
+                    id2.push(i);
+                    retVal += i + " <select onchange=updateParam('" + id2.toString() + "',this.value);>";
+                    for (j = 1; j < json[i].length; j+=2) retVal += "<option value='" + json[i][j] + "'>" + json[i][j] + "</option>";
+                    retVal += i + " </select>";
+                    retVal += "<div id='" + id.toString() + "' style='margin-left: 30px;'>";
+                    if (debug) retVal += "id " + JSON.stringify(id);
+		    console.log(out);
+                    retVal += "<br>";
+                    var id2 = id.slice();
+                    id2.push(i + "[0]");
+                    var arrEl = {};
+                    r = parseJson(json[i][2], arrEl, id2);
+                    retVal += r[0];
+        	    for (var j in r[1]) {
+			out[j] = r[1][j];
+		    }
+                    retVal += "</div>";
                 }
             }
             return [retVal, out];
