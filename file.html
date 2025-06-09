@@ -48,22 +48,25 @@
         }
 
         function addArray(id) {
+console.log(id);
             output = addArray2(id, output, JSON.parse(jsonTxt));
         }
 
         function addArray2(id, out, json) {
             var idObj = id.split(",");
+            var idObjJson = id.split(",");
             var arr = [];
             if (json[idObj[0]][0] == "p") {
                 for (j = 1; j < json[idObj[0]].length; j += 2) {
-                    if (json[idObj[0]][j] == document.getElementById(idObj[0]).value) arr = json[idObj[0]][j + 1];
+                    if (json[idObj[0]][j] == document.getElementById(idObj[0]+"_select").value) arr = json[idObj[0]][j + 1];
                 }
                 arr = arr[idObj[1]][1];
-                idObj.shift();
+                idObjJson.shift();
             } else if (json[idObj[0]][0] == "a") {
                 arr = json[idObj[0]][1];
             }
-            var id2 = id.slice();
+            var id2 = idObj.slice().toString();
+console.log(id2);
             var i = 0;
             var newId = id2 + "[" + i + "]";
             while (document.getElementById([newId]) != null) {
@@ -72,7 +75,7 @@
             }
             var o = {};
             const d = parseJson(arr, o, [newId]);
-            out[idObj[0]].push(o);
+            out[idObjJson[0]].push(o);
             newDivElement = document.createElement('div');
             newDivElement.id = newId;
             newDivElement.innerHTML =
@@ -86,6 +89,7 @@
         }
 
         function updateParam(id, value) {
+console.log(id);
             updateParam2(id, value, JSON.parse(jsonTxt));
         }
 
@@ -98,6 +102,7 @@
         }
 
         function updateInput(id, value) {
+console.log(id);
             updateInput2(id, value, output);
             document.getElementById("o").innerHTML = JSON.stringify(output, null, 2);
         }
@@ -117,6 +122,7 @@
                 for (i in xParent.children) {
                     if (xParent.children[i] === xChild) newIndex = i;
                 }
+console.log(info[0]);
                 updateInput2(idObj2.toString(), value, out[info[0]][newIndex]);
             }
         }
@@ -173,10 +179,10 @@
                 } else if (json[i][0] == "p") { //parameter
                     var id2 = id.slice();
                     id2.push(i);
-                    retVal += i + " <select id='" + id2.toString() + "' onchange=updateParam('" + id2.toString() + "',this.value);>";
+                    retVal += i + " <select id='" + id2.toString() + "_select' onchange=updateParam('" + id2.toString() + "',this.value);>";
                     for (j = 1; j < json[i].length; j += 2) retVal += "<option value='" + json[i][j] + "'>" + json[i][j] + "</option>";
                     retVal += i + " </select>";
-                    retVal += "<div id='" + id2.toString() + "_div' style='margin-left: 30px;'>";
+                    retVal += "<div id='" + id2.toString() + "' style='margin-left: 30px;'>";
                     if (debug) retVal += "id " + JSON.stringify(id);
                     retVal += "<br>";
                     var arrEl = {};
