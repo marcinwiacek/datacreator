@@ -58,7 +58,7 @@ console.log(id);
             var arr = [];
             if (json[idObj[0]][0] == "p") {
                 for (j = 1; j < json[idObj[0]].length; j += 2) {
-                    if (json[idObj[0]][j] == document.getElementById(idObj[0]+"_select").value) arr = json[idObj[0]][j + 1];
+                    if (json[idObj[0]][j] == document.getElementById(idObj[0]).value) arr = json[idObj[0]][j + 1];
                 }
                 arr = arr[idObj[1]][1];
                 idObjJson.shift();
@@ -103,36 +103,45 @@ console.log(id);
 
         function updateInput(id, value) {
 console.log(id);
-            updateInput2(id, value, output, JSON.parse(jsonTxt));
-            document.getElementById("o").innerHTML = JSON.stringify(output, null, 2);
-        }
-
-        function updateInput2(id, value, out, json) {
+	    var out = output;
+	    var json = JSON.parse(jsonTxt);
+            var idObj0 = [];
             var idObj = id.split(",");
-console.log(json);
-console.log(idObj[0]);
-console.log(json[idObj[0]]);
-            if (json[idObj[0]][0] == "p") {
-		idObj.shift();
+	    while (true) {
+		console.log("idobj "+idObj);
+		console.log("idobj0 "+idObj[0]);
+		if (idObj[0].includes("[")) {
+		    var info = idObj[0].split(/[\[,\]]/);
+		    idObj0.push(info[0]);
+            	    var xParent = document.getElementById(idObj0.toString());
+console.log("parent "+idObj0.toString());
+		    idObj0.pop();
+		    idObj0.push(idObj[0]);
+            	    var xChild = document.getElementById(idObj0.toString());
+console.log("child "+idObj0.toString());
+            	    var newIndex = -1;
+            	    for (i in xParent.children) {
+                	if (xParent.children[i] === xChild) newIndex = i;
+            	    }
+            	    out = out[info[0]][newIndex];
+		    json = json[info[0]];
+		    idObj.shift();
+        	} else if (idObj.length == 1) {
+		    out[idObj[0]] = value;
+		    break;
+		} else {
+		    idObj0.push(idObj[0]);
+            	    var xParent = document.getElementById(idObj0.toString());
+            	    for (j = 1; j < json[idObj[0]].length; j += 2) {
+                	if (json[idObj[0]][j] == xParent.value) {
+			    json = json[idObj[0]][j + 1];
+			    break;
+			}
+            	    }
+		    idObj.shift();
+		}
 	    }
-
-            if (idObj.length == 1) {
-                out[idObj[0]] = value;
-            } else {
-                var idObj2 = id.split(",");
-                idObj2.pop();
-                var info = idObj[0].split(/[\[,\]]/);
-                //fixme - it can be array inside array
-                var xParent = document.getElementById(idObj2.toString());
-                var xChild = document.getElementById(id);
-                var newIndex = -1;
-                for (i in xParent.children) {
-                    if (xParent.children[i] === xChild) newIndex = i;
-                }
-console.log(info[0]);
-console.log(JSON.stringify(out));
-                updateInput2(idObj2.toString(), value, out[info[0]][newIndex], json[info[0]]);
-            }
+            document.getElementById("o").innerHTML = JSON.stringify(output, null, 2);
         }
 
         function parseJson(json, out, id) {
@@ -187,7 +196,7 @@ console.log(JSON.stringify(out));
                 } else if (json[i][0] == "p") { //parameter
                     var id2 = id.slice();
                     id2.push(i);
-                    retVal += i + " <select id='" + id2.toString() + "_select' onchange=updateParam('" + id2.toString() + "',this.value);>";
+                    retVal += i + " <select id='" + id2.toString() + "' onchange=updateParam('" + id2.toString() + "',this.value);>";
                     for (j = 1; j < json[i].length; j += 2) retVal += "<option value='" + json[i][j] + "'>" + json[i][j] + "</option>";
                     retVal += i + " </select>";
                     retVal += "<div id='" + id2.toString() + "' style='margin-left: 30px;'>";
