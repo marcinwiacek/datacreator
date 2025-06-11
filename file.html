@@ -126,7 +126,7 @@
             }
         }
 
-        function updateInput(id, value) {
+        function updateInput(id, value, num) {
 	    console.log(id);
 	    var out = output;
 	    var json = JSON.parse(jsonTxt);
@@ -152,7 +152,11 @@
 		    json = json[info[0]];
 		    idObj.shift();
         	} else if (idObj.length == 1) {
-		    out[idObj[0]] = value;
+		    if (num) {
+			out[idObj[0]] = Number(value);
+		    } else {
+			out[idObj[0]] = value;
+		    }
 		    break;
 		} else {
 		    idObj0.push(idObj[0]);
@@ -195,7 +199,7 @@
                 } else if (json[i][0] == "c") { //combo box
                     var id2 = id.slice();
                     id2.push(i);
-                    retVal += i + " <select onchange=updateInput('" + id2.toString() + "',this.value);>";
+                    retVal += i + " <select onchange=updateInput('" + id2.toString() + "',this.value,false);>";
                     for (j = 1; j < json[i].length; j++) retVal += "<option value='" + json[i][j] + "'>" + json[i][j] + "</option>";
                     retVal += i + " </select>";
                     if (debug) retVal += "id " + JSON.stringify(id2);
@@ -205,7 +209,7 @@
                 } else if (json[i][0] == "s") { //string
                     var id2 = id.slice();
                     id2.push(i);
-                    retVal += i + " <input oninput=updateInput('" + id2.toString() + "',this.value);>";
+                    retVal += i + " <input oninput=updateInput('" + id2.toString() + "',this.value,false);>";
                     if (debug) retVal += "id " + JSON.stringify(id2);
                     retVal += "<br>";
                     var el = "";
@@ -213,7 +217,7 @@
                 } else if (json[i][0] == "i") { //integer
                     var id2 = id.slice();
                     id2.push(i);
-                    retVal += i + " <input type=number oninput=updateInput('" + id2.toString() + "',this.value);>";
+                    retVal += i + " <input type=number oninput=updateInput('" + id2.toString() + "',this.value,true);>";
                     if (debug) retVal += "id " + JSON.stringify(id2);
                     retVal += "<br>";
                     var el = "";
