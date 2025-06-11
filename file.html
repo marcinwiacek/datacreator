@@ -212,31 +212,28 @@
                     retVal += i + " <input oninput=updateInput('" + id2.toString() + "',this.value,false);>";
                     if (debug) retVal += "id " + JSON.stringify(id2);
                     retVal += "<br>";
-                    var el = "";
-                    out[i] = el;
+                    out[i] = "";
                 } else if (json[i][0] == "i") { //integer
                     var id2 = id.slice();
                     id2.push(i);
-                    retVal += i + " <input type=number oninput=updateInput('" + id2.toString() + "',this.value,true);>";
+                    retVal += i + " <input value='0' type=number oninput=updateInput('" + id2.toString() + "',this.value,true);>";
                     if (debug) retVal += "id " + JSON.stringify(id2);
                     retVal += "<br>";
-                    var el = "";
-                    out[i] = el;
+                    out[i] = 0;
                 } else if (json[i][0] == "d") { //date
                     var id2 = id.slice();
                     id2.push(i);
                     const date = new Date();
-                    retVal += i + " <input value='" +
-                        date.getFullYear() + "-" +
+                    const val= date.getFullYear() + "-" +
                         (date.getMonth() + 1 < 10 ? "0" : "") +
                         (date.getMonth() + 1) + "-" +
                         (date.getDate() < 10 ? "0" : "") +
-                        date.getDate() +
+                        date.getDate();
+                    retVal += i + " <input value='" + val +
                         "' oninput=updateInput('" + id2.toString() + "',this.value); type=date>";
                     if (debug) retVal += "id " + JSON.stringify(id2);
                     retVal += "<br>";
-                    var el = "";
-                    out[i] = el;
+                    out[i] = val;
                 } else if (json[i][0] == "p") { //parameter
                     var id2 = id.slice();
                     id2.push(i);
