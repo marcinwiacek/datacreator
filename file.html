@@ -26,29 +26,54 @@
         var debug = false;
 
         function deleteArray(id) {
-            output = deleteArray2(id, output, JSON.parse(jsonTxt));
+	    console.log(id);
+	    var out = output;
+	    var json = JSON.parse(jsonTxt);
+            var idObj0 = [];
+            var idObj = id.split(",");
+	    while (true) {
+		console.log("idobj "+idObj);
+		console.log("idobj0 "+idObj[0]);
+		if (idObj[0].includes("[")) {
+		    var info = idObj[0].split(/[\[,\]]/);
+		    idObj0.push(info[0]);
+            	    var xParent = document.getElementById(idObj0.toString());
+		    console.log("parent "+idObj0.toString());
+		    idObj0.pop();
+		    idObj0.push(idObj[0]);
+            	    var xChild = document.getElementById(idObj0.toString());
+		    console.log("child "+idObj0.toString());
+            	    var newIndex = -1;
+            	    for (i in xParent.children) {
+                	if (xParent.children[i] === xChild) newIndex = i;
+            	    }
+		    console.log(newIndex+" "+info[0]+" "+JSON.stringify(out));
+        	    if (idObj.length == 1) {
+            		out[info[0]].splice(newIndex, 1);
+		    } else {
+            		out = out[info[0]][newIndex];
+		    }
+		    json = json[info[0]];
+		    idObj.shift();
+		} else {
+		    idObj0.push(idObj[0]);
+            	    var xParent = document.getElementById(idObj0.toString());
+            	    for (j = 1; j < json[idObj[0]].length; j += 2) {
+                	if (json[idObj[0]][j] == xParent.value) {
+			    json = json[idObj[0]][j + 1];
+			    break;
+			}
+            	    }
+		    idObj.shift();
+		}
+        	if (idObj.length == 0) break;
+	    }
             document.getElementById(id).remove();
             document.getElementById("o").innerHTML = JSON.stringify(output, null, 2);
         }
 
-        function deleteArray2(id, out, json) {
-            var idObj = id.split(",");
-            if (idObj.length == 1) {
-                var info = idObj[0].split(/[\[,\]]/);
-                //fixme - it can be array inside array
-                var xParent = document.getElementById(info[0]);
-                var xChild = document.getElementById(idObj[0]);
-                var newIndex = -1;
-                for (i in xParent.children) {
-                    if (xParent.children[i] === xChild) newIndex = i;
-                }
-                out[info[0]].splice(newIndex, 1);
-            }
-            return out;
-        }
-
         function addArray(id) {
-console.log(id);
+	    console.log(id);
             output = addArray2(id, output, JSON.parse(jsonTxt));
         }
 
@@ -66,7 +91,7 @@ console.log(id);
                 arr = json[idObj[0]][1];
             }
             var id2 = idObj.slice().toString();
-console.log(id2);
+	    console.log(id2);
             var i = 0;
             var newId = id2 + "[" + i + "]";
             while (document.getElementById([newId]) != null) {
@@ -89,7 +114,7 @@ console.log(id2);
         }
 
         function updateParam(id, value) {
-console.log(id);
+	    console.log(id);
             updateParam2(id, value, JSON.parse(jsonTxt));
         }
 
@@ -102,7 +127,7 @@ console.log(id);
         }
 
         function updateInput(id, value) {
-console.log(id);
+	    console.log(id);
 	    var out = output;
 	    var json = JSON.parse(jsonTxt);
             var idObj0 = [];
@@ -114,11 +139,11 @@ console.log(id);
 		    var info = idObj[0].split(/[\[,\]]/);
 		    idObj0.push(info[0]);
             	    var xParent = document.getElementById(idObj0.toString());
-console.log("parent "+idObj0.toString());
+		    console.log("parent "+idObj0.toString());
 		    idObj0.pop();
 		    idObj0.push(idObj[0]);
             	    var xChild = document.getElementById(idObj0.toString());
-console.log("child "+idObj0.toString());
+		    console.log("child "+idObj0.toString());
             	    var newIndex = -1;
             	    for (i in xParent.children) {
                 	if (xParent.children[i] === xChild) newIndex = i;
