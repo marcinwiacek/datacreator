@@ -213,7 +213,14 @@
                 } else if (json[i][0] == "d") { //date
                     var id2 = id.slice();
                     id2.push(i);
-                    retVal += i + " <input oninput=updateInput('" + id2.toString() + "',this.value); type=date>";
+		    const date = new Date();
+                    retVal += i + " <input value='"+
+		    date.getFullYear()+"-"+
+		    (date.getMonth() + 1<10?"0":"")+
+		    (date.getMonth() + 1)+"-"+
+		    (date.getDate()<10?"0":"")+
+		    date.getDate()+
+		    "' oninput=updateInput('" + id2.toString() + "',this.value); type=date>";
                     if (debug) retVal += "id " + JSON.stringify(id2);
                     retVal += "<br>";
                     var el = "";
