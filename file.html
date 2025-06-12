@@ -266,7 +266,12 @@
                 const fReader = new FileReader();
                 fReader.onload = function(e2) {
                     jsonTxt = e2.target.result;
-                    createPage();
+		    try{
+		        JSON.parse(jsonTxt);
+                	createPage();
+		    } catch(ee) {
+		        alert(ee.message)
+		    }
                 };
                 fReader.readAsText(e.target.files[0]);
             });
