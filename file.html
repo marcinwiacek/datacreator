@@ -50,6 +50,7 @@
                     console.log(newIndex + " " + info[0] + " " + JSON.stringify(out));
                     if (idObj.length == 1) {
                         out[info[0]].splice(newIndex, 1);
+console.log("removing index "+info[1]);
                     } else {
                         out = out[info[0]][newIndex];
                     }
@@ -81,14 +82,19 @@
             var idObj = id.split(",");
             var idObjJson = id.split(",");
             var arr = [];
+	    var relatedIndexes = [];
             if (json[idObj[0]][0] == "p") {
                 for (j = 1; j < json[idObj[0]].length; j += 2) {
-                    if (json[idObj[0]][j] == document.getElementById(idObj[0]).value) arr = json[idObj[0]][j + 1];
+                    if (json[idObj[0]][j] == document.getElementById(idObj[0]).value) {
+			arr = json[idObj[0]][j + 1];
+		    }
                 }
+		relatedIndexes = arr[idObj[1]][2];
                 arr = arr[idObj[1]][1];
                 idObjJson.shift();
             } else if (json[idObj[0]][0] == "a") {
                 arr = json[idObj[0]][1];
+		relatedIndexes = json[idObj[1]][2];
             }
             var id2 = idObj.slice().toString();
             console.log(id2);
@@ -98,8 +104,17 @@
                 i = i + 1;
                 newId = id2 + "[" + i + "]";
             }
+	    var allEl = document.getElementsByName(relatedIndexes);
+	    for (j=0;j<allEl.length;j++) {
+		var op = document.createElement('option');
+		op.value = i;
+		op.innerHTML = i;
+		console.log("search for "+relatedIndexes);
+        	console.log(allEl[j]);
+        	allEl[j].add(op);
+	    }
             var o = {};
-            const d = parseJson(arr, o, [newId]);
+            const d = parseJson(arr, o, [newId], i);
             out[idObjJson[0]].push(o);
             newDivElement = document.createElement('div');
             newDivElement.id = newId;
@@ -173,7 +188,7 @@
             document.getElementById("o").innerHTML = JSON.stringify(output, null, 2);
         }
 
-        function parseJson(json, out, id) {
+        function parseJson(json, out, id, newId) {
             var retVal = "";
             for (var i in json) {
                 if (json[i][0] == "a") {
@@ -206,6 +221,20 @@
                     retVal += "<br>";
                     var el = json[i][1];
                     out[i] = el;
+                } else if (json[i][0] == "r") { //read index
+                    var id2 = id.slice();
+                    id2.push(i);
+                    var id3 = id.slice();
+		    id3[0] = "book";
+                    id3.push(i);
+                    retVal += i + " <select name='"+id3.toString()+"' onchange=updateInput('" + id2.toString() + "',this.value,false);>";
+                    retVal += "<option value='0'>0</option>";
+                    retVal += i + " </select>";
+                    if (debug) retVal += "id " + JSON.stringify(id2);
+                    retVal += "<br>";
+                    out[i] = 0;
+                } else if (json[i][0] == "u") { //index
+                    out[i] = newId;
                 } else if (json[i][0] == "s") { //string
                     var id2 = id.slice();
                     id2.push(i);
@@ -255,7 +284,7 @@
         }
 
         function createPage() {
-            const d = parseJson(JSON.parse(jsonTxt), output, []);
+            const d = parseJson(JSON.parse(jsonTxt), output, [], 0);
             document.getElementById("f").innerHTML = d[0];
             output = d[1];
             document.getElementById("o").innerHTML = JSON.stringify(output, null, 2);
