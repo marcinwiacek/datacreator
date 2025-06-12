@@ -5,6 +5,8 @@
             "lastName": ["s","",""],
             "sex": ["c","male","female"],
             "age": ["i","55","0","100"],
+            "bool": ["b"],
+            "idscan": ["f"],
             "id": ["u"]
         },"book,author"]
     }, "companies", {

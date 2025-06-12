@@ -249,6 +249,20 @@ console.log("removing index "+info[1]);
                     if (debug) retVal += "id " + JSON.stringify(id2);
                     retVal += "<br>";
                     out[i] = 0;
+                } else if (json[i][0] == "b") { //bool
+                    var id2 = id.slice();
+                    id2.push(i);
+                    retVal += i + " <input value=true type=checkbox  oninput=updateInput('" + id2.toString() + "',this.value,true);>";
+                    if (debug) retVal += "id " + JSON.stringify(id2);
+                    retVal += "<br>";
+                    out[i] = false;
+                } else if (json[i][0] == "f") { //file
+                    var id2 = id.slice();
+                    id2.push(i);
+                    retVal += i + " <input  type=file  oninput=updateFile('" + id2.toString() + "',this.value);>";
+                    if (debug) retVal += "id " + JSON.stringify(id2);
+                    retVal += "<br>";
+                    out[i] = "";
                 } else if (json[i][0] == "d") { //date
                     var id2 = id.slice();
                     id2.push(i);
