@@ -34,7 +34,7 @@
             while (true) {
                 console.log("idobj " + idObj);
                 console.log("idobj0 " + idObj[0]);
-console.log("json "+JSON.stringify(json));
+		console.log("json "+JSON.stringify(json));
                 if (idObj[0].includes("[")) {
                     var info = idObj[0].split(/[\[,\]]/);
                     idObj0.push(info[0]);
@@ -104,7 +104,7 @@ console.log("json "+JSON.stringify(json));
                 idObjJson.shift();
             } else if (json[idObj[0]][0] == "a") {
                 arr = json[idObj[0]][1];
-		relatedIndexes = json[idObj[1]][2];
+		relatedIndexes = json[idObj[1]]?json[idObj[1]][2]:null;
             }
             var id2 = idObj.slice().toString();
             console.log(id2);
@@ -114,14 +114,16 @@ console.log("json "+JSON.stringify(json));
                 i = i + 1;
                 newId = id2 + "[" + i + "]";
             }
-	    var allEl = document.getElementsByName(relatedIndexes);
-	    for (j=0;j<allEl.length;j++) {
-		var op = document.createElement('option');
-		op.value = i;
-		op.innerHTML = i;
-		console.log("search for "+relatedIndexes);
-        	console.log(allEl[j]);
-        	allEl[j].add(op);
+	    if (relatedIndexes) {
+		var allEl = document.getElementsByName(relatedIndexes);
+		for (j=0;j<allEl.length;j++) {
+		    var op = document.createElement('option');
+		    op.value = i;
+		    op.innerHTML = i;
+		    console.log("search for "+relatedIndexes);
+        	    console.log(allEl[j]);
+        	    allEl[j].add(op);
+		}
 	    }
             var o = {};
             const d = parseJson(arr, o, [newId], i);
@@ -129,7 +131,7 @@ console.log("json "+JSON.stringify(json));
             newDivElement = document.createElement('div');
             newDivElement.id = newId;
             newDivElement.innerHTML =
-                "<input type=button value='delete' onclick=deleteArray('" + newId + "');>" +
+                "<br><input type=button value='delete' onclick=deleteArray('" + newId + "');>" +
                 (debug ? "id " + JSON.stringify(id2) : "") + "<br>" +
                 d[0];
             document.getElementById(id2).appendChild(newDivElement);
@@ -208,7 +210,7 @@ console.log("json "+JSON.stringify(json));
                     if (debug) retVal += "id " + JSON.stringify(id2);
                     retVal += "<div id='" + id2.toString() + "' style='margin-left: 30px;'>";
                     retVal += "<div id='" + id2.toString() + "[0]'>";
-                    retVal += "<input type=button value='delete' onclick=deleteArray('" + id2.toString() + "[0]');>";
+                    retVal += "<br><input type=button value='delete' onclick=deleteArray('" + id2.toString() + "[0]');>";
                     if (debug) retVal += "id " + JSON.stringify(id2);
                     retVal += "<br>";
                     var arr = [];
