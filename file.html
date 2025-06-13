@@ -34,7 +34,7 @@
             while (true) {
                 console.log("idobj " + idObj);
                 console.log("idobj0 " + idObj[0]);
-		console.log("json "+JSON.stringify(json));
+                console.log("json " + JSON.stringify(json));
                 if (idObj[0].includes("[")) {
                     var info = idObj[0].split(/[\[,\]]/);
                     idObj0.push(info[0]);
@@ -51,7 +51,7 @@
                     console.log(newIndex + " " + info[0] + " " + JSON.stringify(out));
                     if (idObj.length == 1) {
                         out[info[0]].splice(newIndex, 1);
-			console.log("removing index "+info[1]);
+                        console.log("removing index " + info[1]);
                     } else {
                         out = out[info[0]][newIndex];
                     }
@@ -70,15 +70,15 @@
                 }
                 if (idObj.length == 0) break;
             }
-	    console.log("json "+JSON.stringify(json));
-	    var allEl = document.getElementsByName(json[2]);
-	    for (j=0;j<allEl.length;j++) {
-		toDelete = -1;
-        	for (jj=0;jj<allEl[j].length;jj++) {
-		    if (allEl[j][jj].value == newIndex) toDelete = jj;
-		}
-		allEl[j].remove(toDelete);
-	    }
+            console.log("json " + JSON.stringify(json));
+            var allEl = document.getElementsByName(json[2]);
+            for (j = 0; j < allEl.length; j++) {
+                toDelete = -1;
+                for (jj = 0; jj < allEl[j].length; jj++) {
+                    if (allEl[j][jj].value == newIndex) toDelete = jj;
+                }
+                allEl[j].remove(toDelete);
+            }
             document.getElementById(id).remove();
             document.getElementById("o").innerHTML = JSON.stringify(output, null, 2);
         }
@@ -92,19 +92,19 @@
             var idObj = id.split(",");
             var idObjJson = id.split(",");
             var arr = [];
-	    var relatedIndexes = [];
+            var relatedIndexes = [];
             if (json[idObj[0]][0] == "p") {
                 for (j = 1; j < json[idObj[0]].length; j += 2) {
                     if (json[idObj[0]][j] == document.getElementById(idObj[0]).value) {
-			arr = json[idObj[0]][j + 1];
-		    }
+                        arr = json[idObj[0]][j + 1];
+                    }
                 }
-		relatedIndexes = arr[idObj[1]][2];
+                relatedIndexes = arr[idObj[1]][2];
                 arr = arr[idObj[1]][1];
                 idObjJson.shift();
             } else if (json[idObj[0]][0] == "a") {
                 arr = json[idObj[0]][1];
-		relatedIndexes = json[idObj[1]]?json[idObj[1]][2]:null;
+                relatedIndexes = json[idObj[1]] ? json[idObj[1]][2] : null;
             }
             var id2 = idObj.slice().toString();
             console.log(id2);
@@ -114,17 +114,17 @@
                 i = i + 1;
                 newId = id2 + "[" + i + "]";
             }
-	    if (relatedIndexes) {
-		var allEl = document.getElementsByName(relatedIndexes);
-		for (j=0;j<allEl.length;j++) {
-		    var op = document.createElement('option');
-		    op.value = i;
-		    op.innerHTML = i;
-		    console.log("search for "+relatedIndexes);
-        	    console.log(allEl[j]);
-        	    allEl[j].add(op);
-		}
-	    }
+            if (relatedIndexes) {
+                var allEl = document.getElementsByName(relatedIndexes);
+                for (j = 0; j < allEl.length; j++) {
+                    var op = document.createElement('option');
+                    op.value = i;
+                    op.innerHTML = i;
+                    console.log("search for " + relatedIndexes);
+                    console.log(allEl[j]);
+                    allEl[j].add(op);
+                }
+            }
             var o = {};
             const d = parseJson(arr, o, [newId], i);
             out[idObjJson[0]].push(o);
@@ -237,9 +237,9 @@
                     var id2 = id.slice();
                     id2.push(i);
                     var id3 = id.slice();
-		    id3[0] = "book";
+                    id3[0] = "book";
                     id3.push(i);
-                    retVal += i + " <select name='"+id3.toString()+"' onchange=updateInput('" + id2.toString() + "',this.value,false);>";
+                    retVal += i + " <select name='" + id3.toString() + "' onchange=updateInput('" + id2.toString() + "',this.value,false);>";
                     retVal += "<option value='0'>0</option>";
                     retVal += i + " </select>";
                     if (debug) retVal += "id " + JSON.stringify(id2);
@@ -279,7 +279,7 @@
                     var id2 = id.slice();
                     id2.push(i);
                     const date = new Date();
-                    const val= date.getFullYear() + "-" +
+                    const val = date.getFullYear() + "-" +
                         (date.getMonth() + 1 < 10 ? "0" : "") +
                         (date.getMonth() + 1) + "-" +
                         (date.getDate() < 10 ? "0" : "") +
@@ -321,12 +321,12 @@
                 const fReader = new FileReader();
                 fReader.onload = function(e2) {
                     jsonTxt = e2.target.result;
-		    try{
-		        JSON.parse(jsonTxt);
-                	createPage();
-		    } catch(ee) {
-		        alert(ee.message)
-		    }
+                    try {
+                        JSON.parse(jsonTxt);
+                        createPage();
+                    } catch (ee) {
+                        alert(ee.message)
+                    }
                 };
                 fReader.readAsText(e.target.files[0]);
             });
