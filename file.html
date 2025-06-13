@@ -34,6 +34,7 @@
             while (true) {
                 console.log("idobj " + idObj);
                 console.log("idobj0 " + idObj[0]);
+console.log("json "+JSON.stringify(json));
                 if (idObj[0].includes("[")) {
                     var info = idObj[0].split(/[\[,\]]/);
                     idObj0.push(info[0]);
@@ -50,7 +51,7 @@
                     console.log(newIndex + " " + info[0] + " " + JSON.stringify(out));
                     if (idObj.length == 1) {
                         out[info[0]].splice(newIndex, 1);
-console.log("removing index "+info[1]);
+			console.log("removing index "+info[1]);
                     } else {
                         out = out[info[0]][newIndex];
                     }
@@ -69,6 +70,15 @@ console.log("removing index "+info[1]);
                 }
                 if (idObj.length == 0) break;
             }
+	    console.log("json "+JSON.stringify(json));
+	    var allEl = document.getElementsByName(json[2]);
+	    for (j=0;j<allEl.length;j++) {
+		toDelete = -1;
+        	for (jj=0;jj<allEl[j].length;jj++) {
+		    if (allEl[j][jj].value == newIndex) toDelete = jj;
+		}
+		allEl[j].remove(toDelete);
+	    }
             document.getElementById(id).remove();
             document.getElementById("o").innerHTML = JSON.stringify(output, null, 2);
         }
