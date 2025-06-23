@@ -20,7 +20,7 @@
     "book": ["a",{
         "title": ["s","",""],
         "year": ["i","","1900","2025"],
-        "author": ["r","type,person"],
+        "author": ["r", "type,person"],
 	"id": ["u"]
-    }]
+    }, "type,person"]
 }

@@ -104,7 +104,7 @@
                 idObjJson.shift();
             } else if (json[idObj[0]][0] == "a") {
                 arr = json[idObj[0]][1];
-                relatedIndexes = json[idObj[1]] ? json[idObj[1]][2] : null;
+                relatedIndexes = json[idObj[0]] ? json[idObj[0]][2] : null;
             }
             var id2 = idObj.slice().toString();
             console.log(id2);
@@ -114,16 +114,33 @@
                 i = i + 1;
                 newId = id2 + "[" + i + "]";
             }
+	    console.log("search for "+relatedIndexes);
             if (relatedIndexes) {
                 var allEl = document.getElementsByName(relatedIndexes);
                 for (j = 0; j < allEl.length; j++) {
-                    var op = document.createElement('option');
-                    op.value = i;
-                    op.innerHTML = i;
-                    console.log("search for " + relatedIndexes);
-                    console.log(allEl[j]);
-                    allEl[j].add(op);
+            	    console.log(allEl[j]);
+                	var op = document.createElement('option');
+                	op.value = i;
+                	op.innerHTML = i;
+                	console.log(allEl[j]);
+                	allEl[j].add(op);
                 }
+console.log(allEl.length);
+		if (allEl.length==0) {
+                    var allEl = document.getElementById(relatedIndexes);
+console.log(allEl);
+//		    if (allEl) {
+//                	var allEl = allEl.getElementsByClassName("option");
+//console.log(allEl);
+//fixme - check indexes
+	        	for (j = 0; j < allEl.children.length; j++) {
+console.log(allEl.children[j]);
+                	    var op = document.createElement('option');
+                	    op.value = j;//allEl.children[j].value;
+                	    op.innerHTML = j;//allEl.children[j].value;
+			}
+//		    }
+		}
             }
             var o = {};
             const d = parseJson(arr, o, [newId], i);
@@ -240,6 +257,14 @@
                     id3[0] = "book";
                     id3.push(i);
                     retVal += i + " <select name='" + id3.toString() + "' onchange=updateInput('" + id2.toString() + "',this.value,false);>";
+
+            	    var allEl = document.getElementById(json[i][1]);
+		    if (allEl != null) {
+            		for (j = 0; j < allEl.length; j++) {
+                	    console.log("aaaa" + allEl[j]);
+			}
+            	    }
+
                     retVal += "<option value='0'>0</option>";
                     retVal += i + " </select>";
                     if (debug) retVal += "id " + JSON.stringify(id2);
