@@ -114,16 +114,16 @@
                 i = i + 1;
                 newId = id2 + "[" + i + "]";
             }
-	    console.log("search for "+relatedIndexes);
+            console.log("search for " + relatedIndexes);
             if (relatedIndexes) {
                 var allEl = document.getElementsByName(relatedIndexes);
                 for (j = 0; j < allEl.length; j++) {
-            	    console.log(allEl[j]);
-                	var op = document.createElement('option');
-                	op.value = i;
-                	op.innerHTML = i;
-                	console.log(allEl[j]);
-                	allEl[j].add(op);
+                    console.log(allEl[j]);
+                    var op = document.createElement('option');
+                    op.value = i;
+                    op.innerHTML = i;
+                    console.log(allEl[j]);
+                    allEl[j].add(op);
                 }
             }
             var o = {};
@@ -241,16 +241,16 @@
                     id3.push(i);
                     retVal += i + " <select name='" + id3.toString() + "' onchange=updateInput('" + id2.toString() + "',this.value,false);>";
 
-                var allEl = document.getElementById(json[i][1]);
-if (allEl!=null) {
-console.log(allEl.children.length);
-		    for (j=0;j<allEl.children.length;j++) {
-            		console.log(allEl.children[j]);
-                	retVal += "<option value='"+j+"'>"+j+"</option>";
-		    }
-} else {
-                	retVal += "<option value='0'>0</option>";
-}
+                    var allEl = document.getElementById(json[i][1]);
+                    if (allEl != null) {
+                        console.log(allEl.children.length);
+                        for (j = 0; j < allEl.children.length; j++) {
+                            console.log(allEl.children[j]);
+                            retVal += "<option value='" + j + "'>" + j + "</option>";
+                        }
+                    } else {
+                        retVal += "<option value='0'>0</option>";
+                    }
                     retVal += i + " </select>";
                     if (debug) retVal += "id " + JSON.stringify(id2);
                     retVal += "<br>";
