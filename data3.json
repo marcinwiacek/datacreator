@@ -13,13 +13,13 @@
 		"delete": ["delete", "rent"]
 	},
 	"carsStruct": {
-		"name": ["string", "customer name","rent,name"],
+		"name": ["string", "customer name","rent.name"],
 		"register": ["string", "registerxx", "rent.register"],
 		"longshort": ["option", "option example", "short", "long", "rent.longshort"]
 	},
 	"busesStruct": {
 		"personId": ["string", "personal id","rent.id"],
-		"name": ["string", "customer name","rent,name"],
+		"name": ["string", "customer name","rent.name"],
 		"register": ["string", "registerxx","rent.register"],
 		"options": ["array", "extra options array", "options", "rent.options"]
 	},
