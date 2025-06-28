@@ -1,0 +1,24 @@
+{
+    "start": {
+	"renttype": ["select","cars","cleanBefore","carsStruct","buses","cleanBefore","busesStruct"],
+	"internal": ["checkbox","cleanBefore2","","cleanBefore2","internaldata"]
+    },
+    "cleanBefore2": {
+	"delete": ["delete","rent.internal"]
+    },
+    "internaldata": {
+	"employee": ["string","rent.internalid"]
+    },
+    "cleanBefore": {
+	"delete": ["delete","rent"]
+    },
+    "carsStruct": {
+	"name": ["string","rent,name"],
+	"register": ["string","rent.register"]
+    },
+    "busesStruct": {
+	"personId": "string","rent.id"],
+	"name": ["string","rent,name"],
+	"register": ["string","rent.register"]
+    }
+}
