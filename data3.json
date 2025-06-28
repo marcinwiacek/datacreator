@@ -8,7 +8,7 @@
 		"internal": ["select", "is is internal employee?","yes","cleanBefore2", "internaldata", "no","cleanBefore2", ""]
 	},
 	"cleanBefore2": {
-		"delete": ["delete", "rent.internal"]
+		"delete": ["delete", "rent.internalid"]
 	},
 	"internaldata": {
 		"employee": ["string", "id for employee","rent.internalid"]
