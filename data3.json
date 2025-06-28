@@ -1,29 +1,29 @@
 {
 	"start": {
-		"renttype": ["select", "cars", "cleanBefore", "carsStruct", "buses", "cleanBefore", "busesStruct"],
-		"internal": ["checkbox", "cleanBefore2", "", "cleanBefore2", "internaldata"]
+		"renttype": ["select", "Select what is rented", "cars", "cleanBefore", "carsStruct", "buses", "cleanBefore", "busesStruct"],
+		"internal": ["checkbox", "is is internal employee?","cleanBefore2", "", "cleanBefore2", "internaldata"]
 	},
 	"cleanBefore2": {
 		"delete": ["delete", "rent.internal"]
 	},
 	"internaldata": {
-		"employee": ["string", "rent.internalid"]
+		"employee": ["string", "id for employee","rent.internalid"]
 	},
 	"cleanBefore": {
 		"delete": ["delete", "rent"]
 	},
 	"carsStruct": {
-		"name": ["string", "rent,name"],
-		"register": ["string", "rent.register"],
-		"longshort": ["option", "short", "long", "rent.longshort"]
+		"name": ["string", "customer name","rent,name"],
+		"register": ["string", "registerxx", "rent.register"],
+		"longshort": ["option", "option example", "short", "long", "rent.longshort"]
 	},
 	"busesStruct": {
-		"personId": ["string", "rent.id"],
-		"name": ["string", "rent,name"],
-		"register": ["string", "rent.register"],
-		"options": ["array", "options", "rent.options"]
+		"personId": ["string", "personal id","rent.id"],
+		"name": ["string", "customer name","rent,name"],
+		"register": ["string", "registerxx","rent.register"],
+		"options": ["array", "extra options array", "options", "rent.options"]
 	},
 	"options": {
-		"id": ["string", "rent.options.id[i]"]
+		"id": ["string", "id", "rent.options.id[i]"]
 	}
 }

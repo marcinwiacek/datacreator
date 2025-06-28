@@ -1,0 +1,73 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .row {
+            display: flex;
+        }
+        .col {
+            flex: 50%;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="file" id="file" name="file" />
+    <p>
+    <div class="row">
+        <div class="col" id="editor"></div>
+        <pre class="col" id="json"></pre>
+    </div>
+    <script>
+        var inputData = "";
+        var outputData = {};
+        var debug = false;
+
+	function processEditorPart(section) {
+	    var editorText = "";
+	    console.log("section "+section);
+	    var elementsToProcess = section;
+	    for (i in elementsToProcess) {
+		console.log(elementsToProcess[i]);
+		if (elementsToProcess[i][0] == "checkbox") {
+		} else if (elementsToProcess[i][0] == "select") {
+		    editorText += elementsToProcess[i][1]+"<select onchange=updateInput('',this.value,false);>";
+                    for (j = 2; j < elementsToProcess[i].length; j=j+3) {
+                    	editorText += "<option value='" + elementsToProcess[i][j] + "'>" + elementsToProcess[i][j] + "</option>";
+                    }
+                    editorText += "</select>";                    
+                    console.log("entering "+elementsToProcess[i][4]);
+                    editorText += "<div style='margin-left: 10px;'>"+processEditorPart(inputData[elementsToProcess[i][4]])+"</div>";
+		} else if (elementsToProcess[i][0] == "checkbox") {
+ 		    editorText += elementsToProcess[i][1]+"<input value=true type=checkbox oninput=updateInput('',this.value,true);><br>";
+  		} else if (elementsToProcess[i][0] == "string") {
+ 		    editorText += elementsToProcess[i][1]+"<input oninput=updateInput('',this.value,true);><br>";
+		} else if (elementsToProcess[i][0] == "option") {
+		} else if (elementsToProcess[i][0] == "array") {
+		} else if (elementsToProcess[i][0] == "delete") {
+		}
+	    }
+	    console.log("exiting");
+	    return editorText;
+	}
+
+        document.getElementById("file").addEventListener("change",
+            function(e) {
+                const fReader = new FileReader();
+                fReader.onload = function(e2) {
+                    jsonTxt = e2.target.result;
+                    try {
+                        inputData = JSON.parse(jsonTxt);
+        		document.getElementById("editor").innerHTML = processEditorPart(inputData.start);
+	                document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+                    } catch (ee) {
+                        alert(ee.message)
+                    }
+                };
+                fReader.readAsText(e.target.files[0]);
+            });
+    </script>
+</body>
+
+</html>
