@@ -1,7 +1,11 @@
 {
 	"start": {
 		"renttype": ["select", "Select what is rented", "cars", "cleanBefore", "carsStruct", "buses", "cleanBefore", "busesStruct"],
-		"internal": ["checkbox", "is is internal employee?","cleanBefore2", "", "cleanBefore2", "internaldata"]
+		"days": ["number", "how many days?","rent.days"],
+		"when": ["date", "when?","rent.startDate"],
+		"doc": ["file", "some document","rent.doc"],
+		"veteran": ["checkbox", "is is veteran?","rent.veteran"],
+		"internal": ["select", "is is internal employee?","yes","cleanBefore2", "internaldata", "no","cleanBefore2", ""]
 	},
 	"cleanBefore2": {
 		"delete": ["delete", "rent.internal"]

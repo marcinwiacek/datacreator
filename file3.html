@@ -41,9 +41,10 @@
 		return [obj,pathObj];
 	}
 	
-	function editString(path, value) {
+	function editStringBoolNum(path, value,num) {
+		console.log("value is "+value);
 		var obj = findOutputObject(path);		
-		obj[0][obj[1]] = value;
+		obj[0][obj[1]] = num?Number(value):value;
                 document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);		
 	}
 	
@@ -62,12 +63,28 @@
                     console.log("entering "+elementsToProcess[i][4]);
                     editorText += "<div style='margin-left: 10px;'>"+processEditorPart(inputData[elementsToProcess[i][4]])+"</div>";
 		} else if (elementsToProcess[i][0] == "checkbox") {
- 		    editorText += elementsToProcess[i][1]+"<input value=true type=checkbox oninput=editString('"+elementsToProcess[i][2]+"',this.value);><br>";
+ 		    editorText += elementsToProcess[i][1]+"<input value=true type=checkbox oninput=editStringBoolNum('"+elementsToProcess[i][2]+"',this.checked,false);><br>";
  		    obj = findOutputObject(elementsToProcess[i][2]);
    		    obj[0][obj[1]] = false;
   		} else if (elementsToProcess[i][0] == "string") {
- 		    editorText += elementsToProcess[i][1]+"<input oninput=editString('"+elementsToProcess[i][2]+"',this.value);><br>";
+ 		    editorText += elementsToProcess[i][1]+"<input oninput=editStringBoolNum('"+elementsToProcess[i][2]+"',this.value,false);><br>";
  		    findOutputObject(elementsToProcess[i][2]);
+		} else if (elementsToProcess[i][0] == "number") {
+ 		    editorText += elementsToProcess[i][1]+"<input value=0 type=number oninput=editStringBoolNum('"+elementsToProcess[i][2]+"',this.value,true);><br>";
+ 		    obj = findOutputObject(elementsToProcess[i][2]);
+   		    obj[0][obj[1]] = 0;
+		} else if (elementsToProcess[i][0] == "date") {
+		    const date = new Date();
+                    const dateVal = date.getFullYear() + "-" +
+                        (date.getMonth() + 1 < 10 ? "0" : "") +
+                        (date.getMonth() + 1) + "-" +
+                        (date.getDate() < 10 ? "0" : "") +
+                        date.getDate();
+ 		    editorText += elementsToProcess[i][1]+"<input value='"+dateVal+"' type=date oninput=editStringBoolNum('"+elementsToProcess[i][2]+"',this.value,false);><br>";
+ 		    obj = findOutputObject(elementsToProcess[i][2]);   		    
+   		    obj[0][obj[1]] = dateVal;
+		} else if (elementsToProcess[i][0] == "file") {
+ 		    editorText += elementsToProcess[i][1]+"<input type=file oninput=editStringBoolNum('"+elementsToProcess[i][2]+"',this.value,false);><br>";
 		} else if (elementsToProcess[i][0] == "option") {
 		} else if (elementsToProcess[i][0] == "array") {
 		} else if (elementsToProcess[i][0] == "delete") {
