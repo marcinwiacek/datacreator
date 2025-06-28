@@ -28,6 +28,6 @@
 		"options": ["array", "extra options array", "options"]
 	},
 	"options": {
-		"id": ["string", "id", "rent.options[].id"]
+		"id": ["string", "id", "rent.options[].id[i]"]
 	}
 }

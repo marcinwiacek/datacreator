@@ -24,16 +24,29 @@
         function findOutputObject(path) {
             var obj = outputData;
             var pathObj = path.split(".");
+            var prevArr = false;
             while (true) {
                 console.log(pathObj[0]);
-                if (obj[pathObj[0]] == null) {
-                    obj[pathObj[0]] = pathObj.length != 1 ? {} : "";
+                arr = pathObj[0].endsWith("[]");
+                pathObj[0] = pathObj[0].replace("[]","");
+                if (prevArr) {
+			var info = pathObj[0].split(/[\[,\]]/);
+			if (info[1]=="i") {
+				//just add new one
+			} else {
+				//get concrete one
+			}
+                } else {
+	                if (obj[pathObj[0]] == null) {
+	                    obj[pathObj[0]] = arr?[]:(pathObj.length != 1 ? {} : "");
+	                }
                 }
                 console.log(obj);
                 console.log(obj);
                 if (pathObj.length == 1) break;
                 obj = obj[pathObj[0]];
                 pathObj.shift();
+                prevArr = arr;
             }
             return [obj, pathObj];
         }
