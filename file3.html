@@ -22,6 +22,7 @@
         var debug = false;
 
         function findOutputObject(path) {
+        console.log("findOutputObject "+path);
             var obj = outputData;
             var pathObj = path.split(".");
             for (var i=0;i<pathObj.length;i++) {
@@ -32,19 +33,19 @@
 		    console.log(info);
 	            if (obj[info[0]] == null) {
 	                    obj[info[0]] = [];
-		    }
-		    
-		    if (info[1]=="") {
-			obj = obj[info[0]];
+		    }	
+		    //we don't have index = we create new one	  
+		    if (info[1]=="") {  
+		    obj = obj[info[0]];	
 			obj.push({});
-			pathObj[i] = info[0]+"["+(obj.length-1)+"]";
-			if (i==pathObj.length - 1) break;
+			pathObj[i] = info[0]+"["+(obj.length-1)+"]";			
+			  if (i==pathObj.length - 1) break;			  
 			obj = obj[obj.length-1];
-		    } else {
-            		if (i==pathObj.length - 1) break;
+		    } else {          		
             		console.log("entering array");
             		console.log(obj);
             		console.log(pathObj[i]);
+            		  if (i==pathObj.length - 1) break;
             		obj = obj[info[0]][info[1]];
             		console.log(obj)
 		    }
@@ -86,7 +87,7 @@
             newDivElement = document.createElement('div');
             newDivElement.classList.add("full");
             newDivElement.style = "display: grid; grid-template-columns: 1fr 1fr;";
-            newDivElement.innerHTML = processEditorPart(path2, obj[2]);
+            newDivElement.innerHTML = processEditorPart(path2, obj[2]+".");
             document.getElementById(path).appendChild(newDivElement);
             newButtonElement = document.createElement('button');
             newButtonElement.innerText = "Delete";
@@ -140,8 +141,8 @@
                     }
                     editorText += "</select>";
                 } else if (elementsToProcess[i][0] == "array") {
-                    findOutputObject(parentPath+elementsToProcess[i][3]);
-                    editorText += "<label>"+elementsToProcess[i][1] + "</label><input type=button onclick=addArrayElement('" + section + "." + i + "','"+elementsToProcess[i][2]+"','"+parentPath+elementsToProcess[i][3]+".'); value='Add'>";
+               //     findOutputObject(parentPath+elementsToProcess[i][3]);
+                    editorText += "<label>"+elementsToProcess[i][1] + "</label><input type=button onclick=addArrayElement('" + section + "." + i + "','"+elementsToProcess[i][2]+"','"+parentPath+elementsToProcess[i][3]+"'); value='Add'>";
                     editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'></div>";
                 } else if (elementsToProcess[i][0] == "delete") {
                     obj = findOutputObject(elementsToProcess[i][1]);
