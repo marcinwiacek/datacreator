@@ -25,9 +25,10 @@
 		"personId": ["string", "personal id","rent.id"],
 		"name": ["string", "customer name","rent.name"],
 		"register": ["string", "registerxx","rent.register"],
-		"options": ["array", "extra options array", "options"]
+		"options": ["array", "extra options array", "options","rent.options[]"]
 	},
 	"options": {
-		"id": ["string", "id", "rent.options[].id"]
+		"id": ["string", "id", "id"],
+		"infinite": ["option", "option example2", "infinite", "not infinite", "infinite"]
 	}
 }

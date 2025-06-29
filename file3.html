@@ -77,15 +77,16 @@
                     break;
                 }
             }
-        }
+        }               
         
-        function addArrayElement(path, path2) {
+        function addArrayElement(path, path2, parentPath) {
+            var obj = findOutputObject(parentPath);
             console.log("Processing add element "+path+" "+path2);
             console.log(processEditorPart(path));        
             newDivElement = document.createElement('div');
             newDivElement.classList.add("full");
             newDivElement.style = "display: grid; grid-template-columns: 1fr 1fr;";
-            newDivElement.innerHTML = processEditorPart(path2);
+            newDivElement.innerHTML = processEditorPart(path2, obj[2]);
             document.getElementById(path).appendChild(newDivElement);
             newButtonElement = document.createElement('button');
             newButtonElement.innerText = "Delete";
@@ -93,7 +94,7 @@
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
         }
 
-        function processEditorPart(section) {
+        function processEditorPart(section, parentPath) {
             var editorText = "";
             console.log("section " + section);
             var elementsToProcess = inputData[section];
@@ -112,7 +113,7 @@
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = false;
                 } else if (elementsToProcess[i][0] == "string") {
-                    var obj = findOutputObject(elementsToProcess[i][2]);
+                    var obj = findOutputObject(parentPath+elementsToProcess[i][2]);
                     console.log(obj);
                     editorText += "<label>"+elementsToProcess[i][1] + "</label><input oninput=editStringBoolNum('" + obj[2] + "',this.value,false);><br>";
                 } else if (elementsToProcess[i][0] == "number") {
@@ -132,13 +133,15 @@
                 } else if (elementsToProcess[i][0] == "file") {
                     editorText += "<label>"+elementsToProcess[i][1] + "</label><input type=file oninput=editStringBoolNum('" + elementsToProcess[i][2] + "',this.value,false);><br>";
                 } else if (elementsToProcess[i][0] == "option") {
-                    editorText += "<label>"+elementsToProcess[i][1] + "</label><select onchange=editStringBoolNum('" + elementsToProcess[i][elementsToProcess[i].length - 1] + "',this.value,false);>";
+                    var obj = findOutputObject(parentPath+elementsToProcess[i][elementsToProcess[i].length - 1]);
+                    editorText += "<label>"+elementsToProcess[i][1] + "</label><select onchange=editStringBoolNum('" + obj[2] + "',this.value,false);>";
                     for (j = 2; j < elementsToProcess[i].length - 1; j++) {
                         editorText += "<option value='" + elementsToProcess[i][j] + "'>" + elementsToProcess[i][j] + "</option>";
                     }
                     editorText += "</select>";
                 } else if (elementsToProcess[i][0] == "array") {
-                    editorText += "<label>"+elementsToProcess[i][1] + "</label><input type=button onclick=addArrayElement('" + section + "." + i + "','"+elementsToProcess[i][2]+"'); value='Add'>";
+                    findOutputObject(parentPath+elementsToProcess[i][3]);
+                    editorText += "<label>"+elementsToProcess[i][1] + "</label><input type=button onclick=addArrayElement('" + section + "." + i + "','"+elementsToProcess[i][2]+"','"+parentPath+elementsToProcess[i][3]+".'); value='Add'>";
                     editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'></div>";
                 } else if (elementsToProcess[i][0] == "delete") {
                     obj = findOutputObject(elementsToProcess[i][1]);
