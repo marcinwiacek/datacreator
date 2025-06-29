@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <style>
     label { grid-column: 1 / 2; }
-    input { grid-column: 2 / 3; }
+    input,button { grid-column: 2 / 3; }
     .full { grid-column: 1 / 3; }
     </style>
 </head>
@@ -81,8 +81,15 @@
         
         function addArrayElement(path, path2) {
             console.log("Processing add element "+path+" "+path2);
-            console.log(processEditorPart(path));
-            document.getElementById(path).innerHTML+=processEditorPart(path2);
+            console.log(processEditorPart(path));        
+            newDivElement = document.createElement('div');
+            newDivElement.classList.add("full");
+            newDivElement.style = "display: grid; grid-template-columns: 1fr 1fr;";
+            newDivElement.innerHTML = processEditorPart(path2);
+            document.getElementById(path).appendChild(newDivElement);
+            newButtonElement = document.createElement('button');
+            newButtonElement.innerText = "Delete";
+            document.getElementById(path).appendChild(newButtonElement);            
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
         }
 
