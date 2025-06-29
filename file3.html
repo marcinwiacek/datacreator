@@ -24,31 +24,39 @@
         function findOutputObject(path) {
             var obj = outputData;
             var pathObj = path.split(".");
-            var prevArr = false;
-            while (true) {
-                console.log(pathObj[0]);
-                arr = pathObj[0].endsWith("[]");
-                pathObj[0] = pathObj[0].replace("[]","");
-                if (prevArr) {
-			var info = pathObj[0].split(/[\[,\]]/);
-			if (info[1]=="i") {
-				//just add new one
-			} else {
-				//get concrete one
-			}
-                } else {
-	                if (obj[pathObj[0]] == null) {
-	                    obj[pathObj[0]] = arr?[]:(pathObj.length != 1 ? {} : "");
-	                }
+            for (var i=0;i<pathObj.length;i++) {
+                console.log(pathObj[i]);
+		//array?
+                if (pathObj[i].includes("[")) {
+		    var info = pathObj[i].split(/[\[,\]]/);
+		    console.log(info);
+	            if (obj[info[0]] == null) {
+	                    obj[info[0]] = [];
+		    }
+		    
+		    if (info[1]=="") {
+			obj = obj[info[0]];
+			obj.push({});
+			pathObj[i] = info[0]+"["+(obj.length-1)+"]";
+			if (i==pathObj.length - 1) break;
+			obj = obj[obj.length-1];
+		    } else {
+            		if (i==pathObj.length - 1) break;
+            		console.log("entering array");
+            		console.log(obj);
+            		console.log(pathObj[i]);
+            		obj = obj[info[0]][info[1]];
+            		console.log(obj)
+		    }
+		} else {
+		    if (obj[pathObj[i]] == null) {
+	        	obj[pathObj[i]] = i!= pathObj.length - 1 ? {} : "";
+		    }
+		    if (i==pathObj.length - 1) break;
+            	    obj = obj[pathObj[i]];
                 }
-                console.log(obj);
-                console.log(obj);
-                if (pathObj.length == 1) break;
-                obj = obj[pathObj[0]];
-                pathObj.shift();
-                prevArr = arr;
             }
-            return [obj, pathObj];
+            return [obj, pathObj[pathObj.length-1], pathObj.join(".")];
         }
 
         function editStringBoolNum(path, value, num) {
@@ -97,8 +105,9 @@
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = false;
                 } else if (elementsToProcess[i][0] == "string") {
-                    editorText += "<label>"+elementsToProcess[i][1] + "</label><input oninput=editStringBoolNum('" + elementsToProcess[i][2] + "',this.value,false);><br>";
-                    findOutputObject(elementsToProcess[i][2]);
+                    var obj = findOutputObject(elementsToProcess[i][2]);
+                    console.log(obj);
+                    editorText += "<label>"+elementsToProcess[i][1] + "</label><input oninput=editStringBoolNum('" + obj[2] + "',this.value,false);><br>";
                 } else if (elementsToProcess[i][0] == "number") {
                     editorText += "<label>"+elementsToProcess[i][1] + "</label><input value=0 step=1 type=number oninput=editStringBoolNum('" + elementsToProcess[i][2] + "',this.value,true);><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
