@@ -128,7 +128,8 @@
                     }
                     editorText += "</select>";
                     console.log("entering " + elementsToProcess[i][4]);
-                    editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'>" + processEditorPart(elementsToProcess[i][4], parentPath) + "</div>";
+                    editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'>" + 
+                    processEditorPart(elementsToProcess[i][4], parentPath) + "</div>";
                 } else if (elementsToProcess[i][0] == "checkbox") {
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=true type=checkbox oninput=editStringBoolNum('" + elementsToProcess[i][2] + "',this.checked,false);><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
@@ -162,7 +163,8 @@
                     editorText += "</select>";
                 } else if (elementsToProcess[i][0] == "array") {
                     //     findOutputObject(parentPath+elementsToProcess[i][3]);
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=button onclick=addArrayElement('" + section + "." + i + "','" + elementsToProcess[i][2] + "','" + parentPath + elementsToProcess[i][3] + "'); value='Add'>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=button onclick=addArrayElement('" + 
+                    section + "." + i + "','" + elementsToProcess[i][2] + "','" + parentPath + elementsToProcess[i][3] + "'); value='Add'>";
                     editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'></div>";
                 } else if (elementsToProcess[i][0] == "delete") {
                     obj = findOutputObject(elementsToProcess[i][1]);
