@@ -96,8 +96,7 @@ console.log(obj);
             var info = obj[1].split(/[\[,\]]/);
             obj[0][info[0]].splice(info[1],1);
             console.log("removing "+path);
-     	document.getElementById(path).remove();
-
+     	    document.getElementById(path).remove();
             var pathObj = path.split(".");
 	    var i = Number(info[1]);
 	    while(true) {
@@ -109,11 +108,22 @@ console.log(obj);
 		console.log("changing "+obj.id+" to "+pathObj.join("."));
 		obj.id = pathObj.join(".");
 	    }
-     	    obj = document.getElementsByTagName("input");
-	    var i = Number(info[1]);
+	    pathObj[pathObj.length-1] = info[0];
+     	    obj0 = [document.getElementsByTagName("input"),document.getElementsByTagName("select"),document.getElementsByTagName("div")];
+     	    for (jj in obj0) {
+     	       obj = obj0[jj];
 	    for (j in obj) {
-		i = i+1;
-...
+	    	if (obj[j].id!=null && obj[j].id.startsWith(pathObj.join("."))) {
+	    	    	pathObj2 = obj[j].id.split(".");
+	    		var info2 = pathObj2[pathObj.length-1].split(/[\[,\]]/);
+	    		if (Number(info2[1])>Number(info[1])) {
+	    		 var i = Number(info2[1]);
+	    		 pathObj2[pathObj.length-1] = info2[0]+"["+(i-1)+"]";
+	    		 console.log("updating "+obj[j].id +" into "+ pathObj2.join("."));
+	    		 obj[j].id = pathObj2.join(".");
+	    		 }
+	    	}
+	    }
 	    }
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);          
         }
@@ -131,7 +141,7 @@ console.log(obj);
             newDivElement.classList.add("full");
             newDivElement.style = "display: grid; grid-template-columns: 1fr 1fr;";
             newDivElement.innerHTML = processEditorPart(path2, obj[2] + ".");
-            newDivElement.id = obj[2];
+            newDivElement.id = obj[2];      
             newDivElement.appendChild(newButtonElement);
             document.getElementById(path).appendChild(newDivElement);
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
@@ -153,7 +163,7 @@ console.log(obj);
                     editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'>" + 
                     processEditorPart(elementsToProcess[i][4], parentPath) + "</div>";
                 } else if (elementsToProcess[i][0] == "checkbox") {
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=true type=checkbox oninput=editStringBoolNum('" + elementsToProcess[i][2] + "',this.checked,false);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=true type=checkbox id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.checked,false);><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = false;
                 } else if (elementsToProcess[i][0] == "string") {
@@ -161,7 +171,7 @@ console.log(obj);
                     console.log(obj);
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input id='"+obj[2]+"' oninput=editStringBoolNum(this.id,this.value,false);><br>";
                 } else if (elementsToProcess[i][0] == "number") {
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=0 step=1 type=number oninput=editStringBoolNum('" + elementsToProcess[i][2] + "',this.value,true);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=0 step=1 type=number id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.value,true);><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = 0;
                 } else if (elementsToProcess[i][0] == "date") {
@@ -171,20 +181,19 @@ console.log(obj);
                         (date.getMonth() + 1) + "-" +
                         (date.getDate() < 10 ? "0" : "") +
                         date.getDate();
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value='" + dateVal + "' type=date oninput=editStringBoolNum('" + elementsToProcess[i][2] + "',this.value,false);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value='" + dateVal + "' id='" + elementsToProcess[i][2] + "' type=date oninput=editStringBoolNum(this.id,this.value,false);><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = dateVal;
                 } else if (elementsToProcess[i][0] == "file") {
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=file oninput=editStringBoolNum('" + elementsToProcess[i][2] + "',this.value,false);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=file id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.value,false);><br>";
                 } else if (elementsToProcess[i][0] == "option") {
                     var obj = findOutputObject(parentPath + elementsToProcess[i][elementsToProcess[i].length - 1]);
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><select onchange=editStringBoolNum('" + obj[2] + "',this.value,false);>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><select id='" + obj[2] + "' onchange=editStringBoolNum(this.id,this.value,false);>";
                     for (j = 2; j < elementsToProcess[i].length - 1; j++) {
                         editorText += "<option value='" + elementsToProcess[i][j] + "'>" + elementsToProcess[i][j] + "</option>";
                     }
                     editorText += "</select>";
                 } else if (elementsToProcess[i][0] == "array") {
-                    //     findOutputObject(parentPath+elementsToProcess[i][3]);
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=button onclick=addArrayElement('" + 
                     section + "." + i + "','" + elementsToProcess[i][2] + "','" + parentPath + elementsToProcess[i][3] + "'); value='Add'>";
                     editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'></div>";
