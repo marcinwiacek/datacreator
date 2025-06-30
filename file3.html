@@ -92,12 +92,30 @@
         function deleteArrayElement(path) {
             console.log(path);
             var obj = findOutputObject(path);
+console.log(obj);
             var info = obj[1].split(/[\[,\]]/);
             obj[0][info[0]].splice(info[1],1);
-//	    while(true) {
-//        	var x = document.getElementById(idObj0.toString());
-//	    }
-            document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+            console.log("removing "+path);
+     	document.getElementById(path).remove();
+
+            var pathObj = path.split(".");
+	    var i = Number(info[1]);
+	    while(true) {
+		i = i+1;
+		pathObj[pathObj.length-1] = info[0]+"["+i+"]";
+     		obj = document.getElementById(pathObj.join("."));
+		if (obj == null) break;
+		pathObj[pathObj.length-1] = info[0]+"["+(i-1)+"]";
+		console.log("changing "+obj.id+" to "+pathObj.join("."));
+		obj.id = pathObj.join(".");
+	    }
+     	    obj = document.getElementsByTagName("input");
+	    var i = Number(info[1]);
+	    for (j in obj) {
+		i = i+1;
+...
+	    }
+            document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);          
         }
 
         function addArrayElement(path, path2, parentPath) {
@@ -113,6 +131,7 @@
             newDivElement.classList.add("full");
             newDivElement.style = "display: grid; grid-template-columns: 1fr 1fr;";
             newDivElement.innerHTML = processEditorPart(path2, obj[2] + ".");
+            newDivElement.id = obj[2];
             newDivElement.appendChild(newButtonElement);
             document.getElementById(path).appendChild(newDivElement);
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
@@ -140,7 +159,7 @@
                 } else if (elementsToProcess[i][0] == "string") {
                     var obj = findOutputObject(parentPath + elementsToProcess[i][2]);
                     console.log(obj);
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input oninput=editStringBoolNum('" + obj[2] + "',this.value,false);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input id='"+obj[2]+"' oninput=editStringBoolNum(this.id,this.value,false);><br>";
                 } else if (elementsToProcess[i][0] == "number") {
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=0 step=1 type=number oninput=editStringBoolNum('" + elementsToProcess[i][2] + "',this.value,true);><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
