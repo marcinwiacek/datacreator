@@ -82,7 +82,8 @@
             for (j = 2; j < elementToProcess.length; j = j + 3) {
                 if (elementToProcess[j] == value) {
                     if (elementToProcess[j + 1] != "") processEditorPart(elementToProcess[j + 1], "");
-                    document.getElementById(path).innerHTML = processEditorPart(elementToProcess[j + 2], "");
+                     console.log("searching for "+path);
+                    document.getElementsByName(path)[0].innerHTML = processEditorPart(elementToProcess[j + 2], "");
                     document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
                     break;
                 }
@@ -94,33 +95,25 @@
             var obj = findOutputObject(path);
 console.log(obj);
             var info = obj[1].split(/[\[,\]]/);
+            //remove from json
             obj[0][info[0]].splice(info[1],1);
             console.log("removing "+path);
-     	    document.getElementById(path).remove();
+            //remove from editor
+            document.getElementsByName(path)[0].remove();
             var pathObj = path.split(".");
-	    var i = Number(info[1]);
-	    while(true) {
-		i = i+1;
-		pathObj[pathObj.length-1] = info[0]+"["+i+"]";
-     		obj = document.getElementById(pathObj.join("."));
-		if (obj == null) break;
-		pathObj[pathObj.length-1] = info[0]+"["+(i-1)+"]";
-		console.log("changing "+obj.id+" to "+pathObj.join("."));
-		obj.id = pathObj.join(".");
-	    }
 	    pathObj[pathObj.length-1] = info[0];
      	    obj0 = [document.getElementsByTagName("input"),document.getElementsByTagName("select"),document.getElementsByTagName("div")];
      	    for (jj in obj0) {
      	       obj = obj0[jj];
 	    for (j in obj) {
-	    	if (obj[j].id!=null && obj[j].id.startsWith(pathObj.join("."))) {
-	    	    	pathObj2 = obj[j].id.split(".");
+	    	if (obj[j].name!=null && obj[j].name.startsWith(pathObj.join("."))) {
+	    	    	pathObj2 = obj[j].name.split(".");
 	    		var info2 = pathObj2[pathObj.length-1].split(/[\[,\]]/);
 	    		if (Number(info2[1])>Number(info[1])) {
 	    		 var i = Number(info2[1]);
 	    		 pathObj2[pathObj.length-1] = info2[0]+"["+(i-1)+"]";
 	    		 console.log("updating "+obj[j].id +" into "+ pathObj2.join("."));
-	    		 obj[j].id = pathObj2.join(".");
+	    		 obj[j].name = pathObj2.join(".");
 	    		 }
 	    	}
 	    }
@@ -133,17 +126,19 @@ console.log(obj);
             console.log("Processing add element " + path + " " + path2);
             console.log(obj);
             newButtonElement = document.createElement('button');
+            newButtonElement.name = obj[2]+"x";
             newButtonElement.addEventListener('click', function(event) {
-                deleteArrayElement(obj[2]);
+                deleteArrayElement(this.name.slice(0,-1));
             });
             newButtonElement.innerText = "Delete";
             newDivElement = document.createElement('div');
             newDivElement.classList.add("full");
             newDivElement.style = "display: grid; grid-template-columns: 1fr 1fr;";
             newDivElement.innerHTML = processEditorPart(path2, obj[2] + ".");
-            newDivElement.id = obj[2];      
+            newDivElement.name = obj[2];      
             newDivElement.appendChild(newButtonElement);
-            document.getElementById(path).appendChild(newDivElement);
+            console.log("searching for "+path);
+            document.getElementsByName(path)[0].appendChild(newDivElement);
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
         }
 
@@ -160,18 +155,18 @@ console.log(obj);
                     }
                     editorText += "</select>";
                     console.log("entering " + elementsToProcess[i][4]);
-                    editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'>" + 
+                    editorText += "<div name='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'>" + 
                     processEditorPart(elementsToProcess[i][4], parentPath) + "</div>";
                 } else if (elementsToProcess[i][0] == "checkbox") {
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=true type=checkbox id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.checked,false);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=true type=checkbox name='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.name,this.checked,false);><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = false;
                 } else if (elementsToProcess[i][0] == "string") {
                     var obj = findOutputObject(parentPath + elementsToProcess[i][2]);
                     console.log(obj);
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input id='"+obj[2]+"' oninput=editStringBoolNum(this.id,this.value,false);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input name='"+obj[2]+"' oninput=editStringBoolNum(this.name,this.value,false);><br>";
                 } else if (elementsToProcess[i][0] == "number") {
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=0 step=1 type=number id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.value,true);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=0 step=1 type=number name='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.name,this.value,true);><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = 0;
                 } else if (elementsToProcess[i][0] == "date") {
@@ -181,14 +176,14 @@ console.log(obj);
                         (date.getMonth() + 1) + "-" +
                         (date.getDate() < 10 ? "0" : "") +
                         date.getDate();
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value='" + dateVal + "' id='" + elementsToProcess[i][2] + "' type=date oninput=editStringBoolNum(this.id,this.value,false);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value='" + dateVal + "' name='" + elementsToProcess[i][2] + "' type=date oninput=editStringBoolNum(this.name,this.value,false);><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = dateVal;
                 } else if (elementsToProcess[i][0] == "file") {
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=file id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.value,false);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=file name='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.name,this.value,false);><br>";
                 } else if (elementsToProcess[i][0] == "option") {
                     var obj = findOutputObject(parentPath + elementsToProcess[i][elementsToProcess[i].length - 1]);
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><select id='" + obj[2] + "' onchange=editStringBoolNum(this.id,this.value,false);>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><select name='" + obj[2] + "' onchange=editStringBoolNum(this.name,this.value,false);>";
                     for (j = 2; j < elementsToProcess[i].length - 1; j++) {
                         editorText += "<option value='" + elementsToProcess[i][j] + "'>" + elementsToProcess[i][j] + "</option>";
                     }
@@ -196,7 +191,7 @@ console.log(obj);
                 } else if (elementsToProcess[i][0] == "array") {
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=button onclick=addArrayElement('" + 
                     section + "." + i + "','" + elementsToProcess[i][2] + "','" + parentPath + elementsToProcess[i][3] + "'); value='Add'>";
-                    editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'></div>";
+                    editorText += "<div name='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'></div>";
                 } else if (elementsToProcess[i][0] == "delete") {
                     obj = findOutputObject(elementsToProcess[i][1]);
                     delete obj[0][obj[1]];
