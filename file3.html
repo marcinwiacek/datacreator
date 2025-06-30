@@ -93,7 +93,10 @@
             console.log(path);
             var obj = findOutputObject(path);
             var info = obj[1].split(/[\[,\]]/);
-            obj[0][info[0]].splice(info[1]);
+            obj[0][info[0]].splice(info[1],1);
+//	    while(true) {
+//        	var x = document.getElementById(idObj0.toString());
+//	    }
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
         }
 
@@ -101,17 +104,17 @@
             var obj = findOutputObject(parentPath);
             console.log("Processing add element " + path + " " + path2);
             console.log(obj);
-            newDivElement = document.createElement('div');
-            newDivElement.classList.add("full");
-            newDivElement.style = "display: grid; grid-template-columns: 1fr 1fr;";
-            newDivElement.innerHTML = processEditorPart(path2, obj[2] + ".");
-            document.getElementById(path).appendChild(newDivElement);
             newButtonElement = document.createElement('button');
             newButtonElement.addEventListener('click', function(event) {
                 deleteArrayElement(obj[2]);
             });
             newButtonElement.innerText = "Delete";
-            document.getElementById(path).appendChild(newButtonElement);
+            newDivElement = document.createElement('div');
+            newDivElement.classList.add("full");
+            newDivElement.style = "display: grid; grid-template-columns: 1fr 1fr;";
+            newDivElement.innerHTML = processEditorPart(path2, obj[2] + ".");
+            newDivElement.appendChild(newButtonElement);
+            document.getElementById(path).appendChild(newDivElement);
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
         }
 
