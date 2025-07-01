@@ -114,11 +114,11 @@
                             pathObj2[pathObj.length - 1] = info2[0] + "[" + (i - 1) + "]";
                             console.log("updating " + obj[j].id + " into " + pathObj2.join("."));
                             obj[j].id = pathObj2.join(".");
-                             
-                            if (obj[j].attributes["name"] && obj[j].attributes["name"]["nodeValue"] == "arrayindex") {                            
-                                console.log("arrayindex "+pathObj2.join(".")+" "+(i-1));
+
+                            if (obj[j].attributes["name"] && obj[j].attributes["name"]["nodeValue"] == "arrayindex") {
+                                console.log("arrayindex " + pathObj2.join(".") + " " + (i - 1));
                                 var obj2 = findOutputObject(pathObj2.join("."));
-                                obj2[0][obj2[1]] = Number(i-1);
+                                obj2[0][obj2[1]] = Number(i - 1);
                             }
                         }
                     }
@@ -185,13 +185,13 @@
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input value='" + dateVal + "' id='" + elementsToProcess[i][2] + "' type=date oninput=editStringBoolNum(this.id,this.value,false);><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = dateVal;
-                 } else if (elementsToProcess[i][0] == "index") {
-                      var obj = findOutputObject(parentPath + elementsToProcess[i][1]);
-                      editorText += "<div name=arrayindex id='" + obj[2] + "'></div>";
-                      var obj2 = parentPath.slice(0,-1).split(".");
-                      var info = obj2[obj2.length-1].split(/[\[,\]]/);
-                      console.log("index - "+info+" "+parentPath);
-                      obj[0][obj[1]] = Number(info[1]);
+                } else if (elementsToProcess[i][0] == "index") {
+                    var obj = findOutputObject(parentPath + elementsToProcess[i][1]);
+                    editorText += "<div name=arrayindex id='" + obj[2] + "'></div>";
+                    var obj2 = parentPath.slice(0, -1).split(".");
+                    var info = obj2[obj2.length - 1].split(/[\[,\]]/);
+                    console.log("index - " + info + " " + parentPath);
+                    obj[0][obj[1]] = Number(info[1]);
                 } else if (elementsToProcess[i][0] == "file") {
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=file id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.value,false);><br>";
                 } else if (elementsToProcess[i][0] == "option") {
@@ -201,7 +201,7 @@
                         editorText += "<option value='" + elementsToProcess[i][j] + "'>" + elementsToProcess[i][j] + "</option>";
                     }
                     editorText += "</select>";
-                     obj[0][obj[1]] = elementsToProcess[i][2];
+                    obj[0][obj[1]] = elementsToProcess[i][2];
                 } else if (elementsToProcess[i][0] == "array") {
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=button onclick=addArrayElement('" +
                         section + "." + i + "','" + elementsToProcess[i][2] + "','" + parentPath + elementsToProcess[i][3] + "'); value='Add'>";
