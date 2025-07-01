@@ -28,6 +28,7 @@
 		"options": ["array", "extra options array", "options","rent.options[]"]
 	},
 	"options": {
+		"index":["index","index"],
 		"id": ["string", "id", "id"],
 		"infinite": ["option", "option example2", "infinite", "not infinite", "infinite"]
 	}
