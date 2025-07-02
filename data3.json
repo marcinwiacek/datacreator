@@ -25,7 +25,8 @@
 		"personId": ["string", "personal id","rent.id"],
 		"name": ["string", "customer name","rent.name"],
 		"register": ["string", "registerxx","rent.register"],
-		"options": ["array", "extra options array", "options","rent.options[]"]
+		"options": ["array", "extra options array", "options","rent.options[]"],
+		"index": ["other","other array index", "rent.options[]"]
 	},
 	"options": {
 		"index":["index","index"],

@@ -23,7 +23,7 @@
     <p>
     <div style="display: flex;">
         <div style="flex: 40%; display: grid; grid-template-columns: 1fr 1fr" id="editor"></div>
-        <pre style="flex: 60%;margin:30px;" id="json"></pre>
+        <pre style="flex: 60%; margin: 30px;" id="json"></pre>
     </div>
     <script>
         var inputData = "";
@@ -146,6 +146,22 @@
             console.log("searching for " + path);
             document.getElementById(path).appendChild(newDivElement);
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+            
+            
+            var pathObj = path.split(".");
+            var elementsToProcess = inputData[pathObj[0]][pathObj[1]];
+                        
+            obj = document.getElementsByTagName("select");
+                for (j in obj) {
+                    if (obj[j].attributes["name"] && obj[j].attributes["name"]["nodeValue"] == elementsToProcess[3]) {
+                    	 var op = document.createElement('option');
+                         op.value = "a";
+                    op.innerHTML = "a";
+                    obj[j].add(op);
+                    }              
+                }
+           
+
         }
 
         function processEditorPart(section, parentPath) {
@@ -192,6 +208,10 @@
                     var info = obj2[obj2.length - 1].split(/[\[,\]]/);
                     console.log("index - " + info + " " + parentPath);
                     obj[0][obj[1]] = Number(info[1]);
+                } else if (elementsToProcess[i][0] == "other") {
+                 //   var obj = findOutputObject(parentPath + elementsToProcess[i][elementsToProcess[i].length - 1]);
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><select name='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(" + elementsToProcess[i][2] + ",this.value,false);>";
+                    editorText += "</select>";
                 } else if (elementsToProcess[i][0] == "file") {
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=file id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.value,false);><br>";
                 } else if (elementsToProcess[i][0] == "option") {
