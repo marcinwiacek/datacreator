@@ -218,9 +218,9 @@ editorText+=" maxlength="+elementsToProcess[i][5];
 		    }
                     editorText += "</span>";
                 } else if (elementsToProcess[i][0] == "number") {
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=0 step=1 type=number id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.value,true,'');><br>";
-                    obj = findOutputObject(elementsToProcess[i][2]);
-                    obj[0][obj[1]] = 0;
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value="+elementsToProcess[i][2]+" step="+elementsToProcess[i][5]+" type=number id='" + elementsToProcess[i][6] + "' oninput=editStringBoolNum(this.id,this.value,true,'');><br>";
+                    obj = findOutputObject(elementsToProcess[i][6]);
+                    obj[0][obj[1]] = Number(elementsToProcess[i][2]);
                 } else if (elementsToProcess[i][0] == "date") {
                     const date = new Date();
                     const dateVal = date.getFullYear() + "-" +

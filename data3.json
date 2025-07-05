@@ -1,7 +1,7 @@
 {
 	"start": {
 		"renttype": ["select", "Select what is rented", "cars", "cleanBeforeCar", "carsStruct", "buses", "cleanBeforeBus", "busesStruct"],
-		"days": ["number", "how many days?","rent.days"],
+		"days": ["number", "how many days?",50,0,100,50,"rent.days"],
 		"when": ["date", "when?","rent.startDate"],
 		"doc": ["file", "some document","rent.doc"],
 		"veteran": ["checkbox", "is is veteran?","rent.veteran"],
