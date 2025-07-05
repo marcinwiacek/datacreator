@@ -5,7 +5,8 @@
 		"renttype": ["select", "Select what is rented", "cars", "cleanBeforeCar", "carsStruct", "buses", "cleanBeforeBus", "busesStruct"],
 		"days": ["number", "how many days?",50,0,100,50,"rent.days"],
 		"when": ["date", "when?","rent.startDate"],
-		"doc": ["file", "some document","rent.doc"],
+		"doc": ["file64", "some document","rent.doc"],
+		"doc2": ["fileHex", "some document hex","rent.doc2"],
 		"veteran": ["checkbox", "is is veteran?","rent.veteran"],
 		"internal": ["select", "is is internal employee?","yes","cleanBefore2", "internaldata", "no","cleanBefore2", ""]
 	},
