@@ -8,7 +8,8 @@
         }
 
         input,
-        button {
+        button,
+        span {
             grid-column: 2 / 3;
         }
 
@@ -62,10 +63,16 @@
             return [obj, pathObj[pathObj.length - 1], pathObj.join(".")];
         }
 
-        function editStringBoolNum(path, value, num) {
+        function editStringBoolNum(path, value, num, regular) {
             var obj = findOutputObject(path);
             obj[0][obj[1]] = num ? Number(value) : value;
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+                                	            document.getElementById(path+"_error").innerHTML = "";
+           if (regular!="") {
+                    	if (!value.match(new RegExp("^"+regular+"$"))) {
+                    	            document.getElementById(path+"_error").innerHTML = "Text doesn't match regular expression "+regular;
+                    	}
+                    }
         }
 
         function processSelect(path, value) {
@@ -181,15 +188,22 @@
                     editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'>" +
                         processEditorPart(elementsToProcess[i][4], parentPath) + "</div>";
                 } else if (elementsToProcess[i][0] == "checkbox") {
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=true type=checkbox id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.checked,false);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=true type=checkbox id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.checked,false,'');><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = false;
                 } else if (elementsToProcess[i][0] == "string") {
-                    var obj = findOutputObject(parentPath + elementsToProcess[i][2]);            
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input id='" + obj[2] + "' oninput=editStringBoolNum(this.id,this.value,false);><br>";
-                    obj[0][obj[1]] = "";
+                    var obj = findOutputObject(parentPath + elementsToProcess[i][4]);            
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input id='" + obj[2] + "' oninput=editStringBoolNum(this.id,this.value,false,'"+elementsToProcess[i][2]+"');><br>";
+                    editorText += "<span id='" + obj[2] + "_error'>";
+                    obj[0][obj[1]] = elementsToProcess[i][3];
+                    if (elementsToProcess[i][2]!="") {
+                    	if (!elementsToProcess[i][3].match(new RegExp("^"+elementsToProcess[i][2]+"$"))) {
+                    	   editorText+="Text doesn't match regular expression "+elementsToProcess[i][2];
+                    	}
+                    }
+                    editorText += "</span>";
                 } else if (elementsToProcess[i][0] == "number") {
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=0 step=1 type=number id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.value,true);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=0 step=1 type=number id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.value,true,'');><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = 0;
                 } else if (elementsToProcess[i][0] == "date") {
@@ -199,7 +213,7 @@
                         (date.getMonth() + 1) + "-" +
                         (date.getDate() < 10 ? "0" : "") +
                         date.getDate();
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value='" + dateVal + "' id='" + elementsToProcess[i][2] + "' type=date oninput=editStringBoolNum(this.id,this.value,false);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value='" + dateVal + "' id='" + elementsToProcess[i][2] + "' type=date oninput=editStringBoolNum(this.id,this.value,false,'');><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = dateVal;
                 } else if (elementsToProcess[i][0] == "index") {
@@ -209,13 +223,13 @@
                     var info = obj2[obj2.length - 1].split(/[\[,\]]/);                  
                     obj[0][obj[1]] = Number(info[1]);
                 } else if (elementsToProcess[i][0] == "other") {
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><select name='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(" + elementsToProcess[i][2] + ",this.value,false);>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><select name='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(" + elementsToProcess[i][2] + ",this.value,false,'');>";
                     editorText += "</select>";
                 } else if (elementsToProcess[i][0] == "file") {
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=file id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.value,false);><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=file id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.value,false,'');><br>";
                 } else if (elementsToProcess[i][0] == "option") {
                     var obj = findOutputObject(parentPath + elementsToProcess[i][elementsToProcess[i].length - 1]);
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><select id='" + obj[2] + "' onchange=editStringBoolNum(this.id,this.value,false);>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><select id='" + obj[2] + "' onchange=editStringBoolNum(this.id,this.value,false,'');>";
                     for (j = 2; j < elementsToProcess[i].length - 1; j++) {
                         editorText += "<option value='" + elementsToProcess[i][j] + "'>" + elementsToProcess[i][j] + "</option>";
                     }
