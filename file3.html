@@ -218,7 +218,12 @@ editorText+=" maxlength="+elementsToProcess[i][5];
 		    }
                     editorText += "</span>";
                 } else if (elementsToProcess[i][0] == "number") {
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value="+elementsToProcess[i][2]+" step="+elementsToProcess[i][5]+" type=number id='" + elementsToProcess[i][6] + "' oninput=editStringBoolNum(this.id,this.value,true,'');><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input ";
+                    if (	elementsToProcess[i][3]!=elementsToProcess[i][4]) {
+                        editorText += " min=" + elementsToProcess[i][3];
+                        editorText += " max=" + elementsToProcess[i][4];
+                    }
+		    editorText += " value="+elementsToProcess[i][2]+" step="+elementsToProcess[i][5]+" type=number id='" + elementsToProcess[i][6] + "' oninput=editStringBoolNum(this.id,this.value,true,'');><br>";
                     obj = findOutputObject(elementsToProcess[i][6]);
                     obj[0][obj[1]] = Number(elementsToProcess[i][2]);
                 } else if (elementsToProcess[i][0] == "date") {
