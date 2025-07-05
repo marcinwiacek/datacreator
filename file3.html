@@ -200,27 +200,27 @@
                 }
             }
         }
-        
-        function loadBase64File(f,path) {
-                	 const reader = new FileReader();
-                reader.onload = function(e2) {
-                    binaryFile = e2.target.result;
-                          var obj = findOutputObject(path);
-            obj.obj[obj.lastPathElement] = btoa(binaryFile); 
-            document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);           
-                };
-                      reader.readAsBinaryString(f);
+
+        function loadBase64File(f, path) {
+            const reader = new FileReader();
+            reader.onload = function(e2) {
+                binaryFile = e2.target.result;
+                var obj = findOutputObject(path);
+                obj.obj[obj.lastPathElement] = btoa(binaryFile);
+                document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+            };
+            reader.readAsBinaryString(f);
         }
-        
-         function loadHexFile(f,path) {
-                	 const reader = new FileReader();
-                reader.onload = function(e2) {
-                    binaryFile = e2.target.result;
-                          var obj = findOutputObject(path);
-            obj.obj[obj.lastPathElement] = btoa(binaryFile); 
-            document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);           
-                };
-                      reader.readAsBinaryString(f);
+
+        function loadHexFile(f, path) {
+            const reader = new FileReader();
+            reader.onload = function(e2) {
+                binaryFile = e2.target.result;
+                var obj = findOutputObject(path);
+                obj.obj[obj.lastPathElement] = btoa(binaryFile);
+                document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+            };
+            reader.readAsBinaryString(f);
         }
 
         function processEditorPart(section, parentPath) {
@@ -302,7 +302,7 @@
                 } else if (elementsToProcess[i][0] == "file64") {
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=file id='" + elementsToProcess[i][2] + "' ";
                     editorText += "onchange=loadBase64File(this.files[0],this.id);><br>";
-                        } else if (elementsToProcess[i][0] == "fileHex") {
+                } else if (elementsToProcess[i][0] == "fileHex") {
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=file id='" + elementsToProcess[i][2] + "' ";
                     editorText += "onchange=loadHexFile(this.files[0],this.id);><br>";
                 } else if (elementsToProcess[i][0] == "option") {
