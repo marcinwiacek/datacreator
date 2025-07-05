@@ -106,6 +106,24 @@
             for (jj in obj0) {
                 obj = obj0[jj];
                 for (j in obj) {
+			    //remove value from select with array index
+                            if (obj[j].attributes && obj[j].attributes["name"]) {
+                            console.log ("name "+obj[j].attributes["name"]["nodeValue"]+" "+pathObj.join(".")+"[]");
+                            if ( obj[j].attributes["name"]["nodeValue"] == pathObj.join(".")+"[]") {
+                    console.log("fount select "+obj[j]);
+//remove highest value
+                toDelete = -1;
+                toDeleteValue = 0;
+                for (jjj = 0; jjj < obj[j].length; jjj++) {
+                    if (Number(obj[j][jjj].value) >= toDeleteValue) {
+                    	toDelete = jjj;
+                toDeleteValue = Number(obj[j][jjj].value);
+                    	}
+                }
+                obj[j].remove(toDelete);
+                //todo: select new value in select            
+                        }
+                        }
                     if (obj[j].id != null && obj[j].id.startsWith(pathObj.join("."))) {
                         pathObj2 = obj[j].id.split(".");
                         var info2 = pathObj2[pathObj.length - 1].split(/[\[,\]]/);
@@ -114,13 +132,14 @@
                             pathObj2[pathObj.length - 1] = info2[0] + "[" + (i - 1) + "]";
                             console.log("updating " + obj[j].id + " into " + pathObj2.join("."));
                             obj[j].id = pathObj2.join(".");
-
-                            if (obj[j].attributes["name"] && obj[j].attributes["name"]["nodeValue"] == "arrayindex") {
+			    //update json value for array indexes
+                            if (obj[j].attributes && obj[j].attributes["name"] && obj[j].attributes["name"]["nodeValue"] == "arrayindex") {
                                 console.log("arrayindex " + pathObj2.join(".") + " " + (i - 1));
                                 var obj2 = findOutputObject(pathObj2.join("."));
                                 obj2[0][obj2[1]] = Number(i - 1);
                             }
-                        }
+
+                    }
                     }
                 }
             }
@@ -130,7 +149,6 @@
         function addArrayElement(path, path2, parentPath) {
             var obj = findOutputObject(parentPath);
             console.log("Processing add element " + path + " " + path2);
-            console.log(obj);
             newButtonElement = document.createElement('button');
             newButtonElement.id = obj[2] + ".x";
             newButtonElement.addEventListener('click', function(event) {
@@ -146,22 +164,20 @@
             console.log("searching for " + path);
             document.getElementById(path).appendChild(newDivElement);
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
-            
-            
+	    //add new value into all related indexes
+            var info = obj[1].split(/[\[,\]]/);
             var pathObj = path.split(".");
             var elementsToProcess = inputData[pathObj[0]][pathObj[1]];
-                        
             obj = document.getElementsByTagName("select");
                 for (j in obj) {
-                    if (obj[j].attributes["name"] && obj[j].attributes["name"]["nodeValue"] == elementsToProcess[3]) {
+                    if (obj[j].attributes && obj[j].attributes["name"] && 
+                        obj[j].attributes["name"]["nodeValue"] == elementsToProcess[3]) {
                     	 var op = document.createElement('option');
-                         op.value = "a";
-                    op.innerHTML = "a";
+                         op.value = info[1];
+                    op.innerHTML = info[1];
                     obj[j].add(op);
-                    }              
+                    }
                 }
-           
-
         }
 
         function processEditorPart(section, parentPath) {
