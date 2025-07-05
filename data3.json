@@ -1,5 +1,7 @@
 {
 	"start": {
+		"1st": ["string", "first str", "[1-9]+", "", 2, 10, "rent.x[0].a"],
+		"2nd": ["string", "second str", "[1-9]+", "", 2, 10, "rent.x[1].a"],
 		"renttype": ["select", "Select what is rented", "cars", "cleanBeforeCar", "carsStruct", "buses", "cleanBeforeBus", "busesStruct"],
 		"days": ["number", "how many days?",50,0,100,50,"rent.days"],
 		"when": ["date", "when?","rent.startDate"],
