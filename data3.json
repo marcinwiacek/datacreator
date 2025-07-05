@@ -17,7 +17,7 @@
 		"delete": ["delete", "rent.id",  "rent.options"]
 	},
 	"carsStruct": {
-		"name": ["string", "customer name","[a-z]+", "", "rent.name"],
+		"name": ["string", "customer name","[a-z]+", "", 0,0,"rent.name"],
 		"register": ["string", "registerxx", "abc","",0,0,"rent.register"],
 		"longshort": ["option", "option example", "short", "long", "rent.longshort"]
 	},

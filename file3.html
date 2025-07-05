@@ -35,17 +35,20 @@
         function findOutputObject(path) {
             var obj = outputData;
             var pathObj = path.split(".");
+            var newValue = false;
             for (var i = 0; i < pathObj.length; i++) {
                 //array?
                 if (pathObj[i].includes("[")) {
                     var info = pathObj[i].split(/[\[,\]]/);
                     if (obj[info[0]] == null) {
                         obj[info[0]] = [];
+                        newValue = true;
                     }
                     //we don't have index = we create new one
                     if (info[1] == "") {
                         obj = obj[info[0]];
                         obj.push({});
+                        newValue = true;
                         pathObj[i] = info[0] + "[" + (obj.length - 1) + "]";
                         if (i == pathObj.length - 1) break;
                         obj = obj[obj.length - 1];
@@ -55,13 +58,14 @@
                     }
                 } else {
                     if (obj[pathObj[i]] == null) {
+                        newValue = true;
                         obj[pathObj[i]] = i != pathObj.length - 1 ? {} : "";
                     }
                     if (i == pathObj.length - 1) break;
                     obj = obj[pathObj[i]];
                 }
             }
-            return [obj, pathObj[pathObj.length - 1], pathObj.join(".")];
+            return [obj, pathObj[pathObj.length - 1], pathObj.join("."), newValue];
         }
 
         function editStringBoolNum(path, value, num, regular) {
