@@ -1,6 +1,6 @@
 {
 	"start": {
-		"renttype": ["select", "Select what is rented", "cars", "cleanBefore", "carsStruct", "buses", "cleanBefore", "busesStruct"],
+		"renttype": ["select", "Select what is rented", "cars", "cleanBeforeCar", "carsStruct", "buses", "cleanBeforeBus", "busesStruct"],
 		"days": ["number", "how many days?","rent.days"],
 		"when": ["date", "when?","rent.startDate"],
 		"doc": ["file", "some document","rent.doc"],
@@ -13,13 +13,16 @@
 	"internaldata": {
 		"employee": ["string", "id for employee","rent.internalid"]
 	},
-	"cleanBefore": {
-		"delete": ["delete", "rent"]
+	"cleanBeforeCar": {
+		"delete": ["delete", "rent.id",  "rent.options"]
 	},
 	"carsStruct": {
 		"name": ["string", "customer name","rent.name"],
 		"register": ["string", "registerxx", "rent.register"],
 		"longshort": ["option", "option example", "short", "long", "rent.longshort"]
+	},
+	"cleanBeforeBus": {
+		"delete": ["delete",   "rent.longshort"]
 	},
 	"busesStruct": {
 		"personId": ["string", "personal id","rent.id"],

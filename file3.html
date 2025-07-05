@@ -31,15 +31,12 @@
         var debug = false;
 
         function findOutputObject(path) {
-            console.log("findOutputObject " + path);
             var obj = outputData;
             var pathObj = path.split(".");
             for (var i = 0; i < pathObj.length; i++) {
-                console.log(pathObj[i]);
                 //array?
                 if (pathObj[i].includes("[")) {
-                    var info = pathObj[i].split(/[\[,\]]/);
-                    console.log(info);
+                    var info = pathObj[i].split(/[\[,\]]/);                   
                     if (obj[info[0]] == null) {
                         obj[info[0]] = [];
                     }
@@ -50,13 +47,9 @@
                         pathObj[i] = info[0] + "[" + (obj.length - 1) + "]";
                         if (i == pathObj.length - 1) break;
                         obj = obj[obj.length - 1];
-                    } else {
-                        console.log("entering array");
-                        console.log(obj);
-                        console.log(pathObj[i]);
+                    } else {                     
                         if (i == pathObj.length - 1) break;
                         obj = obj[info[0]][info[1]];
-                        console.log(obj)
                     }
                 } else {
                     if (obj[pathObj[i]] == null) {
@@ -70,19 +63,21 @@
         }
 
         function editStringBoolNum(path, value, num) {
-            console.log("value is " + value);
             var obj = findOutputObject(path);
             obj[0][obj[1]] = num ? Number(value) : value;
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
         }
 
         function processSelect(path, value) {
+            console.log("processSelect '"+path+"' '"+value+"'");
             var pathObj = path.split(".");
             var elementToProcess = inputData[pathObj[0]][pathObj[1]];
-            for (j = 2; j < elementToProcess.length; j = j + 3) {
+            console.log(elementToProcess);                        
+            for (var j = 2; j < elementToProcess.length; j = j + 3) {
                 if (elementToProcess[j] == value) {
+                    //first section before
                     if (elementToProcess[j + 1] != "") processEditorPart(elementToProcess[j + 1], "");
-                    console.log("searching for " + path);
+                    //now main section                 
                     document.getElementById(path).innerHTML = processEditorPart(elementToProcess[j + 2], "");
                     document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
                     break;
@@ -91,13 +86,10 @@
         }
 
         function deleteArrayElement(path) {
-            console.log(path);
             var obj = findOutputObject(path);
-            console.log(obj);
             var info = obj[1].split(/[\[,\]]/);
             //remove from json
             obj[0][info[0]].splice(info[1], 1);
-            console.log("removing " + path);
             //remove from editor
             document.getElementById(path).remove();
             var pathObj = path.split(".");
@@ -107,10 +99,8 @@
                 obj = obj0[jj];
                 for (j in obj) {
                     //remove value from select with array index
-                    if (obj[j].attributes && obj[j].attributes["name"]) {
-                        console.log("name " + obj[j].attributes["name"]["nodeValue"] + " " + pathObj.join(".") + "[]");
+                    if (obj[j].attributes && obj[j].attributes["name"]) {                     
                         if (obj[j].attributes["name"]["nodeValue"] == pathObj.join(".") + "[]") {
-                            console.log("fount select " + obj[j]);
                             //remove highest value
                             toDelete = -1;
                             toDeleteValue = 0;
@@ -129,12 +119,10 @@
                         var info2 = pathObj2[pathObj.length - 1].split(/[\[,\]]/);
                         if (Number(info2[1]) > Number(info[1])) {
                             var i = Number(info2[1]);
-                            pathObj2[pathObj.length - 1] = info2[0] + "[" + (i - 1) + "]";
-                            console.log("updating " + obj[j].id + " into " + pathObj2.join("."));
+                            pathObj2[pathObj.length - 1] = info2[0] + "[" + (i - 1) + "]";                          
                             obj[j].id = pathObj2.join(".");
                             //update json value for array indexes
-                            if (obj[j].attributes && obj[j].attributes["name"] && obj[j].attributes["name"]["nodeValue"] == "arrayindex") {
-                                console.log("arrayindex " + pathObj2.join(".") + " " + (i - 1));
+                            if (obj[j].attributes && obj[j].attributes["name"] && obj[j].attributes["name"]["nodeValue"] == "arrayindex") {                              
                                 var obj2 = findOutputObject(pathObj2.join("."));
                                 obj2[0][obj2[1]] = Number(i - 1);
                             }
@@ -148,7 +136,6 @@
 
         function addArrayElement(path, path2, parentPath) {
             var obj = findOutputObject(parentPath);
-            console.log("Processing add element " + path + " " + path2);
             newButtonElement = document.createElement('button');
             newButtonElement.id = obj[2] + ".x";
             newButtonElement.addEventListener('click', function(event) {
@@ -161,7 +148,6 @@
             newDivElement.innerHTML = processEditorPart(path2, obj[2] + ".");
             newDivElement.id = obj[2];
             newDivElement.appendChild(newButtonElement);
-            console.log("searching for " + path);
             document.getElementById(path).appendChild(newDivElement);
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
             //add new value into all related indexes
@@ -181,8 +167,8 @@
         }
 
         function processEditorPart(section, parentPath) {
+            console.log("processEditorPart start '"+section+"' '"+parentPath+"'");
             var editorText = "";
-            console.log("section " + section);
             var elementsToProcess = inputData[section];
             for (i in elementsToProcess) {
                 console.log(elementsToProcess[i]);
@@ -191,8 +177,7 @@
                     for (j = 2; j < elementsToProcess[i].length; j = j + 3) {
                         editorText += "<option value='" + elementsToProcess[i][j] + "'>" + elementsToProcess[i][j] + "</option>";
                     }
-                    editorText += "</select>";
-                    console.log("entering " + elementsToProcess[i][4]);
+                    editorText += "</select>";           
                     editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'>" +
                         processEditorPart(elementsToProcess[i][4], parentPath) + "</div>";
                 } else if (elementsToProcess[i][0] == "checkbox") {
@@ -200,9 +185,9 @@
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = false;
                 } else if (elementsToProcess[i][0] == "string") {
-                    var obj = findOutputObject(parentPath + elementsToProcess[i][2]);
-                    console.log(obj);
+                    var obj = findOutputObject(parentPath + elementsToProcess[i][2]);            
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input id='" + obj[2] + "' oninput=editStringBoolNum(this.id,this.value,false);><br>";
+                    obj[0][obj[1]] = "";
                 } else if (elementsToProcess[i][0] == "number") {
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=0 step=1 type=number id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.value,true);><br>";
                     obj = findOutputObject(elementsToProcess[i][2]);
@@ -221,11 +206,9 @@
                     var obj = findOutputObject(parentPath + elementsToProcess[i][1]);
                     editorText += "<div name=arrayindex id='" + obj[2] + "'></div>";
                     var obj2 = parentPath.slice(0, -1).split(".");
-                    var info = obj2[obj2.length - 1].split(/[\[,\]]/);
-                    console.log("index - " + info + " " + parentPath);
+                    var info = obj2[obj2.length - 1].split(/[\[,\]]/);                  
                     obj[0][obj[1]] = Number(info[1]);
                 } else if (elementsToProcess[i][0] == "other") {
-                    //   var obj = findOutputObject(parentPath + elementsToProcess[i][elementsToProcess[i].length - 1]);
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><select name='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(" + elementsToProcess[i][2] + ",this.value,false);>";
                     editorText += "</select>";
                 } else if (elementsToProcess[i][0] == "file") {
@@ -243,11 +226,13 @@
                         section + "." + i + "','" + elementsToProcess[i][2] + "','" + parentPath + elementsToProcess[i][3] + "'); value='Add'>";
                     editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'></div>";
                 } else if (elementsToProcess[i][0] == "delete") {
-                    obj = findOutputObject(elementsToProcess[i][1]);
-                    delete obj[0][obj[1]];
+                    for (j = 1; j < elementsToProcess[i].length ; j++) {
+                      obj = findOutputObject(elementsToProcess[i][j]);
+                      if (obj!=null) delete obj[0][obj[1]];
+                    }
                 }
             }
-            console.log("exiting");
+             console.log("processEditorPart end '"+section+"' '"+parentPath+"'");
             return editorText;
         }
 
