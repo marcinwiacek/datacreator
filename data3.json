@@ -11,29 +11,29 @@
 		"delete": ["delete", "rent.internalid"]
 	},
 	"internaldata": {
-		"employee": ["string", "id for employee", "[1-9]+", "", "rent.internalid"]
+		"employee": ["string", "id for employee", "[1-9]+", "", 2, 10, "rent.internalid"]
 	},
 	"cleanBeforeCar": {
 		"delete": ["delete", "rent.id",  "rent.options"]
 	},
 	"carsStruct": {
 		"name": ["string", "customer name","[a-z]+", "", "rent.name"],
-		"register": ["string", "registerxx", "abc","","rent.register"],
+		"register": ["string", "registerxx", "abc","",0,0,"rent.register"],
 		"longshort": ["option", "option example", "short", "long", "rent.longshort"]
 	},
 	"cleanBeforeBus": {
 		"delete": ["delete",   "rent.longshort"]
 	},
 	"busesStruct": {
-		"personId": ["string", "personal id","","","rent.id"],
-		"name": ["string", "customer name","","","rent.name"],
-		"register": ["string", "registerxx","","","rent.register"],
+		"personId": ["string", "personal id","","",0,0,"rent.id"],
+		"name": ["string", "customer name","","",0,0,"rent.name"],
+		"register": ["string", "registerxx","","",0,0,"rent.register"],
 		"options": ["array", "extra options array", "options","rent.options[]"],
 		"index": ["other","other array index", "rent.options[]"]
 	},
 	"options": {
 		"index":["index","index"],
-		"id": ["string", "id", "","","id"],
+		"id": ["string", "id", "","",0,0,"id"],
 		"infinite": ["option", "option example2", "infinite", "not infinite", "infinite"]
 	}
 }

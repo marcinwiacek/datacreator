@@ -21,6 +21,7 @@
 
 <body>
     <input type="file" id="file" name="file" />
+    <span id="errors"></span>
     <p>
     <div style="display: flex;">
         <div style="flex: 40%; display: grid; grid-template-columns: 1fr 1fr" id="editor"></div>
@@ -67,10 +68,11 @@
             var obj = findOutputObject(path);
             obj[0][obj[1]] = num ? Number(value) : value;
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
-            document.getElementById(path + "_error").innerHTML = "";
-            if (regular != "") {
+            if (regular != "" && document.getElementById(path + "_error").innerHTML != null) {
+        	document.getElementById(path + "_error").innerHTML = "";
                 if (!value.match(new RegExp("^" + regular + "$"))) {
                     document.getElementById(path + "_error").innerHTML = "Text doesn't match regular expression " + regular;
+//                    document.getElementById("errors").innerHTML = "";
                 }
             }
         }
@@ -192,8 +194,15 @@
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj[0][obj[1]] = false;
                 } else if (elementsToProcess[i][0] == "string") {
-                    var obj = findOutputObject(parentPath + elementsToProcess[i][4]);
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input id='" + obj[2] + "' oninput=editStringBoolNum(this.id,this.value,false,'" + elementsToProcess[i][2] + "');><br>";
+                    var obj = findOutputObject(parentPath + elementsToProcess[i][6]);
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input";
+                    if (elementsToProcess[i][4] != 0) {
+editorText+=" minlength="+elementsToProcess[i][4];
+		    }
+                    if (elementsToProcess[i][5] != 0) {
+editorText+=" maxlength="+elementsToProcess[i][5];
+		    }
+		    editorText+=" id='" + obj[2] + "' oninput=editStringBoolNum(this.id,this.value,false,'" + elementsToProcess[i][2] + "');><br>";
                     editorText += "<span id='" + obj[2] + "_error'>";
                     obj[0][obj[1]] = elementsToProcess[i][3];
                     if (elementsToProcess[i][2] != "") {
@@ -201,6 +210,12 @@
                             editorText += "Text doesn't match regular expression " + elementsToProcess[i][2];
                         }
                     }
+                    if (elementsToProcess[i][4] != 0 && elementsToProcess[i][3].length<Number(elementsToProcess[i][4])) {
+                            editorText += "Minimal length "+elementsToProcess[i][4];
+		    }
+                    if (elementsToProcess[i][5] != 0 && elementsToProcess[i][3].length>Number(elementsToProcess[i][5])) {
+                            editorText += "Maximal length "+elementsToProcess[i][5];
+		    }
                     editorText += "</span>";
                 } else if (elementsToProcess[i][0] == "number") {
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input value=0 step=1 type=number id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.value,true,'');><br>";
