@@ -83,6 +83,7 @@
             retVal.lastPathElement = pathObj[pathObj.length - 1];
             retVal.path = pathObj.join(".");
             retVal.isNewValue = newValue;
+            console.log(retVal);
             return retVal;
         }
 
@@ -252,8 +253,12 @@
                     obj = findOutputObject(elementsToProcess[i][2]);
                     obj.obj[obj.lastPathElement] = false;
                 } else if (elementsToProcess[i][0] == "string") {
-                    var obj = findOutputObject(parentPath + elementsToProcess[i][6]);
+                    var obj = findOutputObject(parentPath + elementsToProcess[i][6]);                                                           
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input";
+                      editorText+=" value='"+(obj.isNewValue?elementsToProcess[i][3]:obj.obj[obj.lastPathElement])+"'";
+                      if (obj.isNewValue) {                      
+                    	obj.obj[obj.lastPathElement] = elementsToProcess[i][3];
+                    } 
                     if (elementsToProcess[i][4] != 0) {
                         editorText += " minlength=" + elementsToProcess[i][4];
                     }
@@ -261,17 +266,16 @@
                         editorText += " maxlength=" + elementsToProcess[i][5];
                     }
                     editorText += " id='" + obj.path + "' oninput=editStringBoolNum(this.id,this.value,false,'" + elementsToProcess[i][2] + "');><br>";
-                    editorText += "<span id='" + obj.path + "_error'>";
-                    obj.obj[obj.lastPathElement] = elementsToProcess[i][3];
+                    editorText += "<span id='" + obj.path + "_error'>";                
                     if (elementsToProcess[i][2] != "") {
-                        if (!elementsToProcess[i][3].match(new RegExp("^" + elementsToProcess[i][2] + "$"))) {
+                        if (!(obj.isNewValue?elementsToProcess[i][3]:obj.obj[obj.lastPathElement]).match(new RegExp("^" + elementsToProcess[i][2] + "$"))) {
                             editorText += "Text doesn't match regular expression " + elementsToProcess[i][2];
                         }
                     }
-                    if (elementsToProcess[i][4] != 0 && elementsToProcess[i][3].length < Number(elementsToProcess[i][4])) {
+                    if (elementsToProcess[i][4] != 0 && (obj.isNewValue?elementsToProcess[i][3]:obj.obj[obj.lastPathElement]) < Number(elementsToProcess[i][4])) {
                         editorText += "Minimal length " + elementsToProcess[i][4];
                     }
-                    if (elementsToProcess[i][5] != 0 && elementsToProcess[i][3].length > Number(elementsToProcess[i][5])) {
+                    if (elementsToProcess[i][5] != 0 && (obj.isNewValue?elementsToProcess[i][3]:obj.obj[obj.lastPathElement]) > Number(elementsToProcess[i][5])) {
                         editorText += "Maximal length " + elementsToProcess[i][5];
                     }
                     editorText += "</span>";
