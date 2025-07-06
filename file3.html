@@ -147,6 +147,9 @@
                             }
                             obj[j].remove(toDelete);
                             //todo: select new value in select            
+                             if (obj[j].length==0) {
+                       editStringBoolNum(obj[j].id, "","","");
+                    }
                         }
                     }
                     //update indexes of existing elements in the array
@@ -198,7 +201,10 @@
                     var op = document.createElement('option');
                     op.value = info[1];
                     op.innerHTML = info[1];
-                    obj[j].add(op);
+                    obj[j].add(op);                    
+                    if (obj[j].length==1) {
+                       editStringBoolNum(obj[j].id, info[1],false,'','');
+                    }
                 }
             }
         }
@@ -287,8 +293,8 @@
                         (date.getDate() < 10 ? "0" : "") +
                         date.getDate();
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input value='" + dateVal + "' ";
-                    editorText += "id='" + elementsToProcess[i][2] + "' type=date oninput=editStringBoolNum(this.id,this.value,false,'');><br>";
-                    obj = findOutputObject(elementsToProcess[i][2]);
+                    editorText += "id='" + elementsToProcess[i][6] + "' type=date oninput=editStringBoolNum(this.id,this.value,false,'');><br>";
+                    obj = findOutputObject(elementsToProcess[i][6]);
                     obj.obj[obj.lastPathElement] = dateVal;
                 } else if (elementsToProcess[i][0] == "index") { //field with index of some array
                     var obj = findOutputObject(parentPath + elementsToProcess[i][1]);
@@ -298,8 +304,8 @@
                     obj.obj[obj.lastPathElement] = Number(info[1]);
                 } else if (elementsToProcess[i][0] == "other") { //field with other array index (for selecting)
                     var obj = findOutputObject(parentPath + elementsToProcess[i][elementsToProcess[i].length - 1]);
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><select name='" + elementsToProcess[i][2] + "' ";
-                    editorText += "oninput=editStringBoolNum('" + elementsToProcess[i][3] + "',this.value,false,'');>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><select name='" + elementsToProcess[i][2] + "' id='"+elementsToProcess[i][3]+"' ";
+                    editorText += "oninput=editStringBoolNum(this.id,this.value,false,'');>";
                     editorText += "</select>";
                 } else if (elementsToProcess[i][0] == "file64") { //Base64 encoded file
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=file id='" + elementsToProcess[i][2] + "' ";
