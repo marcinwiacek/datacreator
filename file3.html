@@ -94,7 +94,7 @@
             if (regular != "" && document.getElementById(path + "_error").innerHTML != null) {
                 document.getElementById(path + "_error").innerHTML = "";
                 if (!value.match(new RegExp("^" + regular + "$"))) {
-                    document.getElementById(path + "_error").innerHTML = "Text doesn't match regular expression " + regular;
+                    document.getElementById(path + "_error").innerHTML = "<font color=red>Text doesn't match regular expression " + regular+"</font>";
                 }
             }
         }
@@ -269,14 +269,14 @@
                     editorText += "<span id='" + obj.path + "_error'>";
                     if (elementsToProcess[i][2] != "") {
                         if (!(obj.isNewValue ? elementsToProcess[i][3] : obj.obj[obj.lastPathElement]).match(new RegExp("^" + elementsToProcess[i][2] + "$"))) {
-                            editorText += "Text doesn't match regular expression " + elementsToProcess[i][2];
+                            editorText += "<font color=red>Text doesn't match regular expression " + elementsToProcess[i][2]+"</font>";
                         }
                     }
                     if (elementsToProcess[i][4] != 0 && (obj.isNewValue ? elementsToProcess[i][3] : obj.obj[obj.lastPathElement]) < Number(elementsToProcess[i][4])) {
-                        editorText += "Minimal length " + elementsToProcess[i][4];
+                        editorText += "<font color=red>Minimal length " + elementsToProcess[i][4]+"</font>";
                     }
                     if (elementsToProcess[i][5] != 0 && (obj.isNewValue ? elementsToProcess[i][3] : obj.obj[obj.lastPathElement]) > Number(elementsToProcess[i][5])) {
-                        editorText += "Maximal length " + elementsToProcess[i][5];
+                        editorText += "<font color=red>Maximal length " + elementsToProcess[i][5]+"</font>";
                     }
                     editorText += "</span>";
                 } else if (elementsToProcess[i][0] == "number") {
@@ -296,8 +296,12 @@
                         (date.getMonth() + 1) + "-" +
                         (date.getDate() < 10 ? "0" : "") +
                         date.getDate();
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value='" + dateVal + "' ";
-                    editorText += "id='" + elementsToProcess[i][6] + "' type=date oninput=editStringBoolNum(this.id,this.value,false,'');><br>";
+                    editorText += "<label>" + elementsToProcess[i][1] + "</label><input value='" + (elementsToProcess[i][2]==""?dateVal:elementsToProcess[i][2]) + "' ";
+                    if (elementsToProcess[i][3] != elementsToProcess[i][4]) {
+                        editorText += " min=" + elementsToProcess[i][3];
+                        editorText += " max=" + elementsToProcess[i][4];
+                    }
+                    editorText += " id='" + elementsToProcess[i][6] + "' type=date oninput=editStringBoolNum(this.id,this.value,false,'');><br>";
                     obj = findOutputObject(elementsToProcess[i][6]);
                     obj.obj[obj.lastPathElement] = dateVal;
                 } else if (elementsToProcess[i][0] == "index") { //field with index of some array

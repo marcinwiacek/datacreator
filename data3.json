@@ -2,7 +2,7 @@
 	"start": {
 		"renttype": ["select", "Select what is rented", "cars", "cleanBeforeCar", "carsStruct", "buses", "cleanBeforeBus", "busesStruct"],
 		"days": ["number", "how many days?",50,0,100,50,"rent.days"],
-		"when": ["date", "when?","","","","","rent.startDate"],
+		"when": ["date", "when?","2025-01-01","2024-12-29","2025-02-02","","rent.startDate"],
 		"doc": ["file64", "some document","rent.doc"],
 		"doc2": ["fileHex", "some document hex","rent.doc2"],
 		"veteran": ["checkbox", "is is veteran?","rent.veteran"],
