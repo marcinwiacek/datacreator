@@ -17,7 +17,7 @@
 		"employee": ["string", "id for employee", "[1-9]+", "", 2, 10, "rent.internalid"]
 	},
 	"cleanBeforeCar": {
-		"delete": ["delete", "rent.id",  "rent.options"]
+		"delete": ["delete", "rent.id",  "rent.options", "rent.personid"]
 	},
 	"carsStruct": {
 		"name": ["string", "customer name","[a-z]+", "", 0,0,"rent.name"],
