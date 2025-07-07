@@ -91,32 +91,32 @@
             var retVal = "";
             var obj = inputData[section][element];
             if (obj[0] == "string") {
-            	if (obj[2]!="" && !value.match(new RegExp("^" + obj[2] + "$"))) {
-                            retVal += "<font color=red>Text doesn't match regular exp. " + obj[2] + "</font>";
-            	}
-            	if (obj[4]!=obj[5]) {
+                if (obj[2] != "" && !value.match(new RegExp("^" + obj[2] + "$"))) {
+                    retVal += "<font color=red>Text doesn't match regular exp. " + obj[2] + "</font>";
+                }
+                if (obj[4] != obj[5]) {
                     if (value.length < Number(obj[4])) {
                         retVal += "<font color=red>Minimal length " + obj[4] + "</font>";
                     }
                     if (value.length > Number(obj[5])) {
                         retVal += "<font color=red>Maximal length " + obj[5] + "</font>";
                     }
-                    }
-            } else  if (obj[0] == "number" && obj[3]!=obj[4]) {
-                    if (Number(value) < Number(obj[3])) {
-                        retVal += "<font color=red>Minimal value " + obj[3] + "</font>";
-                    }
-                    if (Number(value) > Number(obj[4])) {
-                        retVal += "<font color=red>Maximal value " + obj[4] + "</font>";
-                    }
+                }
+            } else if (obj[0] == "number" && obj[3] != obj[4]) {
+                if (Number(value) < Number(obj[3])) {
+                    retVal += "<font color=red>Minimal value " + obj[3] + "</font>";
+                }
+                if (Number(value) > Number(obj[4])) {
+                    retVal += "<font color=red>Maximal value " + obj[4] + "</font>";
+                }
             }
             return retVal;
         }
-        
+
         function setEditErrors(path, value, section, element) {
-           document.getElementById(path + "_error").innerHTML = parseEditErrors(section, element, value);
-        }       
-        
+            document.getElementById(path + "_error").innerHTML = parseEditErrors(section, element, value);
+        }
+
         function editStringBoolNum(path, value, num) {
             var obj = findOutputObject(path);
             obj.obj[obj.lastPathElement] = num ? Number(value) : value;
@@ -304,7 +304,7 @@
                     if (elementsToProcess[i][5] != 0) {
                         editorText += " maxlength=" + elementsToProcess[i][5];
                     }
-                    editorText += " id='" + obj.path + "' oninput=editStringBoolNum(this.id,this.value,false);setEditErrors(this.id,this.value,'"+section+"','"+i+"');><br>";
+                    editorText += " id='" + obj.path + "' oninput=editStringBoolNum(this.id,this.value,false);setEditErrors(this.id,this.value,'" + section + "','" + i + "');><br>";
                     editorText += "<span id='" + obj.path + "_error'>";
                     editorText += parseEditErrors(section, i, obj.isNewValue ? elementsToProcess[i][3] : obj.obj[obj.lastPathElement]);
                     editorText += "</span>";
@@ -319,11 +319,11 @@
                         editorText += " max=" + elementsToProcess[i][4];
                     }
                     editorText += " value=" + (obj.isNewValue ? elementsToProcess[i][2] : obj.obj[obj.lastPathElement]) + " step=" + elementsToProcess[i][5] + " type=number ";
-                    editorText += "id='" + obj.path + "' oninput=editStringBoolNum(this.id,this.value,true);setEditErrors(this.id,this.value,'"+section+"','"+i+"');><br>";   
-                     editorText += "<span id='" + obj.path + "_error'>";
+                    editorText += "id='" + obj.path + "' oninput=editStringBoolNum(this.id,this.value,true);setEditErrors(this.id,this.value,'" + section + "','" + i + "');><br>";
+                    editorText += "<span id='" + obj.path + "_error'>";
                     editorText += parseEditErrors(section, i, obj.isNewValue ? elementsToProcess[i][2] : obj.obj[obj.lastPathElement]);
-                    editorText += "</span>";                 
-                } else if (elementsToProcess[i][0] == "date") {               
+                    editorText += "</span>";
+                } else if (elementsToProcess[i][0] == "date") {
                     const date = new Date();
                     const dateVal = date.getFullYear() + "-" +
                         (date.getMonth() + 1 < 10 ? "0" : "") +
@@ -339,25 +339,25 @@
                         editorText += " min=" + elementsToProcess[i][3];
                         editorText += " max=" + elementsToProcess[i][4];
                     }
-                    editorText += " id='" + obj.path + "' type=date oninput=editStringBoolNum(this.id,this.value,false);><br>";             
+                    editorText += " id='" + obj.path + "' type=date oninput=editStringBoolNum(this.id,this.value,false);><br>";
                 } else if (elementsToProcess[i][0] == "checkbox") { //real true & false in json. For string use option
                     obj = findOutputObject(parentPath + elementsToProcess[i][2]);
                     if (obj.isNewValue) {
-                       obj.obj[obj.lastPathElement] = false;
+                        obj.obj[obj.lastPathElement] = false;
                     }
                     editorText += "<label>" + elementsToProcess[i][1] + "</label>";
                     editorText += "<input value=true type=checkbox id='" + elementsToProcess[i][2] + "' oninput=editStringBoolNum(this.id,this.checked,false);><br>";
                 } else if (elementsToProcess[i][0] == "option") { //select one of predefined options
                     obj = findOutputObject(parentPath + elementsToProcess[i][elementsToProcess[i].length - 1]);
                     if (obj.isNewValue) {
-                       obj.obj[obj.lastPathElement] = elementsToProcess[i][2];           
+                        obj.obj[obj.lastPathElement] = elementsToProcess[i][2];
                     }
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><select id='" + obj.path + "' ";
                     editorText += "onchange=editStringBoolNum(this.id,this.value,false);>";
                     for (j = 2; j < elementsToProcess[i].length - 1; j++) {
                         editorText += "<option value='" + elementsToProcess[i][j] + "'>" + elementsToProcess[i][j] + "</option>";
                     }
-                    editorText += "</select>";                                             
+                    editorText += "</select>";
                 } else if (elementsToProcess[i][0] == "file64") { //Base64 encoded file
                     obj = findOutputObject(parentPath + elementsToProcess[i][2]);
                     editorText += "<label>" + elementsToProcess[i][1] + "</label><input type=file id='" + obj.path + "' ";
