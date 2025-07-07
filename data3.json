@@ -1,42 +1,42 @@
 {
-	"start": {
-		"renttype": ["select", "Select what is rented", "cars", "cleanBeforeCar", "carsStruct", "buses", "cleanBeforeBus", "busesStruct"],
-		"days": ["number", "how many days?",50,0,100,50,"rent.days"],
-		"when": ["date", "when?","2025-01-01","2024-12-29","2025-02-02","","rent.startDate"],
-		"doc": ["file64", "some document","rent.doc"],
-		"doc2": ["fileHex", "some document hex","rent.doc2"],
-		"veteran": ["checkbox", "is is veteran?","rent.veteran"],
-		"internal": ["select", "is is internal employee?","yes","cleanBefore2", "internaldata", "no","cleanBefore2", ""],
-		"1st": ["string", "first str", "[1-9]+", "", 2, 10, "rent.x[0].a"],
-		"2nd": ["string", "second str", "[1-9]+", "", 2, 10, "rent.x[1].a"]
-	},
-	"cleanBefore2": {
-		"delete": ["delete", "rent.internalid"]
-	},
-	"internaldata": {
-		"employee": ["string", "id for employee", "[1-9]+", "", 2, 10, "rent.internalid"]
-	},
-	"cleanBeforeCar": {
-		"delete": ["delete", "rent.id",  "rent.options", "rent.personid"]
-	},
-	"carsStruct": {
-		"name": ["string", "customer name","[a-z]+", "", 0,0,"rent.name"],
-		"register": ["string", "registerxx", "abc","",0,0,"rent.register"],
-		"longshort": ["option", "option example", "short", "long", "rent.longshort"]
-	},
-	"cleanBeforeBus": {
-		"delete": ["delete",   "rent.longshort"]
-	},
-	"busesStruct": {
-		"personId": ["string", "personal id","","",0,0,"rent.personid"],
-		"name": ["string", "customer name","","",0,0,"rent.name"],
-		"register": ["string", "registerxx","","",0,0,"rent.register"],
-		"options": ["array", "extra options array", "options","rent.options[]"],
-		"index": ["other","other array index", "rent.options[]", "rent.otherind"]
-	},
-	"options": {
-		"index":["index","index"],
-		"id": ["string", "id", "","",0,0,"id"],
-		"infinite": ["option", "option example2", "infinite", "not infinite", "infinite"]
-	}
+	"start": [
+		["select", "Select what is rented", "cars", "cleanBeforeCar", "carsStruct", "buses", "cleanBeforeBus", "busesStruct"],
+		["number", "how many days?", 50, 0, 100, 50, "rent.days"],
+		["date", "when?", "2025-01-01", "2024-12-29", "2025-02-02", "", "rent.startDate"],
+		["file64", "some document", "rent.doc"],
+		["fileHex", "some document hex", "rent.doc2"],
+		["checkbox", "is is veteran?", "rent.veteran"],
+		["select", "is is internal employee?", "yes", "cleanBefore2", "internaldata", "no", "cleanBefore2", ""],
+		["string", "first str", "[1-9]+", "", 2, 10, "rent.x[0].a"],
+		["string", "second str", "[1-9]+", "", 2, 10, "rent.x[1].a"]
+	],
+	"cleanBefore2": [
+		["delete", "rent.internalid"]
+	],
+	"internaldata": [
+		["string", "id for employee", "[1-9]+", "", 2, 10, "rent.internalid"]
+	],
+	"cleanBeforeCar": [
+		["delete", "rent.id", "rent.options", "rent.personid"]
+	],
+	"carsStruct": [
+		["string", "customer name", "[a-z]+", "", 0, 0, "rent.name"],
+		["string", "registerxx", "abc", "", 0, 0, "rent.register"],
+		["option", "option example", "short", "long", "rent.longshort"]
+	],
+	"cleanBeforeBus": [
+		["delete", "rent.longshort"]
+	],
+	"busesStruct": [
+		["string", "personal id", "", "", 0, 0, "rent.personid"],
+		["string", "customer name", "", "", 0, 0, "rent.name"],
+		["string", "registerxx", "", "", 0, 0, "rent.register"],
+		["array", "extra options array", "options", "rent.options[]"],
+		["other", "other array index", "rent.options[]", "rent.otherind"]
+	],
+	"options": [
+		["index", "index"],
+		["string", "id", "", "", 0, 0, "id"],
+		["option", "option example2", "infinite", "not infinite", "infinite"]
+	]
 }
