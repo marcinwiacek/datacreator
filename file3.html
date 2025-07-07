@@ -87,6 +87,23 @@
             return retVal;
         }
 
+        function parseEditErrors(section, element, value) {
+            var retVal = "";
+            var obj = inputData[section][element];
+            if (obj[0] == "string") {
+            	if (obj[2]!="" && !value.match(new RegExp("^" + obj[2] + "$"))) {
+                            retVal += "<font color=red>Text doesn't match regular exp. " + obj[2] + "</font>";
+            	}
+                    if (obj[4] != 0 && value.length < Number(obj[4])) {
+                        retVal += "<font color=red>Minimal length " + obj[4] + "</font>";
+                    }
+                    if (obj[5] != 0 && value.length > Number(obj[5])) {
+                        retVal += "<font color=red>Maximal length " + obj[5] + "</font>";
+                    }
+            }
+            return retVal;
+        }
+        
         function editStringBoolNum(path, value, num, regular) {
             var obj = findOutputObject(path);
             obj.obj[obj.lastPathElement] = num ? Number(value) : value;
@@ -282,17 +299,7 @@
                     }
                     editorText += " id='" + obj.path + "' oninput=editStringBoolNum(this.id,this.value,false,'" + elementsToProcess[i][2] + "');><br>";
                     editorText += "<span id='" + obj.path + "_error'>";
-                    if (elementsToProcess[i][2] != "") {
-                        if (!(obj.isNewValue ? elementsToProcess[i][3] : obj.obj[obj.lastPathElement]).match(new RegExp("^" + elementsToProcess[i][2] + "$"))) {
-                            editorText += "<font color=red>Text doesn't match regular expression " + elementsToProcess[i][2] + "</font>";
-                        }
-                    }
-                    if (elementsToProcess[i][4] != 0 && (obj.isNewValue ? elementsToProcess[i][3] : obj.obj[obj.lastPathElement]) < Number(elementsToProcess[i][4])) {
-                        editorText += "<font color=red>Minimal length " + elementsToProcess[i][4] + "</font>";
-                    }
-                    if (elementsToProcess[i][5] != 0 && (obj.isNewValue ? elementsToProcess[i][3] : obj.obj[obj.lastPathElement]) > Number(elementsToProcess[i][5])) {
-                        editorText += "<font color=red>Maximal length " + elementsToProcess[i][5] + "</font>";
-                    }
+                    editorText += parseEditErrors(section, i, obj.isNewValue ? elementsToProcess[i][3] : obj.obj[obj.lastPathElement]);
                     editorText += "</span>";
                 } else if (elementsToProcess[i][0] == "number") {
                     var obj = findOutputObject(parentPath + elementsToProcess[i][6]);

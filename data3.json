@@ -28,9 +28,9 @@
 		["delete", "rent.longshort"]
 	],
 	"busesStruct": [
-		["string", "personal id", "", "", 0, 0, "rent.personid"],
 		["string", "customer name", "", "", 0, 0, "rent.name"],
 		["string", "registerxx", "", "", 0, 0, "rent.register"],
+		["string", "personal id", "", "", 0, 0, "rent.personid"],
 		["array", "extra options array", "options", "rent.options[]"],
 		["other", "other array index", "rent.options[]", "rent.otherind"]
 	],
