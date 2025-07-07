@@ -304,8 +304,16 @@
                         editorText += " min=" + elementsToProcess[i][3];
                         editorText += " max=" + elementsToProcess[i][4];
                     }
-                    editorText += " value=" + elementsToProcess[i][2] + " step=" + elementsToProcess[i][5] + " type=number ";
-                    editorText += "id='" + obj.path + "' oninput=editStringBoolNum(this.id,this.value,true,'');><br>";                  
+                    editorText += " value=" + (obj.isNewValue ? elementsToProcess[i][2] : obj.obj[obj.lastPathElement]) + " step=" + elementsToProcess[i][5] + " type=number ";
+                    editorText += "id='" + obj.path + "' oninput=editStringBoolNum(this.id,this.value,true,'');><br>";   
+                    editorText += "<span id='" + obj.path + "_error'>";
+                    if (elementsToProcess[i][3] != 0 && (obj.isNewValue ? elementsToProcess[i][2] : obj.obj[obj.lastPathElement]) < Number(elementsToProcess[i][3])) {
+                        editorText += "<font color=red>Minimal value " + elementsToProcess[i][3] + "</font>";
+                    }
+                    if (elementsToProcess[i][4] != 0 && (obj.isNewValue ? elementsToProcess[i][2] : obj.obj[obj.lastPathElement]) > Number(elementsToProcess[i][4])) {
+                        editorText += "<font color=red>Maximal value " + elementsToProcess[i][4] + "</font>";
+                    }
+                    editorText += "</span>";                    
                 } else if (elementsToProcess[i][0] == "date") {               
                     const date = new Date();
                     const dateVal = date.getFullYear() + "-" +
