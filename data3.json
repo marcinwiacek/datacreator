@@ -1,15 +1,15 @@
 {
 	"start": [
 		["select", "Select what is rented", "cars", "cleanBeforeCar", "carsStruct", "buses", "cleanBeforeBus", "busesStruct"],
-		["number", "how many days?", 50, 0, 100, 50, "rent.days"],
+		["number", "how many days?", 50, 0, 100, 50, "rent.days,rent.w"],
 		["date", "when?", "2025-01-01", "2024-12-29", "2025-02-02", "", "rent.startDate"],
 		["file64", "some document", "rent.doc"],
 		["fileHex", "some document hex", "rent.doc2"],
 		["checkbox", "is is veteran?", "rent.veteran"],
 		["select", "is is internal employee?", "yes", "cleanBefore2", "internaldata", "no", "cleanBefore2", ""],
-		["string", "first str", "[1-9]+", "", 2, 10, "rent.x[0].a"],
+		["string", "first str", "[1-9]+", "", 2, 10, "rent.x[0].a,rent.x[0].b"],
 		["string", "second str", "[1-9]+", "", 2, 10, "rent.x[1].a"],
-		["const", "abcd", "rent.x[1].b"]
+		["const", "abcd", "rent.x[1].b,rent.x[1].c"]
 	],
 	"cleanBefore2": [
 		["delete", "rent.internalid"]
