@@ -18,7 +18,7 @@
 		["string", "id for employee", "[1-9]+", "", 2, 10, "rent.internalid"]
 	],
 	"cleanBeforeCar": [
-		["delete", "rent.id", "rent.options", "rent.personid"]
+		["delete", "rent.id,rent.options,rent.personid"]
 	],
 	"carsStruct": [
 		["string", "customer name", "[a-z]+", "", 0, 0, "rent.name"],
