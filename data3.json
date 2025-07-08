@@ -8,7 +8,8 @@
 		["checkbox", "is is veteran?", "rent.veteran"],
 		["select", "is is internal employee?", "yes", "cleanBefore2", "internaldata", "no", "cleanBefore2", ""],
 		["string", "first str", "[1-9]+", "", 2, 10, "rent.x[0].a"],
-		["string", "second str", "[1-9]+", "", 2, 10, "rent.x[1].a"]
+		["string", "second str", "[1-9]+", "", 2, 10, "rent.x[1].a"],
+		["const", "abcd", "rent.x[1].b"]
 	],
 	"cleanBefore2": [
 		["delete", "rent.internalid"]

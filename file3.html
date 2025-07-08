@@ -130,9 +130,9 @@
             console.log(elementToProcess);
             for (var j = 2; j < elementToProcess.length; j = j + 3) {
                 if (elementToProcess[j] == value) {
-                    //first section before
+                    //process section "before"
                     if (elementToProcess[j + 1] != "") processEditorPart(elementToProcess[j + 1], "");
-                    //now main section                 
+                    //process "target" section
                     document.getElementById(path).innerHTML = processEditorPart(elementToProcess[j + 2], "");
                     document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
                     break;
@@ -171,7 +171,7 @@
                                 }
                             }
                             obj[j].remove(toDelete);
-                            //todo: select new value in select            
+                            //todo: select new value in select
                             if (obj[j].length == 0) {
                                 editStringBoolNum(obj[j].id, "", false);
                             }
@@ -191,7 +191,6 @@
                                 var obj2 = findOutputObject(pathObj2.join("."));
                                 obj2.obj[obj2.lastPathElement] = Number(i - 1);
                             }
-
                         }
                     }
                 }
@@ -291,6 +290,11 @@
                     for (j = 1; j < elementsToProcess[i].length; j++) {
                         obj = findOutputObject(elementsToProcess[i][j]);
                         if (obj != null) delete obj.obj[obj.lastPathElement];
+                    }
+                } else if (elementsToProcess[i][0] == "const") {
+                    obj = findOutputObject(parentPath + elementsToProcess[i][2]);
+                    if (obj.isNewValue) {
+                        obj.obj[obj.lastPathElement] = elementsToProcess[i][1];
                     }
                 } else if (elementsToProcess[i][0] == "string") {
                     obj = findOutputObject(parentPath + elementsToProcess[i][6]);
