@@ -204,8 +204,9 @@
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
         }
 
-        function addArrayElement(path, path2, parentPath) {
-            var obj = findOutputObject(parentPath);
+        function addArrayElement(editorPath, newEditorPath, parentPathInJson) {
+            console.log("addArrayElement "+editorPath+" "+ newEditorPath+ " "+ parentPathInJson);
+            var obj = findOutputObject(parentPathInJson);
             newButton = document.createElement('button');
             newButton.id = obj.path + ".x";
             newButton.addEventListener('click', function(event) {
@@ -215,19 +216,20 @@
             newDiv = document.createElement('div');
             newDiv.classList.add("full");
             newDiv.style = "display: grid; grid-template-columns: 1fr 1fr;";
-            newDiv.innerHTML = processEditorPart(path2, obj.path + ".");
+            //todo split for newEditorPath
+            newDiv.innerHTML = processEditorPart(newEditorPath, obj.path + ".");
             newDiv.id = obj.path;
             newDiv.appendChild(newButton);
-            document.getElementById(path).appendChild(newDiv);
+            document.getElementById(editorPath).appendChild(newDiv);
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
             //add new value into all related indexes
             var info = obj.lastPathElement.split(/[\[,\]]/);
-            var pathObj = path.split(".");
+            var pathObj = editorPath.split(".");
             var elementsToProcess = inputData[pathObj[0]][pathObj[1]];
             obj = document.getElementsByTagName("select");
             for (j in obj) {
                 if (obj[j].attributes && obj[j].attributes["name"] &&
-                    obj[j].attributes["name"]["nodeValue"] == elementsToProcess[3]) {
+                    obj[j].attributes["name"]["nodeValue"] == elementsToProcess[1]) {
                     var op = document.createElement('option');
                     op.value = info[1];
                     op.innerHTML = info[1];
@@ -283,10 +285,10 @@
             console.log("processEditorPart start '" + section + "' '" + parentPath + "'");
             var editorText = "";
             var sectionList = sections.split(",");
-            for (s in sectionList) {
+            for (var s in sectionList) {
                 var section = sectionList[s];
             var elementsToProcess = inputData[section];
-            for (i in elementsToProcess) {
+            for (var i in elementsToProcess) {
                 console.log(elementsToProcess[i]);
                 if (elementsToProcess[i][0] == "select") {
                     //option menu. Can do something extra during changing to concrete value.	
@@ -294,7 +296,9 @@
                     editorText += "<label>" + elementsToProcess[i][1] + "</label>";
                     editorText += "<select onchange=processSelect('" + section + "." + i + "',this.value);>";
                     for (j = 3; j < elementsToProcess[i].length; j = j + 2) {
-                        editorText += "<option value='" + elementsToProcess[i][j] + "'>" + elementsToProcess[i][j] + "</option>";
+                        editorText += "<option value='" + elementsToProcess[i][j] + "'";
+                        if (elementsToProcess[i][2] == elementsToProcess[i][j]) editorText+=" selected";
+                        editorText += ">" + elementsToProcess[i][j] + "</option>";
                     }
                     editorText += "</select>";
                     editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'>";
@@ -318,9 +322,9 @@
                 } else if (elementsToProcess[i][0] == "other") {
                     //field with other array index (for selecting)
                     //0 type, 1 path, 2 description, 3 other array path
-                    obj = findOutputObject(parentPath + elementsToProcess[i][elementsToProcess[i].length - 1]);
-                    editorText += "<label>" + elementsToProcess[i][1] + "</label>";
-                    editorText += "<select name='" + elementsToProcess[i][2] + "' id='" + elementsToProcess[i][3] + "'";
+                    obj = findOutputObject(parentPath + elementsToProcess[i][1]);
+                    editorText += "<label>" + elementsToProcess[i][2] + "</label>";
+                    editorText += "<select name='" + elementsToProcess[i][3] + "' id='" + elementsToProcess[i][1] + "'";
                     editorText += " oninput=editStringBoolNum(this.id,this.value,false);>";
                     editorText += "</select>";
                 } else if (elementsToProcess[i][0] == "delete") {
@@ -396,7 +400,7 @@
                     pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
                     editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                     editorText += "<select id='" + pathValue.path + "' onchange=editStringBoolNum(this.id,this.value,false);>";
-                    for (j = 4; j < elementsToProcess[i].length - 1; j++) {
+                    for (j = 4; j < elementsToProcess[i].length ; j++) {
                         editorText += "<option value='" + elementsToProcess[i][j] + "'";
                         if (elementsToProcess[i][3] == elementsToProcess[i][j]) editorText+=" selected";
                         editorText += ">" + elementsToProcess[i][j] + "</option>";
