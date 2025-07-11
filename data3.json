@@ -30,7 +30,7 @@
 		["string", "rent.name", "customer name", "", 0, 0, ""],
 		["string", "rent.register", "registerxx", "", 0, 0, ""],
 		["string", "rent.personid", "personal id", "", 0, 0, ""],
-		["array", "rent.options[]", "extra options array", "options"],
+		["array", "rent.options[]", "extra options array", "options", 1],
 		["other", "rent.otherind", "other array index", "rent.options[]"]
 	],
 	"options": [

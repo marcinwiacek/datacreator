@@ -31,6 +31,7 @@
         var inputData = "";
         var outputData = {};
         var debug = false;
+        var addArray = [];
 
         function findOutputObject(path) {
             console.log("findOutputPath " + path);
@@ -132,7 +133,7 @@
             var pathObj = path.split(".");
             var elementToProcess = inputData[pathObj[0]][pathObj[1]];
             console.log(elementToProcess);
-            for (j = 3; j < elementToProcess.length; j = j + 2) {
+            for (var j = 3; j < elementToProcess.length; j = j + 2) {
                 if (elementToProcess[j] == value) {
                     var retVal = "";
                     var sectionObj = elementToProcess[j + 1].split(".");
@@ -140,6 +141,10 @@
                         retVal += processEditorPart(sectionObj[s], "");
                     }
                     document.getElementById(path).innerHTML = retVal;
+                    for (var z in addArray) {
+                               addArrayElement(addArray[z].editorPath, addArray[z].newEditorPath, addArray[z].parentPathInJson);
+                            }
+                            addArray = [];
                     document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
                     break;
                 }
@@ -161,16 +166,16 @@
                 document.getElementsByTagName("div"),
                 document.getElementsByTagName("button")
             ];
-            for (jj in obj0) {
+            for (var jj in obj0) {
                 obj = obj0[jj];
-                for (j in obj) {
+                for (var j in obj) {
                     //remove value from select with array index
                     if (obj[j].attributes && obj[j].attributes["name"]) {
                         if (obj[j].attributes["name"]["nodeValue"] == pathObj.join(".") + "[]") {
                             //remove highest value
                             toDelete = -1;
                             toDeleteValue = 0;
-                            for (jjj = 0; jjj < obj[j].length; jjj++) {
+                            for (var jjj = 0; jjj < obj[j].length; jjj++) {
                                 if (Number(obj[j][jjj].value) >= toDeleteValue) {
                                     toDelete = jjj;
                                     toDeleteValue = Number(obj[j][jjj].value);
@@ -221,13 +226,17 @@
             newDiv.id = obj.path;
             newDiv.appendChild(newButton);
             document.getElementById(editorPath).appendChild(newDiv);
+            for (var z in addArray) {
+                               if (addArray[z].editorPath!=editorPath) addArrayElement(addArray[z].editorPath, addArray[z].newEditorPath, addArray[z].parentPathInJson);
+                            }
+                            addArray = [];
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
             //add new value into all related indexes
             var info = obj.lastPathElement.split(/[\[,\]]/);
             var pathObj = editorPath.split(".");
             var elementsToProcess = inputData[pathObj[0]][pathObj[1]];
             obj = document.getElementsByTagName("select");
-            for (j in obj) {
+            for (var j in obj) {
                 if (obj[j].attributes && obj[j].attributes["name"] &&
                     obj[j].attributes["name"]["nodeValue"] == elementsToProcess[1]) {
                     var op = document.createElement('option');
@@ -264,10 +273,10 @@
         }
 
         function getPathValueToCheck(parentPath, path, value) {
-            valueToCheck = value;
-            pathList = path.split(",");
-            for (p in pathList) {
-                obj = findOutputObject(parentPath + pathList[p]);
+            var valueToCheck = value;
+            var pathList = path.split(",");
+            for (var p in pathList) {
+                var obj = findOutputObject(parentPath + pathList[p]);
                 if (obj.isNewValue) {
                     obj.obj[obj.lastPathElement] = value;
                 } else {
@@ -307,11 +316,18 @@
                         }
                     } else if (elementsToProcess[i][0] == "array") {
                         //array with adding/removing elements
-                        //0 type, 1 path, 2 description, 3 section
+                        //0 type, 1 path, 2 description, 3 section, 4 minimum elements
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input type=button value='Add'";
                         editorText += " onclick=addArrayElement('" + section + "." + i + "','" + elementsToProcess[i][3] + "','" + parentPath + elementsToProcess[i][1] + "');>";
-                        editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'></div>";
+                        editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'></div>";                        
+                        for (var j=0;j<Number(elementsToProcess[i][4]);j++) {
+                           var ret = {};
+                           ret.editorPath = section + "." + i;
+                           ret.newEditorPath = elementsToProcess[i][3];
+                           ret.parentPathInJson = parentPath + elementsToProcess[i][1];
+                           addArray.push(ret);
+                        }
                     } else if (elementsToProcess[i][0] == "index") {
                         //field with index of existing array
                         //0 type, 1 path
@@ -435,7 +451,11 @@
                         if (inputData.start == null) {
                             alert("No start section. Is this really file with data?");
                         } else {
-                            document.getElementById("editor").innerHTML = processEditorPart("start", "");
+                            document.getElementById("editor").innerHTML = processEditorPart("start", "");                           
+                            for (var z in addArray) {
+                               addArrayElement(addArray[z].editorPath, addArray[z].newEditorPath, addArray[z].parentPathInJson);
+                            }
+                            addArray = [];
                             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
                         }
                     } catch (ee) {
