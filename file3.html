@@ -24,8 +24,8 @@
     <span id="errors"></span>
     <p>
     <div style="display: flex;">
-        <div style="flex: 40%; display: grid; grid-template-columns: 1fr 1fr" id="editor"></div>
-        <pre style="flex: 60%; margin: 30px;" id="json"></pre>
+        <div style="flex: 40%; display: grid; grid-template-columns: 1fr 1fr; max-width: 800px;" id="editor"></div>
+        <pre style="flex: 60%; margin: 30px; max-width: 400px; overflow-x: auto;" id="json"></pre>
     </div>
     <script>
         var inputData = "";
@@ -253,23 +253,22 @@
         function loadBase64File(f, path) {
             const reader = new FileReader();
             reader.onload = function(e2) {
-                binaryFile = e2.target.result;
                 var obj = findOutputObject(path);
-                obj.obj[obj.lastPathElement] = btoa(binaryFile);
+                obj.obj[obj.lastPathElement] = btoa(new Uint8Array(e2.target.result));
                 document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
             };
-            reader.readAsBinaryString(f);
+            reader.readAsArrayBuffer(f);
         }
 
         function loadHexFile(f, path) {
             const reader = new FileReader();
             reader.onload = function(e2) {
-                binaryFile = e2.target.result;
                 var obj = findOutputObject(path);
-                obj.obj[obj.lastPathElement] = btoa(binaryFile);
+                arr = new Uint8Array(e2.target.result);
+                obj.obj[obj.lastPathElement] = arr.toHex().toUpperCase();
                 document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
             };
-            reader.readAsBinaryString(f);
+            reader.readAsArrayBuffer(f);
         }
 
         function getPathValueToCheck(parentPath, path, value) {
