@@ -20,7 +20,7 @@
 	],
 	"carsStruct": [
 	        ["delete", "rent.id,rent.options,rent.personid"],
-		["random", "rent.name", "abcdefGHJ", 6],
+		["random", "rent.name0", "abcdefGHJ", 6,"-","-"],
 		["string", "rent.name", "customer name", "", 0, 0, "[a-z]+"],
 		["string", "rent.register", "registerxx", "", 0, 0, "abc"],
 		["option", "rent.longshort", "option example", "long", "short", "long"]
