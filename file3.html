@@ -142,9 +142,9 @@
                     }
                     document.getElementById(path).innerHTML = retVal;
                     for (var z in addArray) {
-                               addArrayElement(addArray[z].editorPath, addArray[z].newEditorPath, addArray[z].parentPathInJson);
-                            }
-                            addArray = [];
+                        addArrayElement(addArray[z].editorPath, addArray[z].newEditorPath, addArray[z].parentPathInJson);
+                    }
+                    addArray = [];
                     document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
                     break;
                 }
@@ -227,9 +227,9 @@
             newDiv.appendChild(newButton);
             document.getElementById(editorPath).appendChild(newDiv);
             for (var z in addArray) {
-                               if (addArray[z].editorPath!=editorPath) addArrayElement(addArray[z].editorPath, addArray[z].newEditorPath, addArray[z].parentPathInJson);
-                            }
-                            addArray = [];
+                if (addArray[z].editorPath != editorPath) addArrayElement(addArray[z].editorPath, addArray[z].newEditorPath, addArray[z].parentPathInJson);
+            }
+            addArray = [];
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
             //add new value into all related indexes
             var info = obj.lastPathElement.split(/[\[,\]]/);
@@ -263,7 +263,7 @@
         function loadHexFile(f, path) {
             const reader = new FileReader();
             reader.onload = function(e2) {
-                var obj = findOutputObject(path);                
+                var obj = findOutputObject(path);
                 obj.obj[obj.lastPathElement] = (new Uint8Array(e2.target.result)).toHex().toUpperCase();
                 document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
             };
@@ -318,13 +318,13 @@
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input type=button value='Add'";
                         editorText += " onclick=addArrayElement('" + section + "." + i + "','" + elementsToProcess[i][3] + "','" + parentPath + elementsToProcess[i][1] + "');>";
-                        editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'></div>";                        
-                        for (var j=0;j<Number(elementsToProcess[i][4]);j++) {
-                           var ret = {};
-                           ret.editorPath = section + "." + i;
-                           ret.newEditorPath = elementsToProcess[i][3];
-                           ret.parentPathInJson = parentPath + elementsToProcess[i][1];
-                           addArray.push(ret);
+                        editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'></div>";
+                        for (var j = 0; j < Number(elementsToProcess[i][4]); j++) {
+                            var ret = {};
+                            ret.editorPath = section + "." + i;
+                            ret.newEditorPath = elementsToProcess[i][3];
+                            ret.parentPathInJson = parentPath + elementsToProcess[i][1];
+                            addArray.push(ret);
                         }
                     } else if (elementsToProcess[i][0] == "index") {
                         //field with index of existing array
@@ -362,10 +362,10 @@
                         //put into json random value. When you put this is before string, it can replace default value from string (only when it didn't exist in json)
                         //0 type, 1 path, 2 allowed chars, 3 length, 4 string before, 5 string after
                         var s = "";
-                        for (var j=0;j<Number(elementsToProcess[i][3]);j++) {
-                           s+= elementsToProcess[i][2].charAt(Math.random() * elementsToProcess[i][2].length);
+                        for (var j = 0; j < Number(elementsToProcess[i][3]); j++) {
+                            s += elementsToProcess[i][2].charAt(Math.random() * elementsToProcess[i][2].length);
                         }
-                        getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][4]+s+elementsToProcess[i][5]);
+                        getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][4] + s + elementsToProcess[i][5]);
                     } else if (elementsToProcess[i][0] == "string") {
                         //0 type, 1 path, 2 description, 3 default, 4 minimum len, 5 maximum len, 6 parsing regexp
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
@@ -378,7 +378,7 @@
                         editorText += " oninput=editStringBoolNum(this.id,this.value,false);setEditErrors(this.id,this.value,'" + section + "','" + i + "');><br>";
                         editorText += "<span id='" + pathValue.path + "_error'>";
                         editorText += parseEditErrors(section, i, pathValue.value);
-                        editorText += "</span>";                   
+                        editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "number") {
                         //0 type, 1 path, 2 description, 3 default, 4 minimum, 5 maximum, 6 step
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
@@ -453,9 +453,9 @@
                         if (inputData.start == null) {
                             alert("No start section. Is this really file with data?");
                         } else {
-                            document.getElementById("editor").innerHTML = processEditorPart("start", "");                           
+                            document.getElementById("editor").innerHTML = processEditorPart("start", "");
                             for (var z in addArray) {
-                               addArrayElement(addArray[z].editorPath, addArray[z].newEditorPath, addArray[z].parentPathInJson);
+                                addArrayElement(addArray[z].editorPath, addArray[z].newEditorPath, addArray[z].parentPathInJson);
                             }
                             addArray = [];
                             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
