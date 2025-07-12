@@ -6,6 +6,7 @@
 		["file64",  "rent.doc", "some document", ""],
 		["fileHex", "rent.doc2", "some document hex", ""],
 		["checkbox", "rent.veteran", "is is veteran?", true],
+		["checkbox", "rent.veteran2", "is is veteran?", null],
 		["select", "is is internal employee?", "no", "yes", "cleanBefore,internaldata", "no", "cleanBefore"],
 		["string", "rent.x[0].a,rent.x[0].b", "first str", "", 2, 10, "[1-9]+"],
 		["string", "rent.x[1].a", "second str", "", 2, 10, "[1-9]+"],
@@ -21,13 +22,13 @@
 	"carsStruct": [
 	        ["delete", "rent.id,rent.options,rent.personid"],
 		["random", "rent.name0", "abcdefGHJ", 6,"-","-"],
-		["string", "rent.name", "customer name", "", 0, 0, "[a-z]+"],
+		["string", "rent.name", "customer name", null, 0, 0, "[a-z]+"],
 		["string", "rent.register", "registerxx", "", 0, 0, "abc"],
 		["option", "rent.longshort", "option example", "long", "short", "long"]
 	],
 	"busesStruct": [
 		["delete", "rent.longshort"],
-		["string", "rent.name", "customer name", "", 0, 0, ""],
+		["string", "rent.name", "customer name", null, 0, 0, ""],
 		["string", "rent.register", "registerxx", "", 0, 0, ""],
 		["string", "rent.personid", "personal id", "", 0, 0, ""],
 		["array", "rent.options[]", "extra options array", "options", 1],
