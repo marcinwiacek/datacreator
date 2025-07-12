@@ -345,8 +345,9 @@
                         }
                     } else if (elementsToProcess[i][0] == "link") {
                         //link to existing structure          
-                        //0 type, 1 path, 2 section              
-                        editorText += processEditorPart(elementsToProcess[i][2], parentPath + elementsToProcess[i][1]);
+                        //0 type, 1 path, 2 section 
+                        obj = findOutputObject(parentPath + elementsToProcess[i][1], true);             
+                        editorText += processEditorPart(elementsToProcess[i][2], obj.path+".");
                     } else if (elementsToProcess[i][0] == "index") {
                         //field with index of existing array
                         //0 type, 1 path
