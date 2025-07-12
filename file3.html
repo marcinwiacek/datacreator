@@ -158,9 +158,12 @@
             }
         }
 
-        function deleteArrayElement(path) {
+        function deleteArrayElement(path, minimum) {
             var obj = findOutputObject(path, true);
-            var info = obj.lastPathElement.split(/[\[,\]]/);
+            var info = obj.lastPathElement.split(/[\[,\]]/);            
+            if (obj.obj[info[0]].length==Number(minimum)) {
+            	alert('Array needs at least '+minimum+' elements');
+            } else {
             //remove from json
             obj.obj[info[0]].splice(info[1], 1);
             //remove from editor
@@ -214,15 +217,19 @@
                 }
             }
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+            }
         }
 
         function addArrayElement(editorPath, newEditorPath, parentPathInJson) {
             console.log("addArrayElement " + editorPath + " " + newEditorPath + " " + parentPathInJson);
+            var pathObj = editorPath.split(".");
+            var elementsToProcess = inputData[pathObj[0]][pathObj[1]];            
             var obj = findOutputObject(parentPathInJson, true);
             newButton = document.createElement('button');
             newButton.id = obj.path + ".x";
+            newButton.setAttribute("name", elementsToProcess[4]); //minimum number of elements
             newButton.addEventListener('click', function(event) {
-                deleteArrayElement(this.id.slice(0, -2));
+                deleteArrayElement(this.id.slice(0, -2), this.attributes["name"]["nodeValue"]);
             });
             newButton.innerText = "Delete";
             newDiv = document.createElement('div');
@@ -239,9 +246,7 @@
             addArray = [];
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
             //add new value into all related indexes
-            var info = obj.lastPathElement.split(/[\[,\]]/);
-            var pathObj = editorPath.split(".");
-            var elementsToProcess = inputData[pathObj[0]][pathObj[1]];
+            var info = obj.lastPathElement.split(/[\[,\]]/);          
             obj = document.getElementsByTagName("select");
             for (var j in obj) {
                 if (obj[j].attributes && obj[j].attributes["name"] &&
