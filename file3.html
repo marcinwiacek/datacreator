@@ -35,15 +35,15 @@
         var addArray = [];
 
         function getOutputJson() {
-        	document.getElementById("getOutput").setAttribute( 'href','data:;base64,'+btoa(JSON.stringify(outputData, null, 2)));
+            document.getElementById("getOutput").setAttribute('href', 'data:;base64,' + btoa(JSON.stringify(outputData, null, 2)));
         }
-                
+
         function findOutputObject(path, canCreate) {
             console.log("findOutputPath " + path);
             var obj = outputData;
             var pathObj = path.split(".");
             var newValue = false;
-                var retVal = {};
+            var retVal = {};
             retVal.path = pathObj.join(".");
             for (var i = 0; i < pathObj.length; i++) {
                 console.log("element " + pathObj[i]);
@@ -51,7 +51,7 @@
                 if (pathObj[i].includes("[")) {
                     var info = pathObj[i].split(/[\[,\]]/);
                     if (obj[info[0]] == null) {
-                        if (!canCreate) return  retVal;
+                        if (!canCreate) return retVal;
                         obj[info[0]] = [];
                         console.log("creating array");
                         newValue = true;
@@ -90,7 +90,7 @@
             }
             retVal.obj = obj;
             retVal.lastPathElement = pathObj[pathObj.length - 1];
-        retVal.path = pathObj.join(".");
+            retVal.path = pathObj.join(".");
             retVal.isNewValue = newValue;
             console.log(retVal);
             return retVal;
@@ -100,7 +100,7 @@
             var retVal = "";
             var obj = inputData[section][element];
             if (obj[0] == "string") {
-                if (obj[6] != "" && value!=null && !value.match(new RegExp("^" + obj[6] + "$"))) {
+                if (obj[6] != "" && value != null && !value.match(new RegExp("^" + obj[6] + "$"))) {
                     retVal += "<font color=red>Text doesn't match regular exp. " + obj[6] + "</font>";
                 }
                 if (obj[4] != obj[5]) {
@@ -129,7 +129,7 @@
         function editStringBoolNum(path, value, num) {
             pathList = path.split(",");
             for (p in pathList) {
-                var obj = findOutputObject(pathList[p],true);
+                var obj = findOutputObject(pathList[p], true);
                 obj.obj[obj.lastPathElement] = num ? Number(value) : value;
             }
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
@@ -159,7 +159,7 @@
         }
 
         function deleteArrayElement(path) {
-            var obj = findOutputObject(path,true);
+            var obj = findOutputObject(path, true);
             var info = obj.lastPathElement.split(/[\[,\]]/);
             //remove from json
             obj.obj[info[0]].splice(info[1], 1);
@@ -206,7 +206,7 @@
                             //update json value for array indexes
                             if (obj[j].attributes && obj[j].attributes["name"] &&
                                 obj[j].attributes["name"]["nodeValue"] == "arrayindex") {
-                                var obj2 = findOutputObject(pathObj2.join("."),true);
+                                var obj2 = findOutputObject(pathObj2.join("."), true);
                                 obj2.obj[obj2.lastPathElement] = Number(i - 1);
                             }
                         }
@@ -266,10 +266,10 @@
             };
             reader.readAsArrayBuffer(f);
         }
-        
+
         function getOutputFileBase64(path) {
-               obj = findOutputObject(path, false);               
-        	document.getElementById(path+"_get").setAttribute( 'href','data:;base64,'+obj.obj[obj.lastPathElement]);
+            obj = findOutputObject(path, false);
+            document.getElementById(path + "_get").setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
         }
 
 
@@ -287,11 +287,11 @@
             var valueToCheck = value;
             var pathList = path.split(",");
             for (var p in pathList) {
-                var obj = findOutputObject(parentPath + pathList[p], value!=null);                
+                var obj = findOutputObject(parentPath + pathList[p], value != null);
                 if (obj.isNewValue) {
-                    if (value!=null) obj.obj[obj.lastPathElement] = value;
+                    if (value != null) obj.obj[obj.lastPathElement] = value;
                 } else {
-                    if (obj.obj!=null) valueToCheck = obj.obj[obj.lastPathElement];
+                    if (obj.obj != null) valueToCheck = obj.obj[obj.lastPathElement];
                 }
                 pathList[p] = obj.path;
             }
@@ -339,9 +339,9 @@
                             ret.parentPathInJson = parentPath + elementsToProcess[i][1];
                             addArray.push(ret);
                         }
-                     } else if (elementsToProcess[i][0] == "link") {
+                    } else if (elementsToProcess[i][0] == "link") {
                         //link to existing structure                        
-                        editorText += processEditorPart(elementsToProcess[i][2], parentPath+elementsToProcess[i][1]);
+                        editorText += processEditorPart(elementsToProcess[i][2], parentPath + elementsToProcess[i][1]);
                     } else if (elementsToProcess[i][0] == "index") {
                         //field with index of existing array
                         //0 type, 1 path
@@ -387,7 +387,7 @@
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input";
-                        if (pathValue.value!=null) editorText += " value='" + pathValue.value+"'";                        
+                        if (pathValue.value != null) editorText += " value='" + pathValue.value + "'";
                         editorText += " id='" + pathValue.path + "'";
                         if (elementsToProcess[i][4] != elementsToProcess[i][5]) {
                             editorText += " minlength=" + elementsToProcess[i][4];
@@ -402,7 +402,7 @@
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input";
-                        if (pathValue.value!=null) editorText += " value=" + pathValue.value;
+                        if (pathValue.value != null) editorText += " value=" + pathValue.value;
                         editorText += " step=" + elementsToProcess[i][6] + " type=number id='" + pathValue.path + "'";
                         if (elementsToProcess[i][4] != elementsToProcess[i][5]) {
                             editorText += " min=" + elementsToProcess[i][4];
@@ -432,7 +432,7 @@
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input";
-                        if (elementsToProcess[i][3]) editorText += " checked";                        
+                        if (elementsToProcess[i][3]) editorText += " checked";
                         editorText += " type=checkbox id='" + pathValue.path + "' oninput=editStringBoolNum(this.id,this.checked,false);><br>";
                     } else if (elementsToProcess[i][0] == "option") {
                         //select one of predefined options   
@@ -451,8 +451,8 @@
                         //0 type, 1 path, 2 description, 3 default
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
-                          editorText += "<a id='" + pathValue.path + "_get' download=filefile onclick=getOutputFileBase64('" + pathValue.path+"');>Get File</a>";
-                        editorText += "<input type=file id='" + pathValue.path + "' onchange=loadBase64File(this.files[0],this.id);><br>";                      
+                        editorText += "<a id='" + pathValue.path + "_get' download=filefile onclick=getOutputFileBase64('" + pathValue.path + "');>Get File</a>";
+                        editorText += "<input type=file id='" + pathValue.path + "' onchange=loadBase64File(this.files[0],this.id);><br>";
                     } else if (elementsToProcess[i][0] == "fileHex") {
                         //HexDec encoded file
                         //0 type, 1 path, 2 description, 3 default                    
