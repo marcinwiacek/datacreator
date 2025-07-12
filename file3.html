@@ -21,7 +21,7 @@
 
 <body>
     <input type="file" id="file" name="file" />
-    <a id="getOutput" onclick=getOutputJson();>Get JSON</a>
+    <a id="getOutput" download="output.json" onclick=getOutputJson();>Get JSON</a>
     <span id="errors"></span>
     <p>
     <div style="display: flex;">
@@ -37,7 +37,7 @@
         function getOutputJson() {
         	document.getElementById("getOutput").setAttribute( 'href','data:;base64,'+btoa(JSON.stringify(outputData, null, 2)));
         }
-        
+                
         function findOutputObject(path, canCreate) {
             console.log("findOutputPath " + path);
             var obj = outputData;
@@ -266,6 +266,12 @@
             };
             reader.readAsArrayBuffer(f);
         }
+        
+        function getOutputFileBase64(path) {
+               obj = findOutputObject(path, false);               
+        	document.getElementById(path+"_get").setAttribute( 'href','data:;base64,'+obj.obj[obj.lastPathElement]);
+        }
+
 
         function loadHexFile(f, path) {
             const reader = new FileReader();
@@ -445,7 +451,8 @@
                         //0 type, 1 path, 2 description, 3 default
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
-                        editorText += "<input type=file id='" + pathValue.path + "' onchange=loadBase64File(this.files[0],this.id);><br>";
+                          editorText += "<a id='" + pathValue.path + "_get' download=filefile onclick=getOutputFileBase64('" + pathValue.path+"');>Get File</a>";
+                        editorText += "<input type=file id='" + pathValue.path + "' onchange=loadBase64File(this.files[0],this.id);><br>";                      
                     } else if (elementsToProcess[i][0] == "fileHex") {
                         //HexDec encoded file
                         //0 type, 1 path, 2 description, 3 default                    
