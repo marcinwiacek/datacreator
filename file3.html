@@ -261,7 +261,7 @@
             const reader = new FileReader();
             reader.onload = function(e2) {
                 var obj = findOutputObject(path, true);
-                obj.obj[obj.lastPathElement] = btoa(new Uint8Array(e2.target.result));
+                obj.obj[obj.lastPathElement] = (new Uint8Array(e2.target.result)).toBase64();
                 document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
             };
             reader.readAsArrayBuffer(f);
@@ -271,7 +271,6 @@
             obj = findOutputObject(path, false);
             document.getElementById(path + "_get").setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
         }
-
 
         function loadHexFile(f, path) {
             const reader = new FileReader();
@@ -340,7 +339,8 @@
                             addArray.push(ret);
                         }
                     } else if (elementsToProcess[i][0] == "link") {
-                        //link to existing structure                        
+                        //link to existing structure          
+                        //0 type, 1 path, 2 section              
                         editorText += processEditorPart(elementsToProcess[i][2], parentPath + elementsToProcess[i][1]);
                     } else if (elementsToProcess[i][0] == "index") {
                         //field with index of existing array
