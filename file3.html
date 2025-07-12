@@ -21,6 +21,7 @@
 
 <body>
     <input type="file" id="file" name="file" />
+    <a id="getOutput" onclick=getOutputJson();>Get JSON</a>
     <span id="errors"></span>
     <p>
     <div style="display: flex;">
@@ -33,6 +34,10 @@
         var debug = false;
         var addArray = [];
 
+        function getOutputJson() {
+        	document.getElementById("getOutput").setAttribute( 'href','data:;base64,'+btoa(JSON.stringify(outputData, null, 2)));
+        }
+        
         function findOutputObject(path, canCreate) {
             console.log("findOutputPath " + path);
             var obj = outputData;
@@ -328,6 +333,9 @@
                             ret.parentPathInJson = parentPath + elementsToProcess[i][1];
                             addArray.push(ret);
                         }
+                     } else if (elementsToProcess[i][0] == "link") {
+                        //link to existing structure                        
+                        editorText += processEditorPart(elementsToProcess[i][2], parentPath+elementsToProcess[i][1]);
                     } else if (elementsToProcess[i][0] == "index") {
                         //field with index of existing array
                         //0 type, 1 path

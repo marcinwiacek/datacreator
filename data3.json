@@ -32,7 +32,9 @@
 		["string", "rent.register", "registerxx", "", 0, 0, ""],
 		["string", "rent.personid", "personal id", "", 0, 0, ""],
 		["array", "rent.options[]", "extra options array", "options", 1],
-		["other", "rent.otherind", "other array index", "rent.options[]"]
+		["other", "rent.otherind", "other array index", "rent.options[]"],
+                ["link", "rent.link[0].","options"],
+                ["link", "rent.link[1].","options"]
 	],
 	"options": [
 		["index", "index"],
