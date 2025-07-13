@@ -255,6 +255,7 @@
                     op.value = info[1];
                     op.innerHTML = info[1];
                     obj[j].add(op);
+                    //todo setting correct value
                     if (obj[j].length == 1) {
                         editStringBoolNum(obj[j].id, info[1], false);
                     }
@@ -277,6 +278,8 @@
             obj = findOutputObject(path, false);
             if (obj.obj[obj.lastPathElement].length!=0) {
                 document.getElementById(path + "_get").setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
+            } else {
+                alert('Empty file content');
             }
         }
 
@@ -290,11 +293,15 @@
             };
             reader.readAsArrayBuffer(f);
         }
-        
+
         function getOutputHexFile(path) {
             obj = findOutputObject(path, false);
             if (obj.obj[obj.lastPathElement].length!=0) {
-                document.getElementById(path + "_get").setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
+                obj2 = new Uint8Array(obj.obj[obj.lastPathElement].length/2);
+                obj2.setFromHex(obj.obj[obj.lastPathElement].toLowerCase());
+                document.getElementById(path + "_get").setAttribute('href', 'data:;base64,' + (new Uint8Array(obj2)).toBase64());
+            } else {
+                alert('Empty file content');
             }
         }
 
@@ -369,6 +376,7 @@
                     } else if (elementsToProcess[i][0] == "other") {
                         //field with other array index (for selecting)
                         //0 type, 1 path, 2 description, 3 other array path
+                        //todo setting values in all situations
                         obj = findOutputObject(parentPath + elementsToProcess[i][1], true);
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<select name='" + elementsToProcess[i][3] + "' id='" + elementsToProcess[i][1] + "'";
@@ -492,7 +500,7 @@
                     try {
                         inputData = JSON.parse(jsonTxt);
                         if (inputData.start == null) {
-                            alert("No start section. Is this really file with json description?");
+                            alert("No start section in file '"+document.getElementById('file').files[0].name+"'. Is this really json file with json description?");
                         } else {
                             document.getElementById("editor").innerHTML = processEditorPart("start", "");
                             for (var z in addArray) {
@@ -502,7 +510,7 @@
                             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
                         }
                     } catch (ee) {
-                        alert(ee.message)
+                        alert("Error opening file '"+document.getElementById('file').files[0].name+"'. Is this really json file with json description?\n\n"+ee.message);
                     }
                 };
                 fReader.readAsText(e.target.files[0]);
