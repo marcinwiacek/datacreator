@@ -58,7 +58,10 @@
                     }
                     //we don't have index = we create new one
                     if (info[1] == "") {
+                     
                         obj = obj[info[0]];
+                         retVal.obj = obj;
+                           if (!canCreate) return retVal;
                         obj.push({});
                         newValue = true;
                         pathObj[i] = info[0] + "[" + (obj.length - 1) + "]";
@@ -380,7 +383,7 @@
                         obj = findOutputObject(parentPath + elementsToProcess[i][1], true);
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<select name='" + elementsToProcess[i][3] + "' id='" + elementsToProcess[i][1] + "'";
-                        editorText += " oninput=editStringBoolNum(this.id,this.value,false);>";
+                        editorText += " oninput=editStringBoolNum(this.id,this.value,false);>";                      
                         editorText += "</select>";
                     } else if (elementsToProcess[i][0] == "delete") {
                         //deleting smth from json
@@ -507,6 +510,27 @@
                                 addArrayElement(addArray[z].editorPath, addArray[z].newEditorPath, addArray[z].parentPathInJson);
                             }
                             addArray = [];
+                            
+                            
+                            //add new value into all related indexes
+            obj = document.getElementsByTagName("select");
+            for (var z in obj) {
+                if (obj[z].attributes && obj[z].attributes["name"]) {
+                    console.log("searching for "+obj[z].attributes["name"]["nodeValue"] +" for the end");
+                    obj2 = findOutputObject(obj[z].attributes["name"]["nodeValue"], false);
+                    console.log(obj2);
+                    if (obj2!=null) {
+                       for (j=0;j<obj2.obj.length;j++) {
+                          var op = document.createElement('option');
+                          op.value = j;
+                          op.innerHTML = j;
+                          obj[z].add(op);                          
+                       }
+                    }
+                    }
+                    }
+                   
+            
                             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
                         }
                     } catch (ee) {
