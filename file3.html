@@ -162,7 +162,7 @@
             var obj = findOutputObject(path, true);
             var info = obj.lastPathElement.split(/[\[,\]]/);
             if (obj.obj[info[0]].length == Number(minimum)) {
-                alert('Array needs at least ' + minimum + ' elements');
+                alert('Array '+path+' needs at least ' + minimum + ' elements');
             } else {
                 //remove from json
                 obj.obj[info[0]].splice(info[1], 1);
@@ -268,13 +268,16 @@
                 var obj = findOutputObject(path, true);
                 obj.obj[obj.lastPathElement] = (new Uint8Array(e2.target.result)).toBase64();
                 document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+                document.getElementById(path + "_get").setAttribute('download', document.getElementById(path).files[0].name);
             };
             reader.readAsArrayBuffer(f);
         }
 
-        function getOutputFileBase64(path) {
+        function getOutputBase64File(path) {
             obj = findOutputObject(path, false);
-            document.getElementById(path + "_get").setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
+            if (obj.obj[obj.lastPathElement].length!=0) {
+                document.getElementById(path + "_get").setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
+            }
         }
 
         function loadHexFile(f, path) {
@@ -283,8 +286,16 @@
                 var obj = findOutputObject(path, true);
                 obj.obj[obj.lastPathElement] = (new Uint8Array(e2.target.result)).toHex().toUpperCase();
                 document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+                document.getElementById(path + "_get").setAttribute('download', document.getElementById(path).files[0].name);
             };
             reader.readAsArrayBuffer(f);
+        }
+        
+        function getOutputHexFile(path) {
+            obj = findOutputObject(path, false);
+            if (obj.obj[obj.lastPathElement].length!=0) {
+                document.getElementById(path + "_get").setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
+            }
         }
 
         function getPathValueToCheck(parentPath, path, value) {
@@ -457,13 +468,14 @@
                         //0 type, 1 path, 2 description, 3 default
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
-                        editorText += "<a id='" + pathValue.path + "_get' download=filefile onclick=getOutputFileBase64('" + pathValue.path + "');>Get File</a>";
+                        editorText += "<a id='" + pathValue.path + "_get' download='"+elementsToProcess[i][1]+"' onclick=getOutputBase64File('" + pathValue.path + "');>Get File</a>";
                         editorText += "<input type=file id='" + pathValue.path + "' onchange=loadBase64File(this.files[0],this.id);><br>";
                     } else if (elementsToProcess[i][0] == "fileHex") {
                         //HexDec encoded file
                         //0 type, 1 path, 2 description, 3 default                    
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
+                        editorText += "<a id='" + pathValue.path + "_get' download='"+elementsToProcess[i][1]+"' onclick=getOutputHexFile('" + pathValue.path + "');>Get File</a>";                        
                         editorText += "<input type=file id='" + pathValue.path + "' onchange=loadHexFile(this.files[0],this.id);><br>";
                     }
                 }
@@ -480,7 +492,7 @@
                     try {
                         inputData = JSON.parse(jsonTxt);
                         if (inputData.start == null) {
-                            alert("No start section. Is this really file with data?");
+                            alert("No start section. Is this really file with json description?");
                         } else {
                             document.getElementById("editor").innerHTML = processEditorPart("start", "");
                             for (var z in addArray) {
