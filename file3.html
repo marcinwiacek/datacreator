@@ -58,7 +58,6 @@
                     }
                     //we don't have index = we create new one
                     if (info[1] == "") {
-
                         obj = obj[info[0]];
                         retVal.obj = obj;
                         if (!canCreate) return retVal;
@@ -337,7 +336,7 @@
                 for (var i in elementsToProcess) {
                     console.log(elementsToProcess[i]);
                     if (elementsToProcess[i][0] == "select") {
-                        //option menu. Can do something extra during changing to concrete value.	
+                        //option menu. Can do something extra during changing to concrete value.
                         //0 type, 1 description, 2 default, (3 name, 4 sections for processing)...
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
                         editorText += "<select onchange=processSelect('" + section + "." + i + "',this.value);>";
@@ -464,7 +463,7 @@
                         if (elementsToProcess[i][3]) editorText += " checked";
                         editorText += " type=checkbox id='" + pathValue.path + "' oninput=editStringBoolNum(this.id,this.checked,false);><br>";
                     } else if (elementsToProcess[i][0] == "option") {
-                        //select one of predefined options   
+                        //select one of predefined options
                         //0 type, 1 path, 2 description, 3 default, 4,5... values
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
@@ -508,7 +507,6 @@
                         } else {
                             document.getElementById("editor").innerHTML = processEditorPart("start", "");
                             processExtraArrayElements('');
-
                             //add new value into all related indexes
                             obj = document.getElementsByTagName("select");
                             for (var z in obj) {
@@ -535,7 +533,6 @@
                                     }
                                 }
                             }
-
                             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
                         }
                     } catch (ee) {
