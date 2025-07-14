@@ -139,12 +139,12 @@
         }
 
         function processExtraArrayElements(editorPath) {
-             for (var z in addArray) {
-                       if (addArray[z].editorPath != editorPath)  addArrayElement(addArray[z].editorPath, addArray[z].newEditorPath, addArray[z].parentPathInJson);
-                    }
-                    addArray = [];
+            for (var z in addArray) {
+                if (addArray[z].editorPath != editorPath) addArrayElement(addArray[z].editorPath, addArray[z].newEditorPath, addArray[z].parentPathInJson);
+            }
+            addArray = [];
         }
-        
+
         function processSelect(path, value) {
             console.log("processSelect '" + path + "' '" + value + "'");
             var pathObj = path.split(".");
@@ -158,7 +158,7 @@
                         retVal += processEditorPart(sectionObj[s], "");
                     }
                     document.getElementById(path).innerHTML = retVal;
-                   processExtraArrayElements("");
+                    processExtraArrayElements("");
                     document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
                     break;
                 }
@@ -247,7 +247,7 @@
             newDiv.id = obj.path;
             newDiv.appendChild(newButton);
             document.getElementById(editorPath).appendChild(newDiv);
-           processExtraArrayElements(editorPath);
+            processExtraArrayElements(editorPath);
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
             //add new value into all related indexes
             var info = obj.lastPathElement.split(/[\[,\]]/);
@@ -507,7 +507,7 @@
                             alert("No start section in file '" + document.getElementById('file').files[0].name + "'. Is this really json file with json description?");
                         } else {
                             document.getElementById("editor").innerHTML = processEditorPart("start", "");
-                           processExtraArrayElements('');
+                            processExtraArrayElements('');
 
                             //add new value into all related indexes
                             obj = document.getElementsByTagName("select");
@@ -519,17 +519,17 @@
                                     if (obj2 != null) {
                                         for (j = 0; j < obj2.obj.length; j++) {
                                             var f = false;
-                                            for (jj=0; jj<obj[z].options.length;jj++) {
+                                            for (jj = 0; jj < obj[z].options.length; jj++) {
                                                 if (obj[z].options[jj].value == j) {
-                                                   f=true;
-                                                   break;
+                                                    f = true;
+                                                    break;
                                                 }
                                             }
                                             if (!f) {
-                                               var op = document.createElement('option');
-                                               op.value = j;
-                                               op.innerHTML = j;
-                                               obj[z].add(op);
+                                                var op = document.createElement('option');
+                                                op.value = j;
+                                                op.innerHTML = j;
+                                                obj[z].add(op);
                                             }
                                         }
                                     }
