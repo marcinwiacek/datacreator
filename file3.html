@@ -144,6 +144,35 @@
             addArray = [];
         }
 
+	function processAllRelatedIndexes() {
+                            //add new value into all related indexes
+                            obj = document.getElementsByTagName("select");
+                            for (var z in obj) {
+                                if (obj[z].attributes && obj[z].attributes["name"]) {
+                                    console.log("searching for " + obj[z].attributes["name"]["nodeValue"] + " for the end");
+                                    obj2 = findOutputObject(obj[z].attributes["name"]["nodeValue"], false);
+                                    console.log(obj2);
+                                    if (obj2 != null) {
+                                        for (j = 0; j < obj2.obj.length; j++) {
+                                            var f = false;
+                                            for (jj = 0; jj < obj[z].options.length; jj++) {
+                                                if (obj[z].options[jj].value == j) {
+                                                    f = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (!f) {
+                                                var op = document.createElement('option');
+                                                op.value = j;
+                                                op.innerHTML = j;
+                                                obj[z].add(op);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+	}
+
         function processSelect(path, value) {
             console.log("processSelect '" + path + "' '" + value + "'");
             var pathObj = path.split(".");
@@ -158,6 +187,7 @@
                     }
                     document.getElementById(path).innerHTML = retVal;
                     processExtraArrayElements("");
+		    processAllRelatedIndexes();
                     document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
                     break;
                 }
@@ -366,8 +396,9 @@
                         }
                     } else if (elementsToProcess[i][0] == "link") {
                         //link to existing structure
-                        //0 type, 1 path, 2 section 
+                        //0 type, 1 path, 2 section
                         obj = findOutputObject(parentPath + elementsToProcess[i][1], true);
+			elementsToProcess[i][1] = obj.path;
                         editorText += processEditorPart(elementsToProcess[i][2], obj.path + ".");
                     } else if (elementsToProcess[i][0] == "index") {
                         //field with index of existing array
@@ -495,6 +526,7 @@
             return editorText;
         }
 
+
         document.getElementById("file").addEventListener("change",
             function(e) {
                 const fReader = new FileReader();
@@ -507,32 +539,7 @@
                         } else {
                             document.getElementById("editor").innerHTML = processEditorPart("start", "");
                             processExtraArrayElements('');
-                            //add new value into all related indexes
-                            obj = document.getElementsByTagName("select");
-                            for (var z in obj) {
-                                if (obj[z].attributes && obj[z].attributes["name"]) {
-                                    console.log("searching for " + obj[z].attributes["name"]["nodeValue"] + " for the end");
-                                    obj2 = findOutputObject(obj[z].attributes["name"]["nodeValue"], false);
-                                    console.log(obj2);
-                                    if (obj2 != null) {
-                                        for (j = 0; j < obj2.obj.length; j++) {
-                                            var f = false;
-                                            for (jj = 0; jj < obj[z].options.length; jj++) {
-                                                if (obj[z].options[jj].value == j) {
-                                                    f = true;
-                                                    break;
-                                                }
-                                            }
-                                            if (!f) {
-                                                var op = document.createElement('option');
-                                                op.value = j;
-                                                op.innerHTML = j;
-                                                obj[z].add(op);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+			    processAllRelatedIndexes();
                             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
                         }
                     } catch (ee) {
