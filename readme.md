@@ -7,6 +7,8 @@ Examples:
 
 ["number", "rent.days,rent.w", "how many days?", 50, 0, 100, 50]
 
-in the definition file is setting up field for editing numbers with value
-0-100 changed with step 50 and default value 50, description for user
+in the definition file is setting up user editable field for editing numbers
+with value 0-100 changed with step 50 and default value 50, description for user
 "how many days" and two places in output JSON (rent.path and rent.w path).
+
+![Editor example 15.07.2025](screen.png)
