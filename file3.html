@@ -450,6 +450,11 @@
                             s += elementsToProcess[i][2].charAt(Math.random() * elementsToProcess[i][2].length);
                         }
                         getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][4] + s + elementsToProcess[i][5]);
+                    } else if (elementsToProcess[i][0] == "separator") {
+                    	//0 type, 1 text
+                        editorText += "<span class=full><br>&nbsp;<br>";
+                        editorText += "<label><b>" + elementsToProcess[i][1] + "</b></label>";
+                        editorText += "</span>";                        
                     } else if (elementsToProcess[i][0] == "string") {
                         //0 type, 1 path, 2 description, 3 default, 4 minimum len, 5 maximum len, 6 parsing regexp
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);

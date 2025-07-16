@@ -3,6 +3,7 @@
 		["select", "Select what is rented", "buses", "cars", "carsStruct", "buses", "busesStruct"],
 		["number", "rent.days,rent.w", "how many days?", 50, 0, 100, 50],
 		["date", "rent.startDate", "when?", "2025-01-01", "2024-12-29", "2025-02-02"],
+		["separator", "nice text"],
 		["file64",  "rent.doc", "some document", ""],
 		["fileHex", "rent.doc2", "some document hex", ""],
 		["checkbox", "rent.veteran", "is is veteran?", true],
