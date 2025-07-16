@@ -28,7 +28,7 @@
     <span id="errors"></span>
     <p>
     <div style="display: flex;">
-        <span style="flex: 40%; display: grid; grid-template-columns: 1fr 1fr; max-width: 800px;"><span id="editor" class="full"></span></span>
+        <span style="flex: 40%; display: grid; grid-template-columns: 1fr 1fr; max-width: 800px;"><span id="editor" class="full" style="display:block;"></span></span>
         <pre style="flex: 60%; margin: 30px; max-width: 400px; overflow-x: auto;" id="json"></pre>
     </div>
     <script>
@@ -108,7 +108,7 @@
                 if (obj[6] != "" && value != null && !value.match(new RegExp("^" + obj[6] + "$"))) {
                     retVal += "<font color=red>Text doesn't match regular exp. " + obj[6] + "</font>";
                 }
-                if (obj[4] != obj[5]) {
+                if (obj[4] != 0 || obj[5] != 0) {
                     if (value.length < Number(obj[4])) {
                         retVal += "<font color=red>Minimal length " + obj[4] + "</font>";
                     }
@@ -116,7 +116,7 @@
                         retVal += "<font color=red>Maximal length " + obj[5] + "</font>";
                     }
                 }
-            } else if (obj[0] == "number" && obj[4] != obj[5]) {
+            } else if (obj[0] == "number" && (obj[4] != 0 || obj[5] != 0)) {
                 if (Number(value) < Number(obj[4])) {
                     retVal += "<font color=red>Minimal value " + obj[4] + "</font>";
                 }
