@@ -9,13 +9,16 @@
 
         input,
         button,
+        select,
         span {
             grid-column: 2 / 3;
         }
 
         .full {
             grid-column: 1 / 3;
-        }
+            display: grid; 
+            grid-template-columns: 1fr 1fr;
+        }        
     </style>
 </head>
 
@@ -25,7 +28,7 @@
     <span id="errors"></span>
     <p>
     <div style="display: flex;">
-        <div style="flex: 40%; display: grid; grid-template-columns: 1fr 1fr; max-width: 800px;" id="editor"></div>
+        <span style="flex: 40%; display: grid; grid-template-columns: 1fr 1fr; max-width: 800px;"><span id="editor" class="full"></span></span>
         <pre style="flex: 60%; margin: 30px; max-width: 400px; overflow-x: auto;" id="json"></pre>
     </div>
     <script>
@@ -209,7 +212,7 @@
                 pathObj[pathObj.length - 1] = info[0];
                 obj0 = [document.getElementsByTagName("input"),
                     document.getElementsByTagName("select"),
-                    document.getElementsByTagName("div"),
+                    document.getElementsByTagName("span"),
                     document.getElementsByTagName("button")
                 ];
                 for (var jj in obj0) {
@@ -268,7 +271,7 @@
                 deleteArrayElement(this.id.slice(0, -2), this.attributes["name"]["nodeValue"]);
             });
             newButton.innerText = "Delete";
-            newDiv = document.createElement('div');
+            newDiv = document.createElement('span');
             newDiv.classList.add("full");
             newDiv.style = "display: grid; grid-template-columns: 1fr 1fr;";
             //todo split for newEditorPath
@@ -368,6 +371,7 @@
                     if (elementsToProcess[i][0] == "select") {
                         //option menu. Can do something extra during changing to concrete value.
                         //0 type, 1 description, 2 default, (3 name, 4 sections for processing)...
+                        editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
                         editorText += "<select onchange=processSelect('" + section + "." + i + "',this.value);>";
                         for (j = 3; j < elementsToProcess[i].length; j = j + 2) {
@@ -376,17 +380,19 @@
                             editorText += ">" + elementsToProcess[i][j] + "</option>";
                         }
                         editorText += "</select>";
-                        editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'>";
+                        editorText += "<span id='" + section + "." + i + "' class=full>";
                         for (j = 3; j < elementsToProcess[i].length; j = j + 2) {
-                            if (elementsToProcess[i][2] == elementsToProcess[i][j]) editorText += processEditorPart(elementsToProcess[i][j + 1], parentPath) + "</div>";
+                            if (elementsToProcess[i][2] == elementsToProcess[i][j]) editorText += processEditorPart(elementsToProcess[i][j + 1], parentPath) + "</span>";
                         }
+                        editorText += "</span>";                        
                     } else if (elementsToProcess[i][0] == "array") {
                         //array with adding/removing elements
                         //0 type, 1 path, 2 description, 3 section, 4 minimum elements
+                        editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input type=button value='Add'";
                         editorText += " onclick=addArrayElement('" + section + "." + i + "','" + elementsToProcess[i][3] + "','" + parentPath + elementsToProcess[i][1] + "');>";
-                        editorText += "<div id='" + section + "." + i + "' class=full style='margin-left: 10px; display: grid; grid-template-columns: 1fr 1fr;'></div>";
+                        editorText += "<span id='" + section + "." + i + "' class=full></span>";
                         for (var j = 0; j < Number(elementsToProcess[i][4]); j++) {
                             var ret = {};
                             ret.editorPath = section + "." + i;
@@ -394,6 +400,7 @@
                             ret.parentPathInJson = parentPath + elementsToProcess[i][1];
                             addArray.push(ret);
                         }
+                        editorText += "</span>";                        
                     } else if (elementsToProcess[i][0] == "link") {
                         //link to existing structure
                         //0 type, 1 path, 2 section
@@ -406,16 +413,18 @@
                         obj2 = parentPath.slice(0, -1).split(".");
                         info = obj2[obj2.length - 1].split(/[\[,\]]/);
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], Number(info[1]));
-                        editorText += "<div name=arrayindex id='" + pathValue.path + "'></div>";
+                        editorText += "<span name=arrayindex id='" + pathValue.path + "'></span>";
                     } else if (elementsToProcess[i][0] == "other") {
                         //field with other array index (for selecting)
                         //0 type, 1 path, 2 description, 3 other array path
                         //todo setting values in all situations
                         obj = findOutputObject(parentPath + elementsToProcess[i][1], true);
+                        editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<select name='" + elementsToProcess[i][3] + "' id='" + elementsToProcess[i][1] + "'";
                         editorText += " oninput=editStringBoolNum(this.id,this.value,false);>";
                         editorText += "</select>";
+                        editorText += "</span>";                        
                     } else if (elementsToProcess[i][0] == "delete") {
                         //deleting smth from json
                         //0 type, 1 path
@@ -444,6 +453,7 @@
                     } else if (elementsToProcess[i][0] == "string") {
                         //0 type, 1 path, 2 description, 3 default, 4 minimum len, 5 maximum len, 6 parsing regexp
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
+                        editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input";
                         if (pathValue.value != null) editorText += " value='" + pathValue.value + "'";
@@ -456,9 +466,11 @@
                         editorText += "<span id='" + pathValue.path + "_error'>";
                         editorText += parseEditErrors(section, i, pathValue.value);
                         editorText += "</span>";
+                        editorText += "</span>";                        
                     } else if (elementsToProcess[i][0] == "number") {
                         //0 type, 1 path, 2 description, 3 default, 4 minimum, 5 maximum, 6 step
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
+                        editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input";
                         if (pathValue.value != null) editorText += " value=" + pathValue.value;
@@ -471,6 +483,7 @@
                         editorText += "<span id='" + pathValue.path + "_error'>";
                         editorText += parseEditErrors(section, i, pathValue.value);
                         editorText += "</span>";
+                        editorText += "</span>";                        
                     } else if (elementsToProcess[i][0] == "date") {
                         //0 type, 1 path, 2 description, 3 default, 4 minimum, 5 maximum
                         const date = new Date();
@@ -478,6 +491,7 @@
                             (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1) + "-" +
                             (date.getDate() < 10 ? "0" : "") + date.getDate();
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3] == "" ? dateVal : elementsToProcess[i][3]);
+                        editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input value='" + pathValue.value + "' ";
                         if (elementsToProcess[i][4] != elementsToProcess[i][5]) {
@@ -485,18 +499,22 @@
                             editorText += " max=" + elementsToProcess[i][5];
                         }
                         editorText += " id='" + pathValue.path + "' type=date oninput=editStringBoolNum(this.id,this.value,false);><br>";
+                        editorText += "</span>";                        
                     } else if (elementsToProcess[i][0] == "checkbox") {
                         //real true & false in json. For string use option
                         //0 type, 1 path, 2 description, 3 default
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
+                        editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input";
                         if (elementsToProcess[i][3]) editorText += " checked";
                         editorText += " type=checkbox id='" + pathValue.path + "' oninput=editStringBoolNum(this.id,this.checked,false);><br>";
+                        editorText += "</span>";                        
                     } else if (elementsToProcess[i][0] == "option") {
                         //select one of predefined options
                         //0 type, 1 path, 2 description, 3 default, 4,5... values
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
+                        editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<select id='" + pathValue.path + "' onchange=editStringBoolNum(this.id,this.value,false);>";
                         for (j = 4; j < elementsToProcess[i].length; j++) {
@@ -505,20 +523,25 @@
                             editorText += ">" + elementsToProcess[i][j] + "</option>";
                         }
                         editorText += "</select>";
+                        editorText += "</span>";                        
                     } else if (elementsToProcess[i][0] == "file64") {
                         //Base64 encoded file
                         //0 type, 1 path, 2 description, 3 default
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
+                        editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<a id='" + pathValue.path + "_get' download='" + elementsToProcess[i][1] + "' onclick=getOutputBase64File('" + pathValue.path + "');>Get File</a>";
                         editorText += "<input type=file id='" + pathValue.path + "' onchange=loadBase64File(this.files[0],this.id);><br>";
+                        editorText += "</span>";                        
                     } else if (elementsToProcess[i][0] == "fileHex") {
                         //HexDec encoded file
                         //0 type, 1 path, 2 description, 3 default                    
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3]);
+                        editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<a id='" + pathValue.path + "_get' download='" + elementsToProcess[i][1] + "' onclick=getOutputHexFile('" + pathValue.path + "');>Get File</a>";
                         editorText += "<input type=file id='" + pathValue.path + "' onchange=loadHexFile(this.files[0],this.id);><br>";
+                        editorText += "</span>";                        
                     }
                 }
             }
