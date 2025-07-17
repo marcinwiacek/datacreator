@@ -11,7 +11,12 @@
 		["select", "is is internal employee?", "no", "yes", "cleanBefore,internaldata", "no", "cleanBefore"],
 		["string", "rent.x[0].a,rent.x[0].b", "first str", "", 2, 10, "[1-9]+"],
 		["string", "rent.x[1].a", "second str", "", 2, 10, "[1-9]+"],
-		["const", "rent.x[1].b,rent.x[1].c", "abcd"]
+		["const", "rent.x[1].b,rent.x[1].c", "abcd"],
+		["addreplace", "test[],test2[]"],
+		["link", "", "addreplacetest"]
+	],
+	"addreplacetest": [
+	        ["const","test[].x","onetwothree"]
 	],
 	"cleanBefore": [
 	        ["delete", "rent.internalid"]
