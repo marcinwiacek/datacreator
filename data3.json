@@ -16,7 +16,17 @@
 		["link", "", "addreplacetest"]
 	],
 	"addreplacetest": [
-	        ["const","test[].x","onetwothree"]
+	        ["const","test[].x","onetwothree"],
+	        ["addreplace", "test2[]"],
+	        ["select", "Add replace test 2", "buses", "cars", "carsStruct2", "buses", "busesStruct2"]
+	],
+	"carsStruct2": [
+	          ["delete", "test2[].testvalue"],
+	          ["const","test2[].testvalue","cars2"]
+	],
+	"busesStruct2": [
+	          ["delete", "test2[].testvalue"],
+	          ["const","test2[].testvalue","buses2"]
 	],
 	"cleanBefore": [
 	        ["delete", "rent.internalid"]

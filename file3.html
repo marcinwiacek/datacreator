@@ -36,6 +36,7 @@
         var outputData = {};
         var debug = false;
         var addArray = [];
+        var selectAddReplace = {};
 
         function getOutputJson() {
             document.getElementById("getOutput").setAttribute('href', 'data:;base64,' + btoa(JSON.stringify(outputData, null, 2)));
@@ -178,6 +179,7 @@
 
         function processSelect(path, value) {
             console.log("processSelect '" + path + "' '" + value + "'");
+            console.log(selectAddReplace);
             var pathObj = path.split(".");
             var elementToProcess = inputData[pathObj[0]][pathObj[1]];
             console.log(elementToProcess);
@@ -186,7 +188,7 @@
                     var retVal = "";
                     var sectionObj = elementToProcess[j + 1].split(".");
                     for (s in sectionObj) {
-                        retVal += processEditorPart(sectionObj[s], "", {});
+                        retVal += processEditorPart(sectionObj[s], "",selectAddReplace[path]!=null?selectAddReplace[path]: {});
                     }
                     document.getElementById(path).innerHTML = retVal;
                     processExtraArrayElements("");
@@ -382,6 +384,7 @@
                     if (elementsToProcess[i][0] == "select") {
                         //option menu. Can do something extra during changing to concrete value.
                         //0 type, 1 description, 2 default, (3 name, 4 sections for processing)...
+                        selectAddReplace[section + "." + i] = JSON.parse(JSON.stringify(addReplace));
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
                         editorText += "<select onchange=processSelect('" + section + "." + i + "',this.value);>";
