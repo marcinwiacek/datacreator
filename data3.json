@@ -13,20 +13,27 @@
 		["string", "rent.x[1].a", "second str", "", 2, 10, "[1-9]+"],
 		["const", "rent.x[1].b,rent.x[1].c", "abcd"],
 		["addreplace", "test[],test2[]"],
-		["link", "", "addreplacetest"]
+		["link", "", "addreplacetest"],
+		["button","add","buttontest"]
+	],
+	"buttontest": [
+	        ["addreplace", "test2[],test2[].x[]"],	        
+	        ["link", "", "carsStruct2"]
 	],
 	"addreplacetest": [
 	        ["const","test[].x","onetwothree"],
-	        ["addreplace", "test2[]"],
+	        ["addreplace", "test2[],test2[].x[]"],	        
 	        ["select", "Add replace test 2", "buses", "cars", "carsStruct2", "buses", "busesStruct2"]
 	],
 	"carsStruct2": [
-	          ["delete", "test2[].testvalue"],
-	          ["const","test2[].testvalue","cars2"]
+	          ["delete", "test2[].x[].testvalue"],
+	          ["const","test2[].x[].testvalue","cars2"],
+	          ["const","test2[].x[].testvalue2","cars3"]
 	],
 	"busesStruct2": [
-	          ["delete", "test2[].testvalue"],
-	          ["const","test2[].testvalue","buses2"]
+	          ["delete", "test2[].x[].testvalue"],
+	          ["const","test2[].x[].testvalue","buses2"],
+	          ["delete","test2[].x[].testvalue2"]
 	],
 	"cleanBefore": [
 	        ["delete", "rent.internalid"]

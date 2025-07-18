@@ -28,7 +28,9 @@
     <span id="errors"></span>
     <p>
     <div style="display: flex;">
-        <span style="flex: 40%; display: grid; grid-template-columns: 1fr 1fr; max-width: 800px;"><span id="editor" class="full" style="display:block;"></span></span>
+        <span style="flex: 40%; display: grid; grid-template-columns: 1fr 1fr; max-width: 800px;">
+        <span id="editor" class="full" style="display:block;"></span>
+        </span>
         <pre style="flex: 60%; margin: 30px; max-width: 400px; overflow-x: auto;" id="json"></pre>
     </div>
     <script>
@@ -143,7 +145,10 @@
 
         function processExtraArrayElements(editorPath) {
             for (var z in addArray) {
-                if (addArray[z].editorPath != editorPath) addArrayElement(addArray[z].editorPath, addArray[z].newEditorPath, addArray[z].parentPathInJson);
+                if (addArray[z].editorPath != editorPath) {
+                addArrayElement(addArray[z].editorPath, 
+               addArray[z].newEditorPath, addArray[z].parentPathInJson);
+               }
             }
             addArray = [];
         }
@@ -396,8 +401,11 @@
                         editorText += "</select>";
                         editorText += "<span id='" + section + "." + i + "' class=full>";
                         for (j = 3; j < elementsToProcess[i].length; j = j + 2) {
-                            if (elementsToProcess[i][2] == elementsToProcess[i][j]) editorText += processEditorPart(elementsToProcess[i][j + 1], parentPath, addReplace) + "</span>";
+                            if (elementsToProcess[i][2] == elementsToProcess[i][j]) {
+                            	editorText += processEditorPart(elementsToProcess[i][j + 1], parentPath, addReplace);
+                            }
                         }
+                        editorText += "</span>";
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "array") {
                         //array with adding/removing elements
@@ -405,7 +413,9 @@
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input type=button value='Add'";
-                        editorText += " onclick=addArrayElement('" + section + "." + i + "','" + elementsToProcess[i][3] + "','" + parentPath + elementsToProcess[i][1] + "');>";
+                        editorText += " onclick=addArrayElement('" + section + "." + i + "','" + 
+                        	elementsToProcess[i][3] + "','" + 
+                        	parentPath + elementsToProcess[i][1] + "');>";
                         editorText += "<span id='" + section + "." + i + "' class=full></span>";
                         for (var j = 0; j < Number(elementsToProcess[i][4]); j++) {
                             var ret = {};
@@ -461,13 +471,15 @@
                             }
                         }
                     } else if (elementsToProcess[i][0] == "random") {
-                        //put into json random value. When you put this is before string, it can replace default value from string (only when it didn't exist in json)
+                        //put into json random value. When you put this is before string,
+                        //it can replace default value from string (only when it didn't exist in json)
                         //0 type, 1 path, 2 allowed chars, 3 length, 4 string before, 5 string after
                         var s = "";
                         for (var j = 0; j < Number(elementsToProcess[i][3]); j++) {
                             s += elementsToProcess[i][2].charAt(Math.random() * elementsToProcess[i][2].length);
                         }
-                        getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][4] + s + elementsToProcess[i][5],addReplace);                        
+                        getPathValueToCheck(parentPath, elementsToProcess[i][1], 
+                        elementsToProcess[i][4] + s + elementsToProcess[i][5],addReplace);                        
                     } else if (elementsToProcess[i][0] == "separator") {
                     	//0 type, 1 text
                         editorText += "<span class=full><br>&nbsp;<br>";
@@ -477,11 +489,20 @@
                         //0 type, 1 path
                         pathList = elementsToProcess[i][1].split(",");
                         for (p in pathList) {
-                            obj = findOutputObject(parentPath + pathList[p], true);
-                            addReplace[parentPath + pathList[p]] = obj.path;
+                            obj = findOutputObject(getAddReplace(parentPath + pathList[p], addReplace), true);
+                            addReplace[getAddReplace(parentPath + pathList[p], addReplace)] = obj.path;
                         }
                         console.log("addReplace");
                         console.log(addReplace);
+                    } else if (elementsToProcess[i][0] == "button") {
+                        //array with adding/removing elements
+                        //0 type, 1 description, 2 path
+/*                        editorText += "<span class=full>";
+                        editorText += "<label>" + elementsToProcess[i][2] + "</label>";
+                        editorText += "<input type=button value='Add'";
+                        editorText += " onclick=addArrayElement('" + section + "." + i + "','" + elementsToProcess[i][3] + "','" + parentPath + elementsToProcess[i][1] + "');>";
+                        editorText += "<span id='" + section + "." + i + "' class=full></span>";
+                        editorText += "</span>";*/
                     } else if (elementsToProcess[i][0] == "string") {
                         //0 type, 1 path, 2 description, 3 default, 4 minimum len, 5 maximum len, 6 parsing regexp
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3],addReplace);
@@ -494,7 +515,8 @@
                             editorText += " minlength=" + elementsToProcess[i][4];
                             editorText += " maxlength=" + elementsToProcess[i][5];
                         }
-                        editorText += " oninput=editStringBoolNum(this.id,this.value,false);setEditErrors(this.id,this.value,'" + section + "','" + i + "');><br>";
+                        editorText += " oninput=editStringBoolNum(this.id,this.value,false);setEditErrors(this.id,this.value,'" + 
+                        section + "','" + i + "');><br>";
                         editorText += "<span id='" + pathValue.path + "_error'>";
                         editorText += parseEditErrors(section, i, pathValue.value);
                         editorText += "</span>";
@@ -511,7 +533,8 @@
                             editorText += " min=" + elementsToProcess[i][4];
                             editorText += " max=" + elementsToProcess[i][5];
                         }
-                        editorText += " oninput=editStringBoolNum(this.id,this.value,true);setEditErrors(this.id,this.value,'" + section + "','" + i + "');><br>";
+                        editorText += " oninput=editStringBoolNum(this.id,this.value,true);setEditErrors(this.id,this.value,'" + 
+                        section + "','" + i + "');><br>";
                         editorText += "<span id='" + pathValue.path + "_error'>";
                         editorText += parseEditErrors(section, i, pathValue.value);
                         editorText += "</span>";
@@ -522,7 +545,8 @@
                         const dateVal = date.getFullYear() + "-" +
                             (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1) + "-" +
                             (date.getDate() < 10 ? "0" : "") + date.getDate();
-                        pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3] == "" ? dateVal : elementsToProcess[i][3],addReplace);
+                        pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], 
+                        elementsToProcess[i][3] == "" ? dateVal : elementsToProcess[i][3],addReplace);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input value='" + pathValue.value + "' ";
@@ -562,7 +586,8 @@
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3],addReplace);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
-                        editorText += "<a id='" + pathValue.path + "_get' download='" + elementsToProcess[i][1] + "' onclick=getOutputBase64File('" + pathValue.path + "');>Get File</a>";
+                        editorText += "<a id='" + pathValue.path + "_get' download='" + elementsToProcess[i][1];
+                                     editorText +=           "' onclick=getOutputBase64File('" + pathValue.path + "');>Get File</a>";
                         editorText += "<input type=file id='" + pathValue.path + "' onchange=loadBase64File(this.files[0],this.id);><br>";
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "fileHex") {
@@ -571,7 +596,8 @@
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3],addReplace);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
-                        editorText += "<a id='" + pathValue.path + "_get' download='" + elementsToProcess[i][1] + "' onclick=getOutputHexFile('" + pathValue.path + "');>Get File</a>";
+                        editorText += "<a id='" + pathValue.path + "_get' download='" + elementsToProcess[i][1];
+                        editorText +="' onclick=getOutputHexFile('" + pathValue.path + "');>Get File</a>";
                         editorText += "<input type=file id='" + pathValue.path + "' onchange=loadHexFile(this.files[0],this.id);><br>";
                         editorText += "</span>";
                     }
