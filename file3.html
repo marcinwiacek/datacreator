@@ -617,7 +617,8 @@
                     try {
                         inputData = JSON.parse(jsonTxt);
                         if (inputData.start == null) {
-                            alert("No start section in file '" + document.getElementById('file').files[0].name + "'. Is this really json file with json description?");
+                            alert("No start section in file '" + document.getElementById('file').files[0].name +
+                                "'. Is this really json file with json description?");
                         } else {
                             document.getElementById("editor").innerHTML = processEditorPart("start", "", {});
                             processExtraArrayElements('');
@@ -625,7 +626,8 @@
                             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
                         }
                     } catch (ee) {
-                        alert("Error opening file '" + document.getElementById('file').files[0].name + "'. Is this really json file with json description?\n\n" + ee.message);
+                        alert("Error opening file '" + document.getElementById('file').files[0].name +
+                            "'. Is this really json file with json description?\n\n" + ee.message);
                     }
                 };
                 fReader.readAsText(e.target.files[0]);
