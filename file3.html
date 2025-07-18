@@ -34,14 +34,11 @@
         <pre style="flex: 60%; margin: 30px; max-width: 400px; overflow-x: auto;" id="json"></pre>
     </div>
     <script>
-        var inputData = "";
-        var outputData = {};
-        var debug = false;
-        var addArray = [];
-        var selectAddReplace = {};
+        var inputData, outputData, addArray, selectAddReplace;
 
         function getOutputJson() {
-            document.getElementById("getOutput").setAttribute('href', 'data:;base64,' + btoa(JSON.stringify(outputData, null, 2)));
+            document.getElementById("getOutput").setAttribute('href', 'data:;base64,' + 
+                btoa(JSON.stringify(outputData, null, 2)));
         }
 
         function findOutputObject(path, canCreate) {
@@ -563,9 +560,9 @@
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3], addReplace);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
-                        editorText += "<input";
+                        editorText += "<input type=checkbox";
                         if (elementsToProcess[i][3]) editorText += " checked";
-                        editorText += " type=checkbox id='" + pathValue.path + "' oninput=editStringBoolNum(this.id,this.checked,false);><br>";
+                        editorText += " id='" + pathValue.path + "' oninput=editStringBoolNum(this.id,this.checked,false);><br>";
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "option") {
                         //select one of predefined options
@@ -620,6 +617,9 @@
                             alert("No start section in file '" + document.getElementById('file').files[0].name +
                                 "'. Is this really json file with json description?");
                         } else {
+                            outputData = {};      
+                            addArray = [];
+        		    selectAddReplace = {};
                             document.getElementById("editor").innerHTML = processEditorPart("start", "", {});
                             processExtraArrayElements('');
                             processAllRelatedIndexes();
