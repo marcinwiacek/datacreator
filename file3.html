@@ -24,7 +24,7 @@
 
 <body>
     <input type="file" id="file" name="file" />
-    <a id="getOutput" download="output.json" onclick=getOutputJson();>Get JSON</a>
+    <a id="getOutput" download="output.json" onclick=getOutputJson(); href=''>Get JSON</a>
     <span id="errors"></span>
     <p>
     <div style="display: flex;">
@@ -587,7 +587,7 @@
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3], addReplace);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
-                        editorText += "<a id='" + pathValue.path + "_get' download='" + elementsToProcess[i][1];
+                        editorText += "<a id='" + pathValue.path + "_get' href='' download='" + elementsToProcess[i][1];
                         editorText += "' onclick=getOutputBase64File('" + pathValue.path + "');>Get File</a>";
                         editorText += "<input type=file id='" + pathValue.path + "' onchange=loadBase64File(this.files[0],this.id);><br>";
                         editorText += "</span>";
@@ -597,7 +597,7 @@
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3], addReplace);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
-                        editorText += "<a id='" + pathValue.path + "_get' download='" + elementsToProcess[i][1];
+                        editorText += "<a id='" + pathValue.path + "_get' href='' download='" + elementsToProcess[i][1];
                         editorText += "' onclick=getOutputHexFile('" + pathValue.path + "');>Get File</a>";
                         editorText += "<input type=file id='" + pathValue.path + "' onchange=loadHexFile(this.files[0],this.id);><br>";
                         editorText += "</span>";
