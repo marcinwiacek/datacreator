@@ -193,7 +193,8 @@
                     var retVal = "";
                     var sectionObj = elementToProcess[j + 1].split(".");
                     for (s in sectionObj) {
-                        retVal += processEditorPart(sectionObj[s], "", selectAddReplace[path] != null ? selectAddReplace[path] : {});
+                        retVal += processEditorPart(sectionObj[s], "",
+                            selectAddReplace[path] != null ? selectAddReplace[path] : {});
                     }
                     document.getElementById(path).innerHTML = retVal;
                     processExtraArrayElements("");
