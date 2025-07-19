@@ -214,13 +214,13 @@
                 alert('Array ' + path + ' needs at least ' + minimum + ' elements');
             } else {
                 var pathObj = path.split(".");
-                pathObj[pathObj.length - 1] = info[0] + "[]";
+                pathObj[pathObj.length - 1] = info[0] ;
                 console.log(pathObj.join("."));
                 for (var jj in selectAddReplace) {
                     obj2 = selectAddReplace[jj];
                     for (jjj in obj2) {
                         console.log("jjj " + jjj);
-                        if (jjj.startsWith(pathObj.join(".")) && obj2[jjj].startsWith(path)) {
+                        if (jjj.startsWith(pathObj.join(".")+ "[]") && obj2[jjj].startsWith(path)) {
                             console.log("deleting " + jjj);
                             console.log(obj2);
                             delete obj2[jjj];
@@ -233,7 +233,7 @@
                     obj2 = selectAddReplace[jj];
                     for (jjj in obj2) {
                         console.log("jjj " + jjj);
-                        if (jjj.startsWith(pathObj.join("."))) {
+                        if (jjj.startsWith(pathObj.join(".")+ "[]")) {
                             pathObj2 = obj2[jjj].split(".");
                             var info2 = pathObj2[pathObj2.length - 1].split(/[\[,\]]/);
                             pathObj2[pathObj2.length - 1] = info2[0] + "[" + (Number(info2[1]) - 1) + "]";
@@ -422,7 +422,7 @@
                     if (elementsToProcess[i][0] == "select") {
                         //option menu. Can do something extra during changing to concrete value.
                         //0 type, 1 description, 2 default,  (3 name, 4 sections for processing)...
-
+	
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
                         editorText += "<select onchange=processSelect('" + section + "." + i + "',this.value);>";
