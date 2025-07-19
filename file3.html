@@ -457,7 +457,18 @@
                         pathList = elementsToProcess[i][1].split(",");
                         for (p in pathList) {
                             obj = findOutputObject(getAddReplace(parentPath + pathList[p], addReplace), false);
-                            if (obj.obj != null) delete obj.obj[obj.lastPathElement];
+                            if (obj.obj != null) {                                                        
+                                if (obj.lastPathElement.includes("[")) {
+	                            	console.log("deleting array element "+obj.lastPathElement);
+	                                var info = obj.lastPathElement.split(/[\[,\]]/);
+			                //remove from json
+                			obj.obj[info[0]].splice(info[1], 1);                                	
+                                } else {
+	                            	console.log("deleting "+obj.lastPathElement);
+	                            	delete obj.obj[obj.lastPathElement];
+	                                console.log(obj.obj);
+                                }              
+                            }
                         }
                     } else if (elementsToProcess[i][0] == "const") {
                         //0 type, 1 path, 2 value
@@ -604,7 +615,6 @@
             console.log("processEditorPart end '" + section + "' '" + parentPath + "'");
             return editorText;
         }
-
 
         document.getElementById("file").addEventListener("change",
             function(e) {
