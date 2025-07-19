@@ -186,7 +186,7 @@
             var elementToProcess = inputData[pathObj[0]][pathObj[1]];
             console.log(elementToProcess);
 
-          
+
 
 
             for (var j = 3; j < elementToProcess.length; j = j + 2) {
@@ -194,7 +194,7 @@
                     var retVal = "";
                     var sectionObj = elementToProcess[j + 1].split(".");
                     for (s in sectionObj) {
-                        retVal += processEditorPart(sectionObj[s], "", selectAddReplace[path],path);
+                        retVal += processEditorPart(sectionObj[s], "", selectAddReplace[path], path);
                     }
                     document.getElementById(path).innerHTML = retVal;
                     processExtraArrayElements("");
@@ -315,7 +315,7 @@
             newDiv.classList.add("full");
             newDiv.style = "display: grid; grid-template-columns: 1fr 1fr;";
             //todo split for newEditorPath
-            newDiv.innerHTML = processEditorPart(newEditorPath, obj.path + ".", {},"");
+            newDiv.innerHTML = processEditorPart(newEditorPath, obj.path + ".", {}, "");
             newDiv.id = obj.path;
             newDiv.appendChild(newButton);
             document.getElementById(editorPath).appendChild(newDiv);
@@ -422,7 +422,7 @@
                     if (elementsToProcess[i][0] == "select") {
                         //option menu. Can do something extra during changing to concrete value.
                         //0 type, 1 description, 2 default,  (3 name, 4 sections for processing)...
-                 
+
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
                         editorText += "<select onchange=processSelect('" + section + "." + i + "',this.value);>";
@@ -464,9 +464,9 @@
                         if (elementsToProcess[i][1] != "") {
                             obj = findOutputObject(getAddReplace(parentPath + elementsToProcess[i][1], addReplace), true);
                             elementsToProcess[i][1] = obj.path;
-                            editorText += processEditorPart(elementsToProcess[i][2], obj.path + ".", addReplace,"");
+                            editorText += processEditorPart(elementsToProcess[i][2], obj.path + ".", addReplace, "");
                         } else {
-                            editorText += processEditorPart(elementsToProcess[i][2], "", addReplace,"");
+                            editorText += processEditorPart(elementsToProcess[i][2], "", addReplace, "");
                         }
                     } else if (elementsToProcess[i][0] == "index") {
                         //field with index of existing array
@@ -527,17 +527,17 @@
                         editorText += "<label><b>" + elementsToProcess[i][1] + "</b></label>";
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "addreplace") {
-                    	if (selectname!="") {
-                      pathList = elementsToProcess[i][1].split(",");
+                        if (selectname != "") {
+                            pathList = elementsToProcess[i][1].split(",");
                             for (p in pathList) {
                                 obj = findOutputObject(getAddReplace(parentPath + pathList[p], addReplace), true);
                                 addReplace[getAddReplace(parentPath + pathList[p], addReplace)] = obj.path;
                             }
                             console.log("addReplace");
                             console.log(addReplace);
-                              selectAddReplace[selectname] = JSON.parse(JSON.stringify(addReplace));
-                      
-}
+                            selectAddReplace[selectname] = JSON.parse(JSON.stringify(addReplace));
+
+                        }
                     } else if (elementsToProcess[i][0] == "button") {
                         //array with adding/removing elements
                         //0 type, 1 description, 2 path
@@ -665,7 +665,7 @@
                             outputData = {};
                             addArray = [];
                             selectAddReplace = {};
-                            document.getElementById("editor").innerHTML = processEditorPart("start", "", {},"");
+                            document.getElementById("editor").innerHTML = processEditorPart("start", "", {}, "");
                             processExtraArrayElements('');
                             processAllRelatedIndexes();
                             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
