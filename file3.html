@@ -185,10 +185,6 @@
             var pathObj = path.split(".");
             var elementToProcess = inputData[pathObj[0]][pathObj[1]];
             console.log(elementToProcess);
-
-
-
-
             for (var j = 3; j < elementToProcess.length; j = j + 2) {
                 if (elementToProcess[j] == value) {
                     var retVal = "";
@@ -536,7 +532,6 @@
                             console.log("addReplace");
                             console.log(addReplace);
                             selectAddReplace[selectname] = JSON.parse(JSON.stringify(addReplace));
-
                         }
                     } else if (elementsToProcess[i][0] == "button") {
                         //array with adding/removing elements
