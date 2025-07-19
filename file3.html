@@ -190,8 +190,7 @@
                     var retVal = "";
                     var sectionObj = elementToProcess[j + 1].split(".");
                     for (s in sectionObj) {
-                        retVal += processEditorPart(sectionObj[s], "",
-                            selectAddReplace[path] != null ? selectAddReplace[path] : {});
+                        retVal += processEditorPart(sectionObj[s], "",selectAddReplace[path]);
                     }
                     document.getElementById(path).innerHTML = retVal;
                     processExtraArrayElements("");
@@ -203,18 +202,47 @@
         }
 
         function deleteArrayElement(path, minimum) {
+	    console.log("Delete array alement "+path);
             var obj = findOutputObject(path, true);
             var info = obj.lastPathElement.split(/[\[,\]]/);
             if (obj.obj[info[0]].length == Number(minimum)) {
                 alert('Array ' + path + ' needs at least ' + minimum + ' elements');
             } else {
+                var pathObj = path.split(".");
+                pathObj[pathObj.length - 1] = info[0];  
+                console.log(pathObj.join(".")+"[]");
+                for (var jj in selectAddReplace) {
+	                obj2 = selectAddReplace[jj];
+            		 for (jjj in obj2) {
+            		   console.log("jjj "+jjj);
+	                	if (jjj.startsWith(pathObj.join(".")+"[]")) {
+	                		console.log("deleting "+jjj);
+	                		console.log(obj2);
+	                		delete obj2[jjj];
+	                	}
+	                }
+            	}         
+/*            	for (var j=Number(info[1])+1;j<obj.obj[info[0]].length;j++) {
+	                pathObj[pathObj.length - 1] = info[0]+"["+j+"]";
+		        for (var jj in selectAddReplace) {
+	            		obj2 = selectAddReplace[jj];
+	            		 for (jjj in obj2) {
+		                	if (jjj.startsWith(pathObj.join("."))) {
+		                		var pathObj2 = path.split(".");
+				                pathObj2[pathObj2.length - 1] = info[0]+"["+(j-1)+"]";
+		                		obj2[jjj] = obj2[jjj].replace(pathObj.join("."),pathObj2.join("."));
+		                	}
+		                }
+	            	}
+            	}    */
+            	console.log(selectAddReplace);        			
                 //remove from json
                 obj.obj[info[0]].splice(info[1], 1);
                 //remove from editor
-                document.getElementById(path).remove();
-                //change id for allowing searching all elements
-                var pathObj = path.split(".");
-                pathObj[pathObj.length - 1] = info[0];
+                if ( document.getElementById(path)!=null) {
+                	document.getElementById(path).remove();
+                }
+                //change id for allowing searching all elements               
                 obj0 = [document.getElementsByTagName("input"),
                     document.getElementsByTagName("select"),
                     document.getElementsByTagName("span"),
@@ -226,6 +254,7 @@
                         //remove value from select with array index
                         if (obj[j].attributes && obj[j].attributes["name"]) {
                             if (obj[j].attributes["name"]["nodeValue"] == pathObj.join(".") + "[]") {
+                            	console.log(obj[j]);
                                 //remove highest value
                                 toDelete = -1;
                                 toDeleteValue = 0;
@@ -259,7 +288,7 @@
                             }
                         }
                     }
-                }
+                }                
                 document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
             }
         }
@@ -378,7 +407,7 @@
             console.log("processEditorPart start '" + sections + "' '" + parentPath + "'");
             var editorText = "";
             var sectionList = sections.split(",");
-            var addReplace = JSON.parse(JSON.stringify(addreplace));
+            var addReplace = addreplace == null ?{}:JSON.parse(JSON.stringify(addreplace));
             for (var s in sectionList) {
                 var section = sectionList[s];
                 var elementsToProcess = inputData[section];
@@ -459,10 +488,7 @@
                             obj = findOutputObject(getAddReplace(parentPath + pathList[p], addReplace), false);
                             if (obj.obj != null) {                                                        
                                 if (obj.lastPathElement.includes("[")) {
-	                            	console.log("deleting array element "+obj.lastPathElement);
-	                                var info = obj.lastPathElement.split(/[\[,\]]/);
-			                //remove from json
-                			obj.obj[info[0]].splice(info[1], 1);                                	
+                                  	deleteArrayElement(obj.path, 0);                			             			                			                           	
                                 } else {
 	                            	console.log("deleting "+obj.lastPathElement);
 	                            	delete obj.obj[obj.lastPathElement];
@@ -634,6 +660,7 @@
                             processExtraArrayElements('');
                             processAllRelatedIndexes();
                             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+                            console.log(selectAddReplace);
                         }
                     } catch (ee) {
                         alert("Error opening file '" + document.getElementById('file').files[0].name +
