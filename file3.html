@@ -185,7 +185,20 @@
             var pathObj = path.split(".");
             var elementToProcess = inputData[pathObj[0]][pathObj[1]];
             console.log(elementToProcess);
-            for (var j = 3; j < elementToProcess.length; j = j + 2) {
+            
+             if (elementToProcess[3]!="") {
+             addReplace = selectAddReplace[path];
+                        pathList = elementToProcess[3].split(",");
+                        for (p in pathList) {
+                            obj = findOutputObject(getAddReplace(pathList[p], addReplace), true);
+                            addReplace[getAddReplace(pathList[p], addReplace)] = obj.path;
+                        }
+                        selectAddReplace[path] = JSON.parse(JSON.stringify(addReplace));
+                  
+                        }
+                        
+                        
+            for (var j = 4; j < elementToProcess.length; j = j + 2) {
                 if (elementToProcess[j] == value) {
                     var retVal = "";
                     var sectionObj = elementToProcess[j + 1].split(".");
@@ -196,6 +209,7 @@
                     processExtraArrayElements("");
                     processAllRelatedIndexes();
                     document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+                    	console.log(selectAddReplace);       
                     break;
                 }
             }
@@ -209,32 +223,33 @@
                 alert('Array ' + path + ' needs at least ' + minimum + ' elements');
             } else {
                 var pathObj = path.split(".");
-                pathObj[pathObj.length - 1] = info[0];  
-                console.log(pathObj.join(".")+"[]");
+                pathObj[pathObj.length - 1] = info[0]+"[]";
+                console.log(pathObj.join("."));
                 for (var jj in selectAddReplace) {
 	                obj2 = selectAddReplace[jj];
             		 for (jjj in obj2) {
             		   console.log("jjj "+jjj);
-	                	if (jjj.startsWith(pathObj.join(".")+"[]")	) {
+	                	if (jjj.startsWith(pathObj.join(".")) && obj2[jjj].startsWith(path)) {
 	                		console.log("deleting "+jjj);
 	                		console.log(obj2);
 	                		delete obj2[jjj];
 	                	}
 	                }
-            	}         
-/*            	for (var j=Number(info[1])+1;j<obj.obj[info[0]].length;j++) {
-	                pathObj[pathObj.length - 1] = info[0]+"["+j+"]";
-		        for (var jj in selectAddReplace) {
-	            		obj2 = selectAddReplace[jj];
-	            		 for (jjj in obj2) {
-		                	if (jjj.startsWith(pathObj.join("."))) {
-		                		var pathObj2 = path.split(".");
-				                pathObj2[pathObj2.length - 1] = info[0]+"["+(j-1)+"]";
-		                		obj2[jjj] = obj2[jjj].replace(pathObj.join("."),pathObj2.join("."));
-		                	}
-		                }
-	            	}
-            	}    */
+	                if (Object.keys(obj2).length == 0) delete selectAddReplace[jj];
+	                console.log("len in "+Object.keys(obj2).length+" in index "+jj);
+            	}       
+            	 for (var jj in selectAddReplace) {
+	                obj2 = selectAddReplace[jj];
+            		 for (jjj in obj2) {
+            		   console.log("jjj "+jjj);
+	                	if (jjj.startsWith(pathObj.join("."))) {
+	                		pathObj2 = obj2[jjj].split(".");
+	    				var info2 = pathObj2[pathObj2.length - 1].split(/[\[,\]]/);
+			                pathObj2[pathObj2.length - 1] = info2[0]+"["+(Number(info2[1])-1)+"]";
+                        		obj2[jjj] = pathObj2.join(".");
+	                	}
+	                }
+            	}      
             	console.log(selectAddReplace);        			
                 //remove from json
                 obj.obj[info[0]].splice(info[1], 1);
@@ -415,19 +430,28 @@
                     console.log(elementsToProcess[i]);
                     if (elementsToProcess[i][0] == "select") {
                         //option menu. Can do something extra during changing to concrete value.
-                        //0 type, 1 description, 2 default, (3 name, 4 sections for processing)...
+                        //0 type, 1 description, 2 default, 3 addreplace, (4 name, 5 sections for processing)...
+                          if (elementsToProcess[i][3]!="") {
+                        pathList = elementsToProcess[i][3].split(",");
+                        for (p in pathList) {
+                            obj = findOutputObject(getAddReplace(parentPath + pathList[p], addReplace), true);
+                            addReplace[getAddReplace(parentPath + pathList[p], addReplace)] = obj.path;
+                        }
+                        console.log("addReplace");
+                        console.log(addReplace);
+                        }
                         selectAddReplace[section + "." + i] = JSON.parse(JSON.stringify(addReplace));
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
-                        editorText += "<select onchange=processSelect('" + section + "." + i + "',this.value);>";
-                        for (j = 3; j < elementsToProcess[i].length; j = j + 2) {
+                        editorText += "<select onchange=processSelect('" + section + "." + i + "',this.value);>";                        
+                        for (j = 4; j < elementsToProcess[i].length; j = j + 2) {
                             editorText += "<option value='" + elementsToProcess[i][j] + "'";
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) editorText += " selected";
                             editorText += ">" + elementsToProcess[i][j] + "</option>";
                         }
-                        editorText += "</select>";
+                        editorText += "</select>";                                             
                         editorText += "<span id='" + section + "." + i + "' class=full>";
-                        for (j = 3; j < elementsToProcess[i].length; j = j + 2) {
+                        for (j = 4; j < elementsToProcess[i].length; j = j + 2) {
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) {
                                 editorText += processEditorPart(elementsToProcess[i][j + 1], parentPath, addReplace);
                             }
@@ -520,15 +544,8 @@
                         editorText += "<span class=full><br>&nbsp;<br>";
                         editorText += "<label><b>" + elementsToProcess[i][1] + "</b></label>";
                         editorText += "</span>";
-                    } else if (elementsToProcess[i][0] == "addreplace") {
-                        //0 type, 1 path
-                        pathList = elementsToProcess[i][1].split(",");
-                        for (p in pathList) {
-                            obj = findOutputObject(getAddReplace(parentPath + pathList[p], addReplace), true);
-                            addReplace[getAddReplace(parentPath + pathList[p], addReplace)] = obj.path;
-                        }
-                        console.log("addReplace");
-                        console.log(addReplace);
+//                    } else if (elementsToProcess[i][0] == "addreplace") {
+                      
                     } else if (elementsToProcess[i][0] == "button") {
                         //array with adding/removing elements
                         //0 type, 1 description, 2 path

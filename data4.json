@@ -21,7 +21,7 @@
 		["array", "example4.options[]", "extra options array", "array", 1],
 		
 	        ["separator", "example 5 - select"],				
-		["select", "Select what you like more", "buses", "cars", "carsStruct", "buses", "busesStruct"],
+		["select", "Select what you like more", "buses", "", "cars", "carsStruct", "buses", "busesStruct"],
 		
 	        ["separator", "example 6 - options"],
 		["link", "", "option1"],
@@ -44,8 +44,7 @@
        		["string", "example5.str", "string withotu rules", "", 0, 0, ""]
 	 ],
 	 "option1": [
-	        ["addreplace", "example6_array2[],example6_array1[]"],
-	        ["select", "option1", "yes", "yes", "option1_yes", "no", "option1_no"]	        
+	        ["select", "option1", "yes", "example6_array2[],example6_array1[]", "yes", "option1_yes", "no", "option1_no"]	        
 	 ],
 	 "option1_yes": [	
 	          ["const","example6_array1[].x[].testvalue,example6_array2[].testvalue","option1_yes"],
@@ -55,8 +54,7 @@
 	          ["delete", "example6_array2[],example6_array1[]"]	        
 	 ],
 	 "option2": [
-	        ["addreplace", "example6_array2[],example6_array1[]"],
-	        ["select", "option2", "yes", "yes", "option2_yes", "no", "option2_no"]	        
+	        ["select", "option2", "yes", "example6_array2[],example6_array1[]", "yes", "option2_yes", "no", "option2_no"]	        
 	 ],
 	 "option2_yes": [	
 	          ["const","example6_array1[].testvalue,example6_array2[].testvalue","option2_yes"],
