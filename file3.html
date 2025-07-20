@@ -434,6 +434,7 @@
                             editorText += ">" + elementsToProcess[i][j] + "</option>";
                         }
                         editorText += "</select>";
+                        selectAddReplace[section + "." + i] = JSON.parse(JSON.stringify(addReplace));
                         editorText += "<span id='" + section + "." + i + "' class=full>";
                         for (j = 3; j < elementsToProcess[i].length; j = j + 2) {
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) {
@@ -528,8 +529,7 @@
                         editorText += "<span class=full><br>&nbsp;<br>";
                         editorText += "<label><b>" + elementsToProcess[i][1] + "</b></label>";
                         editorText += "</span>";
-                    } else if (elementsToProcess[i][0] == "addreplace") {
-                        if (selectname != "") {
+                    } else if (elementsToProcess[i][0] == "addreplace") {                        
                             pathList = elementsToProcess[i][1].split(",");
                             for (p in pathList) {
                                 obj = findOutputObject(getAddReplace(parentPath + pathList[p], addReplace), true);
@@ -537,6 +537,7 @@
                             }
                             console.log("addReplace");
                             console.log(addReplace);
+                        if (selectname != "") {
                             selectAddReplace[selectname] = JSON.parse(JSON.stringify(addReplace));
                         }
                     } else if (elementsToProcess[i][0] == "button") {
@@ -676,7 +677,7 @@
                     } catch (ee) {
                         alert("Error opening file '" + document.getElementById('file').files[0].name +
                             "'. Processing element '"+processing+"'. "+
-                            "Is this really json file with json description?\n\n" + ee.message);
+                            "Is this really json file with json description?\n\n" + ee.name+"\n\n"+ee.message);
                     }
                 };
                 fReader.readAsText(e.target.files[0]);
