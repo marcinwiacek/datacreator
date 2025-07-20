@@ -196,6 +196,7 @@
                     processExtraArrayElements("");
                     processAllRelatedIndexes();
                     document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+                    console.log("selectAddReplace after select");
                     console.log(selectAddReplace);
                     break;
                 }
@@ -225,6 +226,8 @@
                     if (Object.keys(obj2).length == 0) delete selectAddReplace[jj];
                     console.log("len in " + Object.keys(obj2).length + " in index " + jj);
                 }
+                  console.log("selectAddReplace after deleting part 1");
+                console.log(selectAddReplace);
                 for (var jj in selectAddReplace) {
                     obj2 = selectAddReplace[jj];
                     for (jjj in obj2) {
@@ -232,12 +235,13 @@
                         if (jjj.startsWith(pathObj.join(".")+ "[]")) {
                             pathObj2 = obj2[jjj].split(".");
                             var info2 = pathObj2[pathObj2.length - 1].split(/[\[,\]]/);
+                            if (Number(info2[1])>Number(info[1])) {
                             pathObj2[pathObj2.length - 1] = info2[0] + "[" + (Number(info2[1]) - 1) + "]";
                             obj2[jjj] = pathObj2.join(".");
+                            }
                         }
                     }
-                }
-                console.log(selectAddReplace);
+                }                
                 //remove from json
                 obj.obj[info[0]].splice(info[1], 1);
                 //remove from editor
@@ -292,6 +296,8 @@
                     }
                 }
                 document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+                console.log("selectAddReplace after deleting");
+                console.log(selectAddReplace);
             }
         }
 
