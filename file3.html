@@ -190,8 +190,8 @@
                     var retVal = "";
                     var sectionObj = elementToProcess[j + 1].split(".");
                     for (s in sectionObj) {
-                        retVal += processEditorPart(sectionObj[s], parentPath, 
-                        selectAddReplace[parentPath + "." + pathInInputData], parentPath + "." + pathInInputData);
+                        retVal += processEditorPart(sectionObj[s], parentPath,
+                            selectAddReplace[parentPath + "." + pathInInputData], parentPath + "." + pathInInputData);
                     }
                     document.getElementById(parentPath + "." + pathInInputData).innerHTML = retVal;
                     processExtraArrayElements("");
@@ -428,7 +428,7 @@
                         //0 type, 1 description, 2 default,  (3 name, 4 sections for processing)...
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
-                        editorText += "<select onchange=processSelect('" + section + "." + i + "',this.value,'"+parentPath+"');>";
+                        editorText += "<select onchange=processSelect('" + section + "." + i + "',this.value,'" + parentPath + "');>";
                         for (j = 3; j < elementsToProcess[i].length; j = j + 2) {
                             editorText += "<option value='" + elementsToProcess[i][j] + "'";
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) editorText += " selected";
@@ -439,8 +439,8 @@
                         editorText += "<span id='" + parentPath + "." + section + "." + i + "' class=full>";
                         for (j = 3; j < elementsToProcess[i].length; j = j + 2) {
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) {
-                                editorText += processEditorPart(elementsToProcess[i][j + 1], parentPath, addReplace, 
-                                parentPath + "." + section + "." + i);
+                                editorText += processEditorPart(elementsToProcess[i][j + 1], parentPath, addReplace,
+                                    parentPath + "." + section + "." + i);
                             }
                         }
                         editorText += "</span>";
