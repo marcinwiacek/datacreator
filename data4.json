@@ -8,7 +8,7 @@
 		["fileHex", "example1.doc2", "some document hex", ""],
 		["checkbox", "example1.bool", "are you happy?", true],
 	        ["const","example1.alwaysTheSame","onetwothree"],
-		["random", "example1.random", "abcdefGHJ", 6,"-","-"],
+		["random", "example1.random", "abcdefGHJ", 6,"start-","-end"],
 		["option", "example1.option", "I can select luck level", "good", "excellent", "perfect", "good"],
 	        
 	        ["separator", "example 2 - link without path"],
@@ -20,7 +20,7 @@
 	        ["separator", "example 4 - array with Add / Delete buttons"],
 		["array", "example4.options[]", "extra options array", "array", 1],
 		
-	        ["separator", "example 5 - select"],				
+	        ["separator", "example 5 - select"],
 		["select", "Select what you like more", "buses",  "cars", "carsStruct", "buses", "busesStruct"],
 		
 	        ["separator", "example 6 - options"],
@@ -44,25 +44,25 @@
        		["string", "example5.str", "string withotu rules", "", 0, 0, ""]
 	 ],
 	 "option1": [
-	        ["select", "option1", "yes", "yes", "option1_yes", "no", "option1_no"]	        
+	        ["select", "option1", "yes", "yes", "option1_yes", "no", "option1_no"]
 	 ],
-	 "option1_yes": [	
+	 "option1_yes": [
 	 	  ["addreplace","example6_array2[],example6_array1[]"],
 	          ["const","example6_array1[].x[].testvalue,example6_array2[].testvalue","option1_yes"],
 	          ["string", "example6_array1[].x[].str", "str", "option1", 0, 0, ""]
 	 ],
 	 "option1_no": [
-	          ["delete", "example6_array2[],example6_array1[]"]	        
+	          ["delete", "example6_array2[],example6_array1[]"]
 	 ],
 	 "option2": [
-	        ["select", "option2", "yes",  "yes", "option2_yes", "no", "option2_no"]	        
+	        ["select", "option2", "yes",  "yes", "option2_yes", "no", "option2_no"]
 	 ],
-	 "option2_yes": [	
+	 "option2_yes": [
 	 	  ["addreplace","example6_array2[],example6_array1[]"],
 	          ["const","example6_array1[].testvalue,example6_array2[].testvalue","option2_yes"],
 	          ["string", "example6_array1[].str", "str", "option2", 0, 0, ""]
 	 ],
 	 "option2_no": [
-	          ["delete", "example6_array2[],example6_array1[]"]	        
+	          ["delete", "example6_array2[],example6_array1[]"]
 	 ]
 }
