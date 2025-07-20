@@ -34,7 +34,7 @@
         <pre style="flex: 60%; margin: 30px; max-width: 400px; overflow-x: auto;" id="json"></pre>
     </div>
     <script>
-        var inputData, outputData, addArray, selectAddReplace;
+        var inputData, outputData, addArray, selectAddReplace, processing;
 
         function getOutputJson() {
             document.getElementById("getOutput").setAttribute('href', 'data:;base64,' +
@@ -248,7 +248,7 @@
                 if (document.getElementById(path) != null) {
                     document.getElementById(path).remove();
                 }
-                //change id for allowing searching all elements               
+                //change id for allowing searching all elements
                 obj0 = [document.getElementsByTagName("input"),
                     document.getElementsByTagName("select"),
                     document.getElementsByTagName("span"),
@@ -412,7 +412,7 @@
         }
 
         function processEditorPart(sections, parentPath, addreplace, selectname) {
-            console.log("processEditorPart start '" + sections + "' '" + parentPath + "'");
+            console.log("processEditorPart start '" + sections + "' '" + parentPath + "'");           
             var editorText = "";
             var sectionList = sections.split(",");
             var addReplace = addreplace == null ? {} : JSON.parse(JSON.stringify(addreplace));
@@ -421,6 +421,7 @@
                 var elementsToProcess = inputData[section];
                 for (var i in elementsToProcess) {
                     console.log(elementsToProcess[i]);
+                    processing = section + "." + i;
                     if (elementsToProcess[i][0] == "select") {
                         //option menu. Can do something extra during changing to concrete value.
                         //0 type, 1 description, 2 default,  (3 name, 4 sections for processing)...
@@ -636,7 +637,7 @@
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "fileHex") {
                         //HexDec encoded file
-                        //0 type, 1 path, 2 description, 3 default                    
+                        //0 type, 1 path, 2 description, 3 default
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3], addReplace);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
@@ -660,7 +661,8 @@
                         inputData = JSON.parse(jsonTxt);
                         if (inputData.start == null) {
                             alert("No start section in file '" + document.getElementById('file').files[0].name +
-                                "'. Is this really json file with json description?");
+                                "'. Processing element '"+processing+"'. "+
+                                "Is this really json file with json description?");
                         } else {
                             outputData = {};
                             addArray = [];
@@ -673,7 +675,8 @@
                         }
                     } catch (ee) {
                         alert("Error opening file '" + document.getElementById('file').files[0].name +
-                            "'. Is this really json file with json description?\n\n" + ee.message);
+                            "'. Processing element '"+processing+"'. "+
+                            "Is this really json file with json description?\n\n" + ee.message);
                     }
                 };
                 fReader.readAsText(e.target.files[0]);

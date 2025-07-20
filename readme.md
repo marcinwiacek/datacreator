@@ -3,6 +3,20 @@ using JSON definitions with info about fields, data format, dependiencies, etc.
 (better and more deep than info in existing formats like
 [OpenAPI Specification](https://swagger.io/specification/)).
 
+Q&A
+
+Why JavaScript? I wanted to have something able to work in browser without
+installing anything?
+
+Why not use JavaScript 'exec' and give all options? I wanted to provide
+format for parsing in very secure environments. In theory you can sandbox
+JavaScript code, but... (especially non-technical) people show red flags,
+when see some keywords.
+
+Is it ready? Work in progress.
+
+Why not use anything ready? All, what I have found, was too limited.
+
 Examples:
 
 ["number", "rent.days,rent.w", "how many days?", 50, 0, 100, 50]
