@@ -179,10 +179,10 @@
             }
         }
 
-        function processSelect(path, value) {
-            console.log("processSelect '" + path + "' '" + value + "'");
+        function processSelect(pathInInputData, value, parentPath) {
+            console.log("processSelect '" + pathInInputData + "' '" + value + "'");
             console.log(selectAddReplace);
-            var pathObj = path.split(".");
+            var pathObj = pathInInputData.split(".");
             var elementToProcess = inputData[pathObj[0]][pathObj[1]];
             console.log(elementToProcess);
             for (var j = 3; j < elementToProcess.length; j = j + 2) {
@@ -190,9 +190,10 @@
                     var retVal = "";
                     var sectionObj = elementToProcess[j + 1].split(".");
                     for (s in sectionObj) {
-                        retVal += processEditorPart(sectionObj[s], "", selectAddReplace[path], path);
+                        retVal += processEditorPart(sectionObj[s], parentPath, 
+                        selectAddReplace[parentPath + "." + pathInInputData], parentPath + "." + pathInInputData);
                     }
-                    document.getElementById(path).innerHTML = retVal;
+                    document.getElementById(parentPath + "." + pathInInputData).innerHTML = retVal;
                     processExtraArrayElements("");
                     processAllRelatedIndexes();
                     document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
@@ -427,18 +428,19 @@
                         //0 type, 1 description, 2 default,  (3 name, 4 sections for processing)...
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
-                        editorText += "<select onchange=processSelect('" + section + "." + i + "',this.value);>";
+                        editorText += "<select onchange=processSelect('" + section + "." + i + "',this.value,'"+parentPath+"');>";
                         for (j = 3; j < elementsToProcess[i].length; j = j + 2) {
                             editorText += "<option value='" + elementsToProcess[i][j] + "'";
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) editorText += " selected";
                             editorText += ">" + elementsToProcess[i][j] + "</option>";
                         }
                         editorText += "</select>";
-                        selectAddReplace[section + "." + i] = JSON.parse(JSON.stringify(addReplace));
-                        editorText += "<span id='" + section + "." + i + "' class=full>";
+                        selectAddReplace[parentPath + "." + section + "." + i] = JSON.parse(JSON.stringify(addReplace));
+                        editorText += "<span id='" + parentPath + "." + section + "." + i + "' class=full>";
                         for (j = 3; j < elementsToProcess[i].length; j = j + 2) {
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) {
-                                editorText += processEditorPart(elementsToProcess[i][j + 1], parentPath, addReplace, section + "." + i);
+                                editorText += processEditorPart(elementsToProcess[i][j + 1], parentPath, addReplace, 
+                                parentPath + "." + section + "." + i);
                             }
                         }
                         editorText += "</span>";

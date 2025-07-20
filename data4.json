@@ -23,9 +23,13 @@
 	        ["separator", "example 5 - select"],
 		["select", "Select what you like more", "buses",  "cars", "carsStruct", "buses", "busesStruct"],
 		
-	        ["separator", "example 6 - options"],
+	        ["separator", "example 6 - options in one array"],
 		["link", "", "option1"],
-		["link", "", "option2"]
+		["link", "", "option2"],
+
+	        ["separator", "example 7 - options in one array inside array"],
+		["link", "example7[]", "option1"],
+		["link", "example7[0]", "option2"]
 	 ],
 	 "link": [
 		["string", "yourName.a", "first string, only numbers", "", 2, 10, "[0-9]+"]
