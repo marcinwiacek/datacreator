@@ -412,7 +412,7 @@
         }
 
         function processEditorPart(sections, parentPath, addreplace, selectname) {
-            console.log("processEditorPart start '" + sections + "' '" + parentPath + "'");           
+            console.log("processEditorPart start '" + sections + "' '" + parentPath + "'");
             var editorText = "";
             var sectionList = sections.split(",");
             var addReplace = addreplace == null ? {} : JSON.parse(JSON.stringify(addreplace));
@@ -529,14 +529,14 @@
                         editorText += "<span class=full><br>&nbsp;<br>";
                         editorText += "<label><b>" + elementsToProcess[i][1] + "</b></label>";
                         editorText += "</span>";
-                    } else if (elementsToProcess[i][0] == "addreplace") {                        
-                            pathList = elementsToProcess[i][1].split(",");
-                            for (p in pathList) {
-                                obj = findOutputObject(getAddReplace(parentPath + pathList[p], addReplace), true);
-                                addReplace[getAddReplace(parentPath + pathList[p], addReplace)] = obj.path;
-                            }
-                            console.log("addReplace");
-                            console.log(addReplace);
+                    } else if (elementsToProcess[i][0] == "addreplace") {
+                        pathList = elementsToProcess[i][1].split(",");
+                        for (p in pathList) {
+                            obj = findOutputObject(getAddReplace(parentPath + pathList[p], addReplace), true);
+                            addReplace[getAddReplace(parentPath + pathList[p], addReplace)] = obj.path;
+                        }
+                        console.log("addReplace");
+                        console.log(addReplace);
                         if (selectname != "") {
                             selectAddReplace[selectname] = JSON.parse(JSON.stringify(addReplace));
                         }
@@ -662,7 +662,7 @@
                         inputData = JSON.parse(jsonTxt);
                         if (inputData.start == null) {
                             alert("No start section in file '" + document.getElementById('file').files[0].name +
-                                "'. Processing element '"+processing+"'. "+
+                                "'. Processing element '" + processing + "'. " +
                                 "Is this really json file with json description?");
                         } else {
                             outputData = {};
@@ -676,8 +676,8 @@
                         }
                     } catch (ee) {
                         alert("Error opening file '" + document.getElementById('file').files[0].name +
-                            "'. Processing element '"+processing+"'. "+
-                            "Is this really json file with json description?\n\n" + ee.name+"\n\n"+ee.message);
+                            "'. Processing element '" + processing + "'. " +
+                            "Is this really json file with json description?\n\n" + ee.name + "\n\n" + ee.message);
                     }
                 };
                 fReader.readAsText(e.target.files[0]);
