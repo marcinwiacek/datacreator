@@ -5,17 +5,18 @@ using JSON definitions with info about fields, data format, dependiencies, etc.
 
 # Q&A
 
-**Why JavaScript?** I wanted to have something able to work in browser without
-installing anything?
+**Why JavaScript & not Rust, Java, C, Python, nodeJS, whatever?**
+I wanted to have something able to work in browser without
+installing anything.
 
-**Why not use JavaScript 'exec' and give all options?** I wanted to provide
+**Why not use JavaScript 'eval' and give all options?** I wanted to provide
 format for parsing in very secure environments. In theory you can sandbox
-JavaScript code, but... (especially non-technical) people show red flags,
-when see some keywords.
+JavaScript code, but... (especially non-technical) people can see red flag,
+when see some keywords & I wanted to avoid it.
 
 **Is it ready?** Work in progress.
 
-**Why not use anything ready?** All, what I have found, was too limited.
+**Why not use anything ready?** All found projects were too limited.
 
 # Examples
 
