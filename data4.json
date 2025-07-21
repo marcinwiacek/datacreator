@@ -29,7 +29,7 @@
 
 	        ["separator", "example 7 - options in one array inside array"],
 	        ["const","example7[].example6_array1[].alwaysTheSame","onetwothree"],
-		["link", "example7[0]", "option1"],
+	        ["link", "example7[0]", "option1"],
 		["link", "example7[0]", "option2"]
 	 ],
 	 "link": [
