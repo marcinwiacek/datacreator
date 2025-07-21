@@ -191,7 +191,7 @@
                     var sectionObj = elementToProcess[j + 1].split(".");
                     for (s in sectionObj) {
                         retVal += processEditorPart(sectionObj[s], parentPath,
-                            selectAddReplace[parentPath +  pathInInputData], parentPath + "." + pathInInputData);
+                            selectAddReplace[parentPath +  pathInInputData], parentPath + pathInInputData);
                     }
                     document.getElementById(parentPath +  pathInInputData).innerHTML = retVal;
                     processExtraArrayElements("");
