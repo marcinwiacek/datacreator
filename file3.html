@@ -191,9 +191,9 @@
                     var sectionObj = elementToProcess[j + 1].split(".");
                     for (s in sectionObj) {
                         retVal += processEditorPart(sectionObj[s], parentPath,
-                            selectAddReplace[parentPath + "." + pathInInputData], parentPath + "." + pathInInputData);
+                            selectAddReplace[parentPath +  pathInInputData], parentPath + "." + pathInInputData);
                     }
-                    document.getElementById(parentPath + "." + pathInInputData).innerHTML = retVal;
+                    document.getElementById(parentPath +  pathInInputData).innerHTML = retVal;
                     processExtraArrayElements("");
                     processAllRelatedIndexes();
                     document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
@@ -403,6 +403,8 @@
         }
 
         function getAddReplace(path, addReplace) {
+            console.log("getAddReplace "+path);
+            console.log(addReplace);
             var pathList = path.split(",");
             for (var p in pathList) {
                 for (var a in addReplace) {
@@ -435,12 +437,12 @@
                             editorText += ">" + elementsToProcess[i][j] + "</option>";
                         }
                         editorText += "</select>";
-                        selectAddReplace[parentPath + "." + section + "." + i] = JSON.parse(JSON.stringify(addReplace));
-                        editorText += "<span id='" + parentPath + "." + section + "." + i + "' class=full>";
+                        selectAddReplace[parentPath + section + "." + i] = JSON.parse(JSON.stringify(addReplace));
+                        editorText += "<span id='" + parentPath + section + "." + i + "' class=full>";
                         for (j = 3; j < elementsToProcess[i].length; j = j + 2) {
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) {
                                 editorText += processEditorPart(elementsToProcess[i][j + 1], parentPath, addReplace,
-                                    parentPath + "." + section + "." + i);
+                                    parentPath + section + "." + i);
                             }
                         }
                         editorText += "</span>";
@@ -494,10 +496,12 @@
                     } else if (elementsToProcess[i][0] == "delete") {
                         //deleting smth from json
                         //0 type, 1 path
+                        console.log(addReplace);
+                        console.log(selectAddReplace);
                         pathList = elementsToProcess[i][1].split(",");
                         for (p in pathList) {
-                            obj = findOutputObject(getAddReplace(parentPath + pathList[p], addReplace), false);
-                            if (obj.obj != null) {
+                            obj = findOutputObject(getAddReplace(parentPath + pathList[p], selectAddReplace[selectname]), false);
+                            if (obj.obj != null && obj.lastPathElement != null) {
                                 if (obj.lastPathElement.includes("[")) {
                                     deleteArrayElement(obj.path, 0);
                                 } else {

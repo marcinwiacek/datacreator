@@ -48,7 +48,7 @@
        		["string", "example5.str", "string withotu rules", "", 0, 0, ""]
 	 ],
 	 "option1": [
-	        ["select", "option1", "no", "yes", "option1_yes", "no", "option1_no"]
+	        ["select", "option1", "yes", "yes", "option1_yes", "no", "option1_no"]
 	 ],
 	 "option1_yes": [
 	 	  ["addreplace","example6_array2[],example6_array1[]"],
@@ -59,7 +59,7 @@
 	          ["delete", "example6_array2[],example6_array1[]"]
 	 ],
 	 "option2": [
-	        ["select", "option2", "yes",  "yes", "option2_yes", "no", "option2_no"]
+	        ["select", "option2", "no",  "yes", "option2_yes", "no", "option2_no"]
 	 ],
 	 "option2_yes": [
 	 	  ["addreplace","example6_array2[],example6_array1[]"],
