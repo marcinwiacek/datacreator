@@ -190,7 +190,7 @@
                     var retVal = "";
                     var sectionObj = elementToProcess[j + 1].split(".");
                     for (s in sectionObj) {
-                        retVal += processEditorPart(sectionObj[s], parentPath,
+                        retVal += processEditorPart(sectionObj[s],parentPath,
                             selectAddReplace[parentPath +  pathInInputData], parentPath + pathInInputData);
                     }
                     document.getElementById(parentPath +  pathInInputData).innerHTML = retVal;
@@ -420,7 +420,8 @@
         }
 
         function processEditorPart(sections, parentPath, addreplace, selectname) {
-            console.log("processEditorPart start '" + sections + "' '" + parentPath + "'");
+            console.log("processEditorPart start '" + sections + "' '" + parentPath + "'" + " "+selectname);
+            console.log(addreplace);
             var editorText = "";
             var sectionList = sections.split(",");
             var addReplace = addreplace == null ? {} : JSON.parse(JSON.stringify(addreplace));
@@ -475,10 +476,11 @@
                         //0 type, 1 path, 2 section
                         if (elementsToProcess[i][1] != "") {
                             obj = findOutputObject(getAddReplace(parentPath , elementsToProcess[i][1], addReplace), true);
-                            elementsToProcess[i][1] = obj.path;
-                            editorText += processEditorPart(elementsToProcess[i][2], obj.path + ".", addReplace, "");
+                         //   elementsToProcess[i][1] = obj.path;
+                            editorText += processEditorPart(elementsToProcess[i][2], obj.path + ".", addReplace, selectname);
+//			editorText += processEditorPart(elementsToProcess[i][2], elementsToProcess[i][1] + ".", addReplace, selectname);
                         } else {
-                            editorText += processEditorPart(elementsToProcess[i][2], "", addReplace, "");
+                            editorText += processEditorPart(elementsToProcess[i][2], "", addReplace, selectname);
                         }
                     } else if (elementsToProcess[i][0] == "index") {
                         //field with index of existing array

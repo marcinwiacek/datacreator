@@ -30,7 +30,11 @@
 	        ["separator", "example 7 - options in one array inside array"],
 	        ["const","example7[].example6_array1[].alwaysTheSame","onetwothree"],
 	        ["link", "example7[0]", "option1"],
-		["link", "example7[0]", "option2"]
+		["link", "example7[0]", "option2"],
+		
+		["separator", "example 8 - array in array..."],
+	        ["const","example8[].example8_intern[].example8_array1[].alwaysTheSame","onetwothree"],
+	        ["link", "example8[0].example8_intern[0]", "option12"]
 	 ],
 	 "link": [
 		["string", "yourName.a", "first string, only numbers", "", 2, 10, "[0-9]+"]
@@ -69,5 +73,31 @@
 	 ],
 	 "option2_no": [
 	          ["delete", "example6_array2[],example6_array1[]"]
+	 ],
+	 "option12": [
+	        ["select", "option1", "yes", "yes", "option18_yes", "no", "option18_no"],
+	        ["select", "option2", "no",  "yes", "option28_yes", "no", "option28_no"]
+	 ],
+	 "option18_yes": [
+	 	  ["addreplace","example8_array2[],example8_array1[]"],
+	          ["const","example8_array1[].x[].testvalue,example8_array2[].testvalue","option1_yes"],
+	          ["const","$.example8[0].testvalue,example8_array2[].testvalue","option1_hallo"],
+	          ["string", "example8_array1[].x[].str", "str", "option1", 0, 0, ""],
+	          ["link","example8_array1[].x[]","option18_yes_extra"]
+	 ],
+	 "option18_no": [
+	          ["delete", "example8_array2[],example8_array1[],$.example8[0].testvalue"]
+	 ],
+	 "option28_yes": [
+	 	  ["addreplace","example8_array2[],example8_array1[]"],
+	          ["const","example8_array1[].testvalue,example8_array2[].testvalue","option2_yes"],
+	          ["string", "example8_array1[].str", "str", "option2", 0, 0, ""]
+	 ],
+	 "option28_no": [
+	          ["delete", "example8_array2[],example8_array1[]"]
+	 ],
+	 "option18_yes_extra": [
+	 	["string", "str1", "str", "str1", 0, 0, ""],
+	 	["string", "str2", "str", "str2", 0, 0, ""]	 	
 	 ]
 }
