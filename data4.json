@@ -38,7 +38,8 @@
 	        ["link", "example8[0].example8_intern[0]", "option12"],
 	        
                 ["separator", "example 9 - combo"],
-		["array", "example9_part1[]", "extra options array2", "example9_start", 0]
+                ["adddelete", "extra array", "example9_add", "example9_delete", 0],
+		["array2", "example9_part1[]", "extra options array2", "example9_start", 0]
 	 ],
 	
 	
@@ -116,9 +117,8 @@
 	 ],
 	 
 	 
-	 "example9_start" : [
-	 	 ["const","test","onetwothree"],
-	 	["link", "example9[0].example9_intern[0]", "option129"]
+	 "example9_add": [
+	 	["link", "example9[]", "option129"]
 	 	
 	 ],
 	 "option129": [
@@ -128,7 +128,7 @@
 	 "option19_yes": [
 	 	  ["addreplace","example9_array2[],example9_array1[]"],
 	          ["const","example9_array1[].x[].testvalue,example9_array2[].testvalue","option1_yes"],
-	          ["const","$.example9[].testvalue,example9_array2[].testvalue","option1_hallo"],
+	          ["const","$.example90[].testvalue,example9_array2[].testvalue","option1_hallo"],
 	          ["string", "example9_array1[].x[].str", "str", "option1", 0, 0, ""],
 	          ["link","example9_array1[].x[]","option19_yes_extra"]
 	 ],
