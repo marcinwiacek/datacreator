@@ -18,6 +18,7 @@
 		["link", "example3[]", "link"],
 		
 	        ["separator", "example 4 - array with Add / Delete buttons"],
+	        ["other", "example4.index", "array index", "example4.options[]"],
 		["array", "example4.options[]", "extra options array", "array", 1],
 		
 	        ["separator", "example 5 - select"],
