@@ -140,7 +140,7 @@
             document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
         }
 
-	//what when we have two array? todo
+        //what when we have two array? todo
         function processExtraArrayElements(editorPath) {
             for (var z in addArray) {
                 if (addArray[z].editorPath != editorPath) {
@@ -205,7 +205,7 @@
             }
         }
 
-	//todo delete elements outside (with $.)
+        //todo delete elements outside (with $.)
         function deleteArrayElement(path, minimum) {
             console.log("Delete array alement " + path);
             var obj = findOutputObject(path, true);
@@ -343,22 +343,22 @@
                 }
             }
         }
-        
-         function addArrayElement2(pathInInputData, parentPath) {
+
+        function addArrayElement2(pathInInputData, parentPath) {
             console.log("addArrayElement2 '" + pathInInputData + "'");
             console.log(selectAddReplace);
             var pathObj = pathInInputData.split(".");
             var elementToProcess = inputData[pathObj[0]][pathObj[1]];
             console.log(elementToProcess);
-    
-                   
-//                    document.getElementById(parentPath + pathInInputData).innerHTML = retVal;
-                    
-                    
-                    
-                    newButton = document.createElement('button');
+
+
+            //                    document.getElementById(parentPath + pathInInputData).innerHTML = retVal;
+
+
+
+            newButton = document.createElement('button');
             newButton.id = obj.path + ".x";
-          //  newButton.setAttribute("name", elementsToProcess[4]); //minimum number of elements
+            //  newButton.setAttribute("name", elementsToProcess[4]); //minimum number of elements
             newButton.addEventListener('click', function(event) {
                 deleteArrayElement(this.id.slice(0, -2), this.attributes["name"]["nodeValue"]);
             });
@@ -367,23 +367,23 @@
             newDiv.classList.add("full");
             newDiv.style = "display: grid; grid-template-columns: 1fr 1fr;";
 
-             var retVal = "";
-                    var sectionObj = elementToProcess[2].split(".");
-                    for (s in sectionObj) {
-                        retVal += processEditorPart(sectionObj[s], parentPath,
-                            selectAddReplace[parentPath + pathInInputData], parentPath + pathInInputData);
-                    }
-                    
+            var retVal = "";
+            var sectionObj = elementToProcess[2].split(".");
+            for (s in sectionObj) {
+                retVal += processEditorPart(sectionObj[s], parentPath,
+                    selectAddReplace[parentPath + pathInInputData], parentPath + pathInInputData);
+            }
+
             newDiv.innerHTML = retVal;
-         //   newDiv.id = obj.path;
+            //   newDiv.id = obj.path;
             newDiv.appendChild(newButton);
             document.getElementById(pathInInputData).appendChild(newDiv);
-            
-                    processExtraArrayElements("");
-                    processAllRelatedIndexes();
-                    document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
-                    console.log("selectAddReplace after select");
-                    console.log(selectAddReplace);
+
+            processExtraArrayElements("");
+            processAllRelatedIndexes();
+            document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+            console.log("selectAddReplace after select");
+            console.log(selectAddReplace);
         }
 
         function loadBase64File(f, path) {
@@ -516,7 +516,7 @@
                             addArray.push(ret);
                         }
                         editorText += "</span>";
-                     } else if (elementsToProcess[i][0] == "adddelete") {
+                    } else if (elementsToProcess[i][0] == "adddelete") {
                         //array with adding/removing elements
                         //0 type, 1 description, 2 section add, 3 section delete, 4 minimum elements
                         editorText += "<span class=full>";
@@ -524,13 +524,13 @@
                         editorText += "<input type=button value='Add'";
                         editorText += " onclick=addArrayElement2('" + section + "." + i + "','" + parentPath + "');>";
                         editorText += "<span id='" + parentPath + section + "." + i + "' class=full></span>";
-                       /* for (var j = 0; j < Number(elementsToProcess[i][4]); j++) {
-                            var ret = {};
-                            ret.editorPath = section + "." + i;
-                            ret.newEditorPath = elementsToProcess[i][3];
-                            ret.parentPathInJson = parentPath + elementsToProcess[i][1];
-                            addArray.push(ret);
-                        }*/
+                        /* for (var j = 0; j < Number(elementsToProcess[i][4]); j++) {
+                             var ret = {};
+                             ret.editorPath = section + "." + i;
+                             ret.newEditorPath = elementsToProcess[i][3];
+                             ret.parentPathInJson = parentPath + elementsToProcess[i][1];
+                             addArray.push(ret);
+                         }*/
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "link") {
                         //link to existing structure
