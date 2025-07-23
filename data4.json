@@ -34,14 +34,23 @@
 		
 		["separator", "example 8 - array in array..."],
 	        ["const","example8[].example8_intern[].example8_array1[].alwaysTheSame","onetwothree"],
-	        ["link", "example8[0].example8_intern[0]", "option12"]
+	        ["link", "example8[0].example8_intern[0]", "option12"],
+	        
+                ["separator", "example 9 - combo"],
+		["array", "example9_part1[]", "extra options array2", "example9_start", 0]
 	 ],
+	
+	
 	 "link": [
 		["string", "yourName.a", "first string, only numbers", "", 2, 10, "[0-9]+"]
 	 ],
+	
+	
 	 "array": [
 		["string", "yourName.a", "array string, string possible, only capitals", "", 2, 10, "[A-Z]+"]
 	 ],
+	
+	
 	 "carsStruct": [
 	        ["delete", "example5.busSelected"],
 	        ["const","example5.carSelected",true],
@@ -52,6 +61,8 @@
 	        ["const","example5.busSelected",true],
        		["string", "example5.str", "string withotu rules", "", 0, 0, ""]
 	 ],
+	 
+	 
 	 "option1": [
 	        ["select", "option1", "yes", "yes", "option1_yes", "no", "option1_no"]
 	 ],
@@ -74,6 +85,8 @@
 	 "option2_no": [
 	          ["delete", "example6_array2[],example6_array1[]"]
 	 ],
+	 
+	 
 	 "option12": [
 	        ["select", "option1", "yes", "yes", "option18_yes", "no", "option18_no"],
 	        ["select", "option2", "no",  "yes", "option28_yes", "no", "option28_no"]
@@ -97,6 +110,39 @@
 	          ["delete", "example8_array2[],example8_array1[]"]
 	 ],
 	 "option18_yes_extra": [
+	 	["string", "str1", "str", "str1", 0, 0, ""],
+	 	["string", "str2", "str", "str2", 0, 0, ""]	 	
+	 ],
+	 
+	 
+	 "example9_start" : [
+	 	 ["const","test","onetwothree"],
+	 	["link", "example9[0].example9_intern[0]", "option129"]
+	 	
+	 ],
+	 "option129": [
+	        ["select", "option1", "yes", "yes", "option19_yes", "no", "option19_no"],
+	        ["select", "option2", "no",  "yes", "option29_yes", "no", "option29_no"]
+	 ],
+	 "option19_yes": [
+	 	  ["addreplace","example9_array2[],example9_array1[]"],
+	          ["const","example9_array1[].x[].testvalue,example9_array2[].testvalue","option1_yes"],
+	          ["const","$.example9[].testvalue,example9_array2[].testvalue","option1_hallo"],
+	          ["string", "example9_array1[].x[].str", "str", "option1", 0, 0, ""],
+	          ["link","example9_array1[].x[]","option19_yes_extra"]
+	 ],
+	 "option19_no": [
+	          ["delete", "example9_array2[],example9_array1[],$.example9[].testvalue"]
+	 ],
+	 "option29_yes": [
+	 	  ["addreplace","example9_array2[],example9_array1[]"],
+	          ["const","example9_array1[].testvalue,example9_array2[].testvalue","option2_yes"],
+	          ["string", "example9_array1[].str", "str", "option2", 0, 0, ""]
+	 ],
+	 "option29_no": [
+	          ["delete", "example9_array2[],example9_array1[]"]
+	 ],
+	 "option19_yes_extra": [
 	 	["string", "str1", "str", "str1", 0, 0, ""],
 	 	["string", "str2", "str", "str2", 0, 0, ""]	 	
 	 ]

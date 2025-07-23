@@ -204,6 +204,7 @@
             }
         }
 
+	//todo delete elements outside (with $.)
         function deleteArrayElement(path, minimum) {
             console.log("Delete array alement " + path);
             var obj = findOutputObject(path, true);
@@ -403,7 +404,7 @@
         }
 
         function getAddReplace(parentPath, path, addReplace) {
-            console.log("getAddReplace " + parentPath + " " + path);
+            console.log("getAddReplace start " + parentPath + " " + path);
             console.log(addReplace);
             var pathList = path.split(",");
             for (var p in pathList) {
@@ -416,6 +417,7 @@
                     pathList[p] = pathList[p].replace(a, addReplace[a]);
                 }
             }
+            console.log("getAddReplace end " + pathList.join(","));
             return pathList.join(",");
         }
 
