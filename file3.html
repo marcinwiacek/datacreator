@@ -603,7 +603,7 @@
                     } else if (elementsToProcess[i][0] == "addreplace") {
                         pathList = elementsToProcess[i][1].split(",");
                         for (p in pathList) {
-                            obj = findOutputObject(getAddReplace(parentPath, pathList[p], addReplace), true);
+                            obj = findOutputObject(parentPath + pathList[p], true);
                             addReplace[getAddReplace(parentPath, pathList[p], addReplace)] = obj.path;
                         }
                         console.log("addReplace");
