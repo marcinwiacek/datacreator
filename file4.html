@@ -36,6 +36,96 @@
     <script>
         var inputData, outputData, addArray, selectAddReplace, processing;
 
+	//alphabetical, arrays in the end
+	function sortJson(dat) {
+	    console.log("sortJson");
+	    console.log(dat);
+
+//for (var x in dat) {
+		//dat[x] = sortJson(dat[x]);
+//	    }
+		var newData = Object.keys(dat).sort(
+		
+	    function(a,b){
+		if (Array.isArray(dat[a])==Array.isArray(dat[b])) {
+		    return a.localeCompare(b);
+		} else if (Array.isArray(dat[a]) && !Array.isArray(dat[b])) {
+		    return 1;
+		} else {
+		    return -1;
+		}
+	}	
+	
+		
+		).reduce(
+			  (newObj, key) => { 
+			  
+			  if (dat[key] instanceof Object || Array.isArray(dat[key])) {
+			  
+			    newObj[key] = sortJson(dat[key]); 
+			    } else {
+			    newObj[key] = dat[key]; 
+			    }
+			    console.log(dat[key]);
+    			    return newObj;
+  			  }, {});
+  			  
+  		/*	  for (var x in dat) {
+		newData[x] = sortJson(newData[x]);
+	    }*/
+
+	/*    var newData = Object.keys(dat).sort(
+	    function(a,b){
+		if (Array.isArray(dat[a])==Array.isArray(dat[b])) {
+		    return a.localeCompare(b);
+		} else if (Array.isArray(dat[a]) && !Array.isArray(dat[b])) {
+		    return 1;
+		} else {
+		    return -1;
+		}
+
+*/
+//		return dat[a]-dat[b]
+//	    });
+/*
+	    console.log(dat);
+	    var newData={};
+	    var info = [];
+	    for (var x in dat) {
+		if (!Array.isArray(dat[x])) {
+		    info.push(x);
+		}
+	    }
+	    info.sort();
+	    console.log(info);
+	    for (var x in info) {
+//		console.log("dat[x]");
+//		console.log(x);
+//		console.log(dat[x]);
+//		newData[info[x]] = sortJson(dat[info[x]]);
+console.log("adding "+info[x]);
+		newData[info[x]] = dat[info[x]];
+	    }
+	    console.log("newdata1");
+	    console.log (newData);
+	    info = [];
+	    for (var x in dat) {
+		if (Array.isArray(dat[x])) {
+		    info.push(x);
+		}
+	    }
+	    info.sort();
+	    for (var x in info) {
+//		newData[info[x]] = sortJson(dat[info[x]]);
+console.log("adding2 "+info[x]);
+		newData[info[x]] = dat[info[x]];
+	    }
+*/
+	    console.log("newdata2");
+	    console.log (newData);
+	    return newData;
+	}
+
         function getOutputJson() {
             document.getElementById("getOutput").setAttribute('href', 'data:;base64,' +
                 btoa(JSON.stringify(outputData, null, 2)));
@@ -742,7 +832,7 @@
                             document.getElementById("editor").innerHTML = processEditorPart("start", "", {}, "");
                             processExtraArrayElements('');
                             processAllRelatedIndexes();
-                            document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+                            document.getElementById("json").innerHTML = JSON.stringify(sortJson(outputData), null, 2);
                             console.log(selectAddReplace);
                         }
                     } catch (ee) {
