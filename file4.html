@@ -64,7 +64,7 @@
                     console.log(dat[key]);
                     return newObj;
                 }, {});
-                
+
             return newData;
         }
 
@@ -386,22 +386,22 @@
             //                    document.getElementById(parentPath + pathInInputData).innerHTML = retVal;
 
 
- 	var obj = document.getElementById(pathInInputData);
+            var obj = document.getElementById(pathInInputData);
             var existingNumberOfElements = 0;
-                if (obj.attributes && obj.attributes["name"]) {
-                    existingNumberOfElements = Number(obj.attributes["name"]["nodeValue"]);
-                    } else {
-                    	alert("Problem with element "+pathInInputData+", no name attribute");
-                    }
-                    var ElementIndex = 4;
-                    if (ElementIndex + existingNumberOfElements + 1>=elementToProcess.length) {
-                    	ElementIndex = elementToProcess.length-1;
-                    } else {
-                    	ElementIndex += existingNumberOfElements + 1;
-                    }
-                    obj.setAttribute("name", existingNumberOfElements+1);
-                    
-                    
+            if (obj.attributes && obj.attributes["name"]) {
+                existingNumberOfElements = Number(obj.attributes["name"]["nodeValue"]);
+            } else {
+                alert("Problem with element " + pathInInputData + ", no name attribute");
+            }
+            var ElementIndex = 4;
+            if (ElementIndex + existingNumberOfElements + 1 >= elementToProcess.length) {
+                ElementIndex = elementToProcess.length - 1;
+            } else {
+                ElementIndex += existingNumberOfElements + 1;
+            }
+            obj.setAttribute("name", existingNumberOfElements + 1);
+
+
             newButton = document.createElement('button');
             newButton.id = obj.path + ".x";
             //  newButton.setAttribute("name", elementsToProcess[4]); //minimum number of elements
