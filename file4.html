@@ -36,42 +36,37 @@
     <script>
         var inputData, outputData, addArray, selectAddReplace, processing;
 
-	//alphabetical, objects in the end
-	function sortJson(dat) {
-		var newData = Object.keys(dat).sort(
-		
-	    function(a,b){
-	        	if (dat[a] instanceof Object == dat[b] instanceof Object && Array.isArray(dat[a])  == Array.isArray(dat[b])) {
-		    		return a.localeCompare(b);
-	        	} else if (Array.isArray(dat[b])) {
-		    		return -1;
-	        	} else {
-				    return 1;
-	        	}
-	}	
-		).reduce(
-			  (newObj, key) => { 
-			  
-			//  if (dat[key] instanceof Object || Array.isArray(dat[key])) {
-			 if (Array.isArray(dat[key])) {
-			      newObj[key] = [];
-			      dat[key].sort();
-			      for (var x in dat[key]) {
-                        newObj[key].push(dat[key][x]);
+        //alphabetical, values, objects, arrays
+        function sortJson(dat) {
+            var newData = Object.keys(dat).sort(
+                function(a, b) {
+                    if (dat[a] instanceof Object == dat[b] instanceof Object && Array.isArray(dat[a]) == Array.isArray(dat[b])) {
+                        return a.localeCompare(b);
+                    } else if (Array.isArray(dat[b])) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                }
+            ).reduce(
+                (newObj, key) => {
+                    if (Array.isArray(dat[key])) {
+                        newObj[key] = [];
+                        dat[key].sort();
+                        for (var x in dat[key]) {
+                            newObj[key].push(dat[key][x]);
                         }
-                        
-			    } else if (dat[key] instanceof Object ) {
-			  
-			    newObj[key] = sortJson(dat[key]); 
-			    } else {
-			    newObj[key] = dat[key]; 
-			    }
-			    console.log(dat[key]);
-    			    return newObj;
-  			  }, {});
-  			  
-	    return newData;
-	}
+                    } else if (dat[key] instanceof Object) {
+                        newObj[key] = sortJson(dat[key]);
+                    } else {
+                        newObj[key] = dat[key];
+                    }
+                    console.log(dat[key]);
+                    return newObj;
+                }, {});
+                
+            return newData;
+        }
 
         function getOutputJson() {
             document.getElementById("getOutput").setAttribute('href', 'data:;base64,' +
@@ -390,6 +385,23 @@
 
             //                    document.getElementById(parentPath + pathInInputData).innerHTML = retVal;
 
+
+ 	var obj = document.getElementById(pathInInputData);
+            var existingNumberOfElements = 0;
+                if (obj.attributes && obj.attributes["name"]) {
+                    existingNumberOfElements = Number(obj.attributes["name"]["nodeValue"]);
+                    } else {
+                    	alert("Problem with element "+pathInInputData+", no name attribute");
+                    }
+                    var ElementIndex = 4;
+                    if (ElementIndex + existingNumberOfElements + 1>=elementToProcess.length) {
+                    	ElementIndex = elementToProcess.length-1;
+                    } else {
+                    	ElementIndex += existingNumberOfElements + 1;
+                    }
+                    obj.setAttribute("name", existingNumberOfElements+1);
+                    
+                    
             newButton = document.createElement('button');
             newButton.id = obj.path + ".x";
             //  newButton.setAttribute("name", elementsToProcess[4]); //minimum number of elements
@@ -402,7 +414,7 @@
             newDiv.style = "display: grid; grid-template-columns: 1fr 1fr;";
 
             var retVal = "";
-            var sectionObj = elementToProcess[5].split(".");
+            var sectionObj = elementToProcess[ElementIndex].split(".");
             for (s in sectionObj) {
                 retVal += processEditorPart(sectionObj[s], parentPath,
                     selectAddReplace[parentPath + pathInInputData], parentPath + pathInInputData);
@@ -552,12 +564,12 @@
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "adddelete") {
                         //array with adding/removing elements
-                        //0 type, 1 description, 2 section add, 3 section delete, 4 minimum elements
+                        //0 type, 1 description, 2 minimum, 3 maksimum, 4 section delete, 5 section add, 6 section add
                         editorText += "<span class=full>";
-                        editorText += "<label>" + elementsToProcess[i][2] + "</label>";
+                        editorText += "<label>" + elementsToProcess[i][1] + "</label>";
                         editorText += "<input type=button value='Add'";
                         editorText += " onclick=addArrayElement2('" + section + "." + i + "','" + parentPath + "');>";
-                        editorText += "<span id='" + parentPath + section + "." + i + "' class=full></span>";
+                        editorText += "<span id='" + parentPath + section + "." + i + "' class=full name=0></span>";
                         /* for (var j = 0; j < Number(elementsToProcess[i][4]); j++) {
                              var ret = {};
                              ret.editorPath = section + "." + i;
@@ -760,9 +772,9 @@
             console.log("processEditorPart end '" + section + "' '" + parentPath + "'");
             return editorText;
         }
-        
+
         function showFormattedOutputJson() {
-	        document.getElementById("json").innerHTML = JSON.stringify(sortJson(outputData), null, 2);
+            document.getElementById("json").innerHTML = JSON.stringify(sortJson(outputData), null, 2);
         }
 
         document.getElementById("file").addEventListener("change",
