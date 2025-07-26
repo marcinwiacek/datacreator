@@ -60,7 +60,8 @@
 		).reduce(
 			  (newObj, key) => { 
 			  
-			  if (dat[key] instanceof Object || Array.isArray(dat[key])) {
+			//  if (dat[key] instanceof Object || Array.isArray(dat[key])) {
+			  if (dat[key] instanceof Object ) {
 			  
 			    newObj[key] = sortJson(dat[key]); 
 			    } else {
