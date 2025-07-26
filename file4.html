@@ -38,7 +38,7 @@
 
         //alphabetical, values, objects, arrays
         function sortJson(dat) {
-            var newData = Object.keys(dat).sort(
+            return Object.keys(dat).sort(
                 function(a, b) {
                     if (dat[a] instanceof Object == dat[b] instanceof Object && Array.isArray(dat[a]) == Array.isArray(dat[b])) {
                         return a.localeCompare(b);
@@ -64,8 +64,6 @@
                     console.log(dat[key]);
                     return newObj;
                 }, {});
-
-            return newData;
         }
 
         function getOutputJson() {
@@ -427,7 +425,7 @@
 
             processExtraArrayElements("");
             processAllRelatedIndexes();
-            document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
+            showFormattedOutputJson();
             console.log("selectAddReplace after select");
             console.log(selectAddReplace);
         }
