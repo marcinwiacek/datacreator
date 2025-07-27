@@ -397,10 +397,10 @@
             obj.setAttribute("name", existingNumberOfElements + 1);
 
             newButton = document.createElement('button');
-            newButton.id = pathInInputData+"."+(existingNumberOfElements+1)+".x";
+            newButton.id = pathInInputData + "." + (existingNumberOfElements + 1) + ".x";
             newButton.setAttribute("name", parentPath);
             newButton.addEventListener('click', function(event) {
-                deleteArrayElement2(this.id.slice(0, -2),this.attributes["name"]["nodeValue"]);
+                deleteArrayElement2(this.id.slice(0, -2), this.attributes["name"]["nodeValue"]);
             });
             newButton.innerText = "Delete";
             newDiv = document.createElement('span');
@@ -411,12 +411,12 @@
             var sectionObj = elementToProcess[ElementIndex].split(".");
             for (s in sectionObj) {
                 retVal += processEditorPart(sectionObj[s], parentPath,
-                    selectAddReplace[parentPath + pathInInputData+"."+(existingNumberOfElements + 1)], 
-                    parentPath + pathInInputData+"."+(existingNumberOfElements + 1));
+                    selectAddReplace[parentPath + pathInInputData + "." + (existingNumberOfElements + 1)],
+                    parentPath + pathInInputData + "." + (existingNumberOfElements + 1));
             }
 
             newDiv.innerHTML = retVal;
-            newDiv.id = pathInInputData+"."+(existingNumberOfElements+1);
+            newDiv.id = pathInInputData + "." + (existingNumberOfElements + 1);
             newDiv.appendChild(newButton);
             document.getElementById(pathInInputData).appendChild(newDiv);
 
@@ -426,21 +426,21 @@
             console.log("selectAddReplace after select");
             console.log(selectAddReplace);
         }
-        
-         function deleteArrayElement2(pathInInputDataNumber, parentPath) {
-             var pathObj = pathInInputDataNumber.split(".");
+
+        function deleteArrayElement2(pathInInputDataNumber, parentPath) {
+            var pathObj = pathInInputDataNumber.split(".");
             var elementToProcess = inputData[pathObj[0]][pathObj[1]];
-            
+
             var sectionObj = elementToProcess[4].split(".");
             for (s in sectionObj) {
                 processEditorPart(sectionObj[s], parentPath,
                     selectAddReplace[parentPath + pathInInputDataNumber], parentPath + pathInInputDataNumber);
             }
-                      
+
             document.getElementById(pathInInputDataNumber).remove();
             showFormattedOutputJson();
-            
-         }
+
+        }
 
         function loadBase64File(f, path) {
             const reader = new FileReader();
@@ -510,11 +510,11 @@
                 if (pathList[p].startsWith("$.")) {
                     pathList[p] = pathList[p].substring(2);
                 } else {
-                for (var a in addReplace) {
-                //    if (pathList[p].startsWith(addReplace[a])) {
-                    pathList[p] = pathList[p].replace(a, addReplace[a]);
-                  //  }
-                }
+                    for (var a in addReplace) {
+                        //    if (pathList[p].startsWith(addReplace[a])) {
+                        pathList[p] = pathList[p].replace(a, addReplace[a]);
+                        //  }
+                    }
                     pathList[p] = parentPath + pathList[p];
                 }
             }
@@ -662,11 +662,11 @@
                         editorText += "<label><b>" + elementsToProcess[i][1] + "</b></label>";
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "addreplace") {
-                    	//0 type, 1 path, 2 (optional) name
+                        //0 type, 1 path, 2 (optional) name
                         pathList = elementsToProcess[i][1].split(",");
                         for (p in pathList) {
                             obj = findOutputObject(parentPath + pathList[p], true);
-                            addReplace[elementsToProcess[i].length ==3 ? elementsToProcess[i][2]:getAddReplace(parentPath, pathList[p], addReplace)] = obj.path;
+                            addReplace[elementsToProcess[i].length == 3 ? elementsToProcess[i][2] : getAddReplace(parentPath, pathList[p], addReplace)] = obj.path;
                         }
                         console.log("addReplace");
                         console.log(addReplace);
