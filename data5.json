@@ -43,7 +43,14 @@
 	 ],
 		 "example10_add": [
 		 	 	  ["addreplace","example10_array1[],example10_array2[]"],
-		 	 	  ["string", "example10_array1[].firstStr", "first string, only numbers", "", 2, 10, "[0-9]+"]
+		 	 	  ["string", "example10_array1[].firstStr", "first string, only numbers", "", 2, 10, "[0-9]+"],
+		 	 	    ["string", "example10_array2[].firstStr", "first string, only numbers", "", 2, 10, "[0-9]+"],
+		 	 	  	["link", "example10_array1[]", "option1"],
+		["link", "example10_array1[]", "option2"],
+		 	 	  ["addreplace2","example10_array1[]", "newindex_example10_array1[]"],
+		
+		  	["link2", "newindex_example10_array1[]", "option1"],
+		["link2", "newindex_example10_array1[]", "option2"]
 
 	 	
 	 
@@ -55,7 +62,7 @@
 	
 	 ],
 		 "example10_delete": [
-		 	 	  ["delete","example10_array1[],example10_array2[]"]	 	
+		 	 	  ["delete","example10_array1[],example10_array2[],newindex_example10_array1[]"]
 	 ],
 
 	

@@ -61,7 +61,7 @@
                     } else {
                         newObj[key] = dat[key];
                     }
-                    console.log(dat[key]);
+                    //console.log(dat[key]);
                     return newObj;
                 }, {});
         }
@@ -510,10 +510,12 @@
                 if (pathList[p].startsWith("$.")) {
                     pathList[p] = pathList[p].substring(2);
                 } else {
-                    pathList[p] = parentPath + pathList[p];
-                }
                 for (var a in addReplace) {
+                //    if (pathList[p].startsWith(addReplace[a])) {
                     pathList[p] = pathList[p].replace(a, addReplace[a]);
+                  //  }
+                }
+                    pathList[p] = parentPath + pathList[p];
                 }
             }
             console.log("getAddReplace end " + pathList.join(","));
@@ -660,10 +662,11 @@
                         editorText += "<label><b>" + elementsToProcess[i][1] + "</b></label>";
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "addreplace") {
+                    	//0 type, 1 path, 2 (optional) name
                         pathList = elementsToProcess[i][1].split(",");
                         for (p in pathList) {
                             obj = findOutputObject(parentPath + pathList[p], true);
-                            addReplace[getAddReplace(parentPath, pathList[p], addReplace)] = obj.path;
+                            addReplace[elementsToProcess[i].length ==3 ? elementsToProcess[i][2]:getAddReplace(parentPath, pathList[p], addReplace)] = obj.path;
                         }
                         console.log("addReplace");
                         console.log(addReplace);
