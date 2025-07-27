@@ -510,13 +510,13 @@
                 if (pathList[p].startsWith("$.")) {
                     pathList[p] = pathList[p].substring(2);
                 } else {
+                pathList[p] = parentPath + pathList[p];
+                }
                     for (var a in addReplace) {
                         //    if (pathList[p].startsWith(addReplace[a])) {
                         pathList[p] = pathList[p].replace(a, addReplace[a]);
                         //  }
                     }
-                    pathList[p] = parentPath + pathList[p];
-                }
             }
             console.log("getAddReplace end " + pathList.join(","));
             return pathList.join(",");
@@ -672,16 +672,7 @@
                         console.log(addReplace);
                         if (selectname != "") {
                             selectAddReplace[selectname] = JSON.parse(JSON.stringify(addReplace));
-                        }
-                    } else if (elementsToProcess[i][0] == "button") {
-                        //array with adding/removing elements
-                        //0 type, 1 description, 2 path
-                        /*                        editorText += "<span class=full>";
-                                                editorText += "<label>" + elementsToProcess[i][2] + "</label>";
-                                                editorText += "<input type=button value='Add'";
-                                                editorText += " onclick=addArrayElement('" + section + "." + i + "','" + elementsToProcess[i][3] + "','" + parentPath + elementsToProcess[i][1] + "');>";
-                                                editorText += "<span id='" + section + "." + i + "' class=full></span>";
-                                                editorText += "</span>";*/
+                        }                   
                     } else if (elementsToProcess[i][0] == "string") {
                         //0 type, 1 path, 2 description, 3 default, 4 minimum len, 5 maximum len, 6 parsing regexp
                         pathValue = getPathValueToCheck(parentPath, elementsToProcess[i][1], elementsToProcess[i][3], addReplace);
