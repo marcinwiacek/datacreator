@@ -381,9 +381,6 @@
             var elementToProcess = inputData[pathObj[0]][pathObj[1]];
             console.log(elementToProcess);
 
-            //                    document.getElementById(parentPath + pathInInputData).innerHTML = retVal;
-
-
             var obj = document.getElementById(pathInInputData);
             var existingNumberOfElements = 0;
             if (obj.attributes && obj.attributes["name"]) {
@@ -399,12 +396,11 @@
             }
             obj.setAttribute("name", existingNumberOfElements + 1);
 
-
             newButton = document.createElement('button');
-            newButton.id = obj.path + ".x";
-            //  newButton.setAttribute("name", elementsToProcess[4]); //minimum number of elements
+            newButton.id = pathInInputData+"."+(existingNumberOfElements+1)+".x";
+            newButton.setAttribute("name", parentPath);
             newButton.addEventListener('click', function(event) {
-                deleteArrayElement(this.id.slice(0, -2), this.attributes["name"]["nodeValue"]);
+                deleteArrayElement2(this.id.slice(0, -2),this.attributes["name"]["nodeValue"]);
             });
             newButton.innerText = "Delete";
             newDiv = document.createElement('span');
@@ -415,11 +411,12 @@
             var sectionObj = elementToProcess[ElementIndex].split(".");
             for (s in sectionObj) {
                 retVal += processEditorPart(sectionObj[s], parentPath,
-                    selectAddReplace[parentPath + pathInInputData], parentPath + pathInInputData);
+                    selectAddReplace[parentPath + pathInInputData+"."+(existingNumberOfElements + 1)], 
+                    parentPath + pathInInputData+"."+(existingNumberOfElements + 1));
             }
 
             newDiv.innerHTML = retVal;
-            //   newDiv.id = obj.path;
+            newDiv.id = pathInInputData+"."+(existingNumberOfElements+1);
             newDiv.appendChild(newButton);
             document.getElementById(pathInInputData).appendChild(newDiv);
 
@@ -429,6 +426,21 @@
             console.log("selectAddReplace after select");
             console.log(selectAddReplace);
         }
+        
+         function deleteArrayElement2(pathInInputDataNumber, parentPath) {
+             var pathObj = pathInInputDataNumber.split(".");
+            var elementToProcess = inputData[pathObj[0]][pathObj[1]];
+            
+            var sectionObj = elementToProcess[4].split(".");
+            for (s in sectionObj) {
+                processEditorPart(sectionObj[s], parentPath,
+                    selectAddReplace[parentPath + pathInInputDataNumber], parentPath + pathInInputDataNumber);
+            }
+                      
+            document.getElementById(pathInInputDataNumber).remove();
+            showFormattedOutputJson();
+            
+         }
 
         function loadBase64File(f, path) {
             const reader = new FileReader();
