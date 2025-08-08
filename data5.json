@@ -1,25 +1,25 @@
 {
 	"start": [
 		["separator", "example 1 - different edit types"],
-		["string", "example1.yourName.a", "first string, only numbers", "", 2, 10, "[0-9]+"],
-		["number", "example1.number1,example1.number2", "what is your lucky number?", 50, 0, 100, 50],
-		["date", "example1.date", "when?", "2025-01-01", "2024-12-29", "2025-02-02"],
-		["file64",  "example1.doc", "some document base64", ""],
-		["fileHex", "example1.doc2", "some document hex", ""],
-		["checkbox", "example1.bool", "are you happy?", true],
-	        ["const","example1.alwaysTheSame","onetwothree"],
-		["random", "example1.random", "abcdefGHJ", 6,"start-","-end"],
-		["option", "example1.option", "I can select luck level", "good", "excellent", "perfect", "good"],
+		["string", "example01.yourName.a", "first string, only numbers", "", 2, 10, "[0-9]+"],
+		["number", "example01.number1,example01.number2", "what is your lucky number?", 50, 0, 100, 50],
+		["date", "example01.date", "when?", "2025-01-01", "2024-12-29", "2025-02-02"],
+		["file64",  "example01.doc", "some document base64", ""],
+		["fileHex", "example01.doc2", "some document hex", ""],
+		["checkbox", "example01.bool", "are you happy?", true],
+	        ["const","example01.alwaysTheSame","onetwothree"],
+		["random", "example01.random", "abcdefGHJ", 6,"start-","-end"],
+		["option", "example01.option", "I can select luck level", "good", "excellent", "perfect", "good"],
 	        
 	        ["separator", "example 2 - link without path"],
 		["link", "", "link"],
 
 	        ["separator", "example 3 - link with path"],
-		["link", "example3[]", "link"],
+		["link", "example03[]", "link"],
 		
 	        ["separator", "example 4 - array with Add / Delete buttons"],
-	        ["other", "example4.index", "array index", "example4.options[]"],
-		["array", "example4.options[]", "extra options array", "array", 1],
+	        ["other", "example04.index", "array index", "example04.options[]"],
+		["array", "example04.options[]", "extra options array", "array", 1],
 		
 	        ["separator", "example 5 - select"],
 		["select", "Select what you like more", "buses",  "cars", "carsStruct", "buses", "busesStruct"],
@@ -29,60 +29,40 @@
 		["link", "", "option2"],
 
 	        ["separator", "example 7 - options in one array inside array"],
-	        ["const","example7[].example6_array1[].alwaysTheSame","onetwothree"],
-	        ["link", "example7[0]", "option1"],
-		["link", "example7[0]", "option2"],
+	        ["const","example07[].example6_array1[].alwaysTheSame","onetwothree"],
+	        ["link", "example07[0]", "option1"],
+		["link", "example07[0]", "option2"],
 		
 		["separator", "example 8 - array in array..."],
-	        ["const","example8[].example8_intern[].example8_array1[].alwaysTheSame","onetwothree"],
-	        ["link", "example8[0].example8_intern[0]", "option12"],
+	        ["const","example08[].example08_intern[].example08_array1[].alwaysTheSame","onetwothree"],
+	        ["link", "example08[0].example08_intern[0]", "option12"],
 	        
                 ["separator", "example 9 - combo"],
-                ["adddelete", "extra array", 0,0, "example10_delete", "example10_add", "example10_add2"],
-		["array2", "example9_part1[]", "extra options array2", "example9_start", 0]
-	 ],
-	 "example10_add": [
-		["addreplace","example10_array1[]","first_example10_array1[]"],
-		["addreplace","example10_array2[]"],
-		["string", "first_example10_array1[].firstStr", "first string, only numbers", "", 2, 10, "[0-9]+"],
-		["string", "example10_array2[].firstStr", "first string, only numbers", "", 2, 10, "[0-9]+"],
-		["link", "first_example10_array1[]", "option1"],
-		["link", "first_example10_array1[]", "option2"],
-		["addreplace","example10_array1[]", "second_example10_array1[]"],
-		["link", "second_example10_array1[]", "option1"],
-		["link", "second_example10_array1[]", "option2"]
-	 ],
-	 "example10_add2": [
-		["addreplace","example10_array1[]","first_example10_array1[]"],
-		["addreplace","example10_array2[]"],
-	 	["string", "first_example10_array1[].secondStr", "Second string, only numbers", "", 2, 10, "[0-9]+"]
-	 ],
-	 "example10_delete": [
-		["delete","second_example10_array1[],first_example10_array1[],example10_array2[]"]
+                ["adddelete", "extra array", 0,0, "example9_delete", "example9_add", "example9_add2"]
 	 ],
 	 "link": [
-		["string", "yourName.a", "first string, only numbers", "", 2, 10, "[0-9]+"]
+		["string", "theSameForExample2And3.yourName.a", "first string, only numbers", "", 2, 10, "[0-9]+"]
 	 ],
 	 "array": [
 		["string", "yourName.a", "array string, string possible, only capitals", "", 2, 10, "[A-Z]+"]
 	 ],
 	 "carsStruct": [
-	        ["delete", "example5.busSelected"],
-	        ["const","example5.carSelected",true],
-       		["string", "example5.str", "string with regular expression", "default", 2, 10, "[1-9]+"]
+	        ["delete", "example05.busSelected"],
+	        ["const","example05.carSelected",true],
+       		["string", "example05.str", "string with regular expression", "default", 2, 10, "[1-9]+"]
 	 ],
 	 "busesStruct": [
-	        ["delete", "example5.carSelected"],
-	        ["const","example5.busSelected",true],
-       		["string", "example5.str", "string withotu rules", "", 0, 0, ""]
+	        ["delete", "example05.carSelected"],
+	        ["const","example05.busSelected",true],
+       		["string", "example05.str", "string withotu rules", "", 0, 0, ""]
 	 ],
 	 "option1": [
 	        ["select", "option1", "yes", "yes", "option1_yes", "no", "option1_no"]
 	 ],
 	 "option1_yes": [
-	 	["addreplace","example6_array2[],example6_array1[]"],
-	        ["const","example6_array1[].x[].testvalue,example6_array2[].testvalue","option1_yes"],
-	        ["string", "example6_array1[].x[].str", "str", "option1", 0, 0, ""]
+	 	["addreplace","example06_array2[],example06_array1[]"],
+	        ["const","example06_array1[].x[].testvalue,example06_array2[].testvalue","option1_yes"],
+	        ["string", "example06_array1[].x[].str", "str", "option1", 0, 0, ""]
 	 ],
 	 "option1_no": [
 	        ["delete", "example6_array2[],example6_array1[]"]
@@ -91,67 +71,56 @@
 	        ["select", "option2", "no",  "yes", "option2_yes", "no", "option2_no"]
 	 ],
 	 "option2_yes": [
-	 	["addreplace","example6_array2[],example6_array1[]"],
-	        ["const","example6_array1[].testvalue,example6_array2[].testvalue","option2_yes"],
-	        ["string", "example6_array1[].str", "str", "option2", 0, 0, ""]
+	 	["addreplace","example06_array2[],example6_array1[]"],
+	        ["const","example06_array1[].testvalue,example06_array2[].testvalue","option2_yes"],
+	        ["string", "example06_array1[].str", "str", "option2", 0, 0, ""]
 	 ],
 	 "option2_no": [
-	        ["delete", "example6_array2[],example6_array1[]"]
+	        ["delete", "example06_array2[],example6_array1[]"]
 	 ],
 	 "option12": [
 	        ["select", "option1", "yes", "yes", "option18_yes", "no", "option18_no"],
 	        ["select", "option2", "no",  "yes", "option28_yes", "no", "option28_no"]
 	 ],
 	 "option18_yes": [
-	 	["addreplace","example8_array2[],example8_array1[]"],
-	        ["const","example8_array1[].x[].testvalue,example8_array2[].testvalue","option1_yes"],
-	        ["const","$.example8[0].testvalue,example8_array2[].testvalue","option1_hallo"],
-	        ["string", "example8_array1[].x[].str", "str", "option1", 0, 0, ""],
-	        ["link","example8_array1[].x[]","option18_yes_extra"]
+	 	["addreplace","example08_array2[],example08_array1[]"],
+	        ["const","example08_array1[].x[].testvalue,example08_array2[].testvalue","option1_yes"],
+	        ["const","$.example08[0].testvalue,example08_array2[].testvalue","option1_hallo"],
+	        ["string", "example08_array1[].x[].str", "str", "option1", 0, 0, ""],
+	        ["link","example08_array1[].x[]","option18_yes_extra"]
 	 ],
 	 "option18_no": [
-	        ["delete", "example8_array2[],example8_array1[],$.example8[0].testvalue"]
+	        ["delete", "example08_array2[],example08_array1[],$.example08[0].testvalue"]
 	 ],
 	 "option28_yes": [
-	 	["addreplace","example8_array2[],example8_array1[]"],
-	        ["const","example8_array1[].testvalue,example8_array2[].testvalue","option2_yes"],
-	        ["string", "example8_array1[].str", "str", "option2", 0, 0, ""]
+	 	["addreplace","example08_array2[],example08_array1[]"],
+	        ["const","example08_array1[].testvalue,example08_array2[].testvalue","option2_yes"],
+	        ["string", "example08_array1[].str", "str", "option2", 0, 0, ""]
 	 ],
 	 "option28_no": [
-	        ["delete", "example8_array2[],example8_array1[]"]
+	        ["delete", "example08_array2[],example08_array1[]"]
 	 ],
 	 "option18_yes_extra": [
 	 	["string", "str1", "str", "str1", 0, 0, ""],
 	 	["string", "str2", "str", "str2", 0, 0, ""]
 	 ],
 	 "example9_add": [
-	 	["link", "example9[]", "option129"]
-	 	
+		["addreplace","example09_array1[]","first_example09_array1[]"],
+		["addreplace","example09_array2[]"],
+		["string", "first_example09_array1[].firstStr", "first string, only numbers", "", 2, 10, "[0-9]+"],
+		["string", "example09_array2[].firstStr", "first string, only numbers", "", 2, 10, "[0-9]+"],
+		["link", "first_example09_array1[]", "option1"],
+		["link", "first_example09_array1[]", "option2"],
+		["addreplace","example09_array1[]", "second_example09_array1[]"],
+		["link", "second_example09_array1[]", "option1"],
+		["link", "second_example09_array1[]", "option2"]
 	 ],
-	 "option129": [
-	        ["select", "option1", "yes", "yes", "option19_yes", "no", "option19_no"],
-	        ["select", "option2", "no",  "yes", "option29_yes", "no", "option29_no"]
+	 "example9_add2": [
+		["addreplace","example09_array1[]","first_example09_array1[]"],
+		["addreplace","example09_array2[]"],
+	 	["string", "first_example09_array1[].secondStr", "Second string, only numbers", "", 2, 10, "[0-9]+"]
 	 ],
-	 "option19_yes": [
-	 	["addreplace","example9_array2[],example9_array1[]"],
-	        ["const","example9_array1[].x[].testvalue,example9_array2[].testvalue","option1_yes"],
-	        ["const","$.example90[].testvalue,example9_array2[].testvalue","option1_hallo"],
-	        ["string", "example9_array1[].x[].str", "str", "option1", 0, 0, ""],
-	        ["link","example9_array1[].x[]","option19_yes_extra"]
-	 ],
-	 "option19_no": [
-	        ["delete", "example9_array2[],example9_array1[],$.example9[].testvalue"]
-	 ],
-	 "option29_yes": [
-	 	["addreplace","example9_array2[],example9_array1[]"],
-	        ["const","example9_array1[].testvalue,example9_array2[].testvalue","option2_yes"],
-	        ["string", "example9_array1[].str", "str", "option2", 0, 0, ""]
-	 ],
-	 "option29_no": [
-	        ["delete", "example9_array2[],example9_array1[]"]
-	 ],
-	 "option19_yes_extra": [
-	 	["string", "str1", "str", "str1", 0, 0, ""],
-	 	["string", "str2", "str", "str2", 0, 0, ""]
+	 "example9_delete": [
+		["delete","second_example09_array1[],first_example09_array1[],example09_array2[]"]
 	 ]
 }

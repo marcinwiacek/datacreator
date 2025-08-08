@@ -24,7 +24,7 @@
 
 <body>
     <input type="file" id="file" name="file" />
-    <a id="getOutput" download="output.json" onclick=getOutputJson(); href=''>Get JSON</a>
+    <a id="getOutput" download="output.json" onclick='return getOutputJson();' href=''>Get JSON</a>
     <span id="errors"></span>
     <p>
     <div style="display: flex;">
@@ -34,13 +34,14 @@
         <pre style="flex: 60%; margin: 30px; max-width: 400px; overflow-x: auto;" id="json"></pre>
     </div>
     <script>
-        var inputData, outputData, addArray, selectAddReplace, processing;
+        var inputData, outputData={}, addArray, selectAddReplace, processing;
 
         //alphabetical, values, objects, arrays
         function sortJson(dat) {
             return Object.keys(dat).sort(
                 function(a, b) {
-                    if (dat[a] instanceof Object == dat[b] instanceof Object && Array.isArray(dat[a]) == Array.isArray(dat[b])) {
+                    if (dat[a] instanceof Object == dat[b] instanceof Object && 
+                        Array.isArray(dat[a]) == Array.isArray(dat[b])) {
                         return a.localeCompare(b);
                     } else if (Array.isArray(dat[b])) {
                         return -1;
@@ -67,8 +68,14 @@
         }
 
         function getOutputJson() {
+            if (JSON.stringify(outputData, null, 2).length==2) {
+            	alert("Empty output file!");
+            	return false;
+            } else {
             document.getElementById("getOutput").setAttribute('href', 'data:;base64,' +
                 btoa(JSON.stringify(outputData, null, 2)));
+                return true;
+                }
         }
 
         function findOutputObject(path, canCreate) {
@@ -243,13 +250,15 @@
             if (obj.obj[info[0]].length == Number(minimum)) {
                 alert('Array ' + path + ' needs at least ' + minimum + ' elements');
             } else {
+             console.log("selectAddReplace before deleting");
+                console.log(selectAddReplace);
                 var pathObj = path.split(".");
                 pathObj[pathObj.length - 1] = info[0];
-                console.log(pathObj.join("."));
+              //  console.log(pathObj.join("."));
                 for (var jj in selectAddReplace) {
                     obj2 = selectAddReplace[jj];
                     for (jjj in obj2) {
-                        console.log("jjj " + jjj);
+                //        console.log("jjj " + jjj);
                         if (jjj.startsWith(pathObj.join(".") + "[]") && obj2[jjj].startsWith(path)) {
                             console.log("deleting " + jjj);
                             console.log(obj2);
@@ -264,13 +273,15 @@
                 for (var jj in selectAddReplace) {
                     obj2 = selectAddReplace[jj];
                     for (jjj in obj2) {
-                        console.log("jjj " + jjj);
+                       // console.log("jjj " + jjj);
                         if (jjj.startsWith(pathObj.join(".") + "[]")) {
                             pathObj2 = obj2[jjj].split(".");
                             var info2 = pathObj2[pathObj2.length - 1].split(/[\[,\]]/);
                             if (Number(info2[1]) > Number(info[1])) {
                                 pathObj2[pathObj2.length - 1] = info2[0] + "[" + (Number(info2[1]) - 1) + "]";
                                 obj2[jjj] = pathObj2.join(".");
+                                 console.log("updating " + jjj);
+                            console.log(obj2[jjj]);
                             }
                         }
                     }
@@ -539,7 +550,8 @@
                         //0 type, 1 description, 2 default,  (3 name, 4 sections for processing)...
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
-                        editorText += "<select onchange=processSelect('" + section + "." + i + "',this.value,'" + parentPath + "');>";
+                        editorText += "<select onchange=processSelect('" + section + "." + i + 
+                            "',this.value,'" + parentPath + "');>";
                         for (j = 3; j < elementsToProcess[i].length; j = j + 2) {
                             editorText += "<option value='" + elementsToProcess[i][j] + "'";
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) editorText += " selected";
@@ -594,10 +606,8 @@
                         //link to existing structure
                         //0 type, 1 path, 2 section
                         if (elementsToProcess[i][1] != "") {
-                            obj = findOutputObject(getAddReplace(parentPath, elementsToProcess[i][1], addReplace), true);
-                            //   elementsToProcess[i][1] = obj.path;
+                            obj = findOutputObject(getAddReplace(parentPath, elementsToProcess[i][1], addReplace), true);                            
                             editorText += processEditorPart(elementsToProcess[i][2], obj.path + ".", addReplace, selectname);
-                            //			editorText += processEditorPart(elementsToProcess[i][2], elementsToProcess[i][1] + ".", addReplace, selectname);
                         } else {
                             editorText += processEditorPart(elementsToProcess[i][2], "", addReplace, selectname);
                         }
@@ -630,6 +640,8 @@
                             if (obj.obj != null && obj.lastPathElement != null) {
                                 if (obj.lastPathElement.includes("[")) {
                                     deleteArrayElement(obj.path, 0);
+                                   
+                
                                 } else {
                                     console.log("deleting " + obj.lastPathElement);
                                     delete obj.obj[obj.lastPathElement];
@@ -666,7 +678,9 @@
                         pathList = elementsToProcess[i][1].split(",");
                         for (p in pathList) {
                             obj = findOutputObject(parentPath + pathList[p], true);
-                            addReplace[elementsToProcess[i].length == 3 ? elementsToProcess[i][2] : getAddReplace(parentPath, pathList[p], addReplace)] = obj.path;
+                            addReplace[elementsToProcess[i].length == 3 ? 
+                               elementsToProcess[i][2] : 
+                               getAddReplace(parentPath, pathList[p], addReplace)] = obj.path;
                         }
                         console.log("addReplace");
                         console.log(addReplace);
