@@ -1,4 +1,9 @@
 {
+	"info": [
+	    "Example file for DataCreator project (MIT license) from GitHub",
+	    "You can create different menu options",
+	    "Version 20250809"
+	],
 	"start": [
 		["separator", "example 1 - different edit types"],
 		["string", "example01.yourName.a", "first string, only numbers", "", 2, 10, "[0-9]+"],
@@ -29,7 +34,7 @@
 		["link", "", "option2"],
 
 	        ["separator", "example 7 - options in one array inside array"],
-	        ["const","example07[].example6_array1[].alwaysTheSame","onetwothree"],
+	        ["const","example07[].example06_array1[].alwaysTheSame","onetwothree"],
 	        ["link", "example07[0]", "option1"],
 		["link", "example07[0]", "option2"],
 		
@@ -37,15 +42,21 @@
 	        ["const","example08[].example08_intern[].example08_array1[].alwaysTheSame","onetwothree"],
 	        ["link", "example08[0].example08_intern[0]", "option12"],
 	        
-                ["separator", "example 9 - combo"],
-                ["adddelete", "extra array", 0,0, "example9_delete", "example9_add", "example9_add2"]
+                ["separator", "example 9 - combo"],              		
+                ["adddelete", "extra array", "example9_delete", "example9_add", false, "example9_add2", true, "example9_add2", true,"example9_add2", true],
+                ["index", "example09.index1", "array index", "example09_array1[]"],
+		["index", "example09.index2", "array index", "example09_array2[]"]
 	 ],
 	 "link": [
 		["string", "theSameForExample2And3.yourName.a", "first string, only numbers", "", 2, 10, "[0-9]+"]
 	 ],
+	 
+	 
 	 "array": [
 		["string", "yourName.a", "array string, string possible, only capitals", "", 2, 10, "[A-Z]+"]
 	 ],
+	 
+	 
 	 "carsStruct": [
 	        ["delete", "example05.busSelected"],
 	        ["const","example05.carSelected",true],
@@ -65,18 +76,19 @@
 	        ["string", "example06_array1[].x[].str", "str", "option1", 0, 0, ""]
 	 ],
 	 "option1_no": [
-	        ["delete", "example6_array2[],example6_array1[]"]
+	        ["delete", "example06_array2[],example06_array1[]"]
 	 ],
 	 "option2": [
 	        ["select", "option2", "no",  "yes", "option2_yes", "no", "option2_no"]
 	 ],
 	 "option2_yes": [
-	 	["addreplace","example06_array2[],example6_array1[]"],
+	 	["addreplace","example06_array2[],example06_array1[]"],
 	        ["const","example06_array1[].testvalue,example06_array2[].testvalue","option2_yes"],
-	        ["string", "example06_array1[].str", "str", "option2", 0, 0, ""]
+	        ["string", "example06_array1[].str", "str", "option2", 0, 0, ""],
+		["index", "indxxxxx"]
 	 ],
 	 "option2_no": [
-	        ["delete", "example06_array2[],example6_array1[]"]
+	        ["delete", "example06_array2[],example06_array1[]"]
 	 ],
 	 "option12": [
 	        ["select", "option1", "yes", "yes", "option18_yes", "no", "option18_no"],
