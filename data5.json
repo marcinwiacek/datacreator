@@ -1,34 +1,33 @@
 {
 	"info": [
-	    "Example file for DataCreator project (MIT license) from GitHub",
-	    "You can create different menu options",
-	    "Version 20250809"
+	    "Example file (MIT license) for DataCreator project (MIT license) from GitHub",
+	    "You can create complicated JSON files with user friendly menu",
+	    "Version 20250817"
 	],
 	"start": [
 		["separator", "example 1 - different edit types"],
-		["string", "example01.yourName.a", "first string, only numbers", "", 2, 10, "[0-9]+"],
-		["number", "example01.number1,example01.number2", "what is your lucky number?", 50, 0, 100, 50],
+		["string", "example01.yourName.stringWithNumber", "first string, only numbers", "", 2, 10, "[0-9]+"],
+		["number", "example01.int1,example01.int2", "what is your lucky number?", 60, 0, 100, 20],
+		["number", "example01.float", "float number", 50.02, 0, 100, 0.02],
 		["date", "example01.date", "when?", "2025-01-01", "2024-12-29", "2025-02-02"],
-		["file64",  "example01.doc", "some document base64", ""],
-		["fileHex", "example01.doc2", "some document hex", ""],
+		["time", "example01.time", "when?", "", "", ""],
+		["file64",  "example01.doc", "some document base64", "T0s=","example",""],
+		["fileHex", "example01.doc2", "some document hex", "","", ""],
 		["checkbox", "example01.bool", "are you happy?", true],
-	        ["const","example01.alwaysTheSame","onetwothree"],
+	        ["const","example01.alwaysTheSameConst","onetwothree"],
 		["random", "example01.random", "abcdefGHJ", 6,"start-","-end"],
 		["option", "example01.option", "I can select luck level", "good", "excellent", "perfect", "good"],
-	        
+		["multi", "example01.arr[]", "You can more", 1, 2, "good", true, "excellent", false, "perfect", true],
+
 	        ["separator", "example 2 - link without path"],
 		["link", "", "link"],
 
 	        ["separator", "example 3 - link with path"],
 		["link", "example03[]", "link"],
-		
-	        ["separator", "example 4 - array with Add / Delete buttons"],
-	        ["other", "example04.index", "array index", "example04.options[]"],
-		["array", "example04.options[]", "extra options array", "array", 1],
-		
+
 	        ["separator", "example 5 - select"],
-		["select", "Select what you like more", "buses",  "cars", "carsStruct", "buses", "busesStruct"],
-		
+		["select", "Select what you like", "buses",  "cars", "carsStruct", "buses", "busesStruct"],
+
 	        ["separator", "example 6 - options in one array"],
 		["link", "", "option1"],
 		["link", "", "option2"],
@@ -37,26 +36,23 @@
 	        ["const","example07[].example06_array1[].alwaysTheSame","onetwothree"],
 	        ["link", "example07[0]", "option1"],
 		["link", "example07[0]", "option2"],
-		
+
 		["separator", "example 8 - array in array..."],
 	        ["const","example08[].example08_intern[].example08_array1[].alwaysTheSame","onetwothree"],
 	        ["link", "example08[0].example08_intern[0]", "option12"],
-	        
-                ["separator", "example 9 - combo"],              		
-                ["adddelete", "extra array", "example9_delete", "example9_add", false, "example9_add2", true, "example9_add2", true,"example9_add2", true],
-                ["index", "example09.index1", "array index", "example09_array1[]"],
-		["index", "example09.index2", "array index", "example09_array2[]"]
+
+                ["separator", "example 9 - combo"],
+                ["index", "example09.index1toselect", "array index1 to select", "example09_array1[]"],
+		["index", "example09.index2toselect", "array index2 to select", "example09_array2[]"],
+                ["adddelete", "extra array", "example9_delete", "example9_add", true, "example9_add2", true, "example9_add2", true,"example9_add2", true]
 	 ],
+
+	 "comment":"example 2 and 3",
 	 "link": [
 		["string", "theSameForExample2And3.yourName.a", "first string, only numbers", "", 2, 10, "[0-9]+"]
 	 ],
-	 
-	 
-	 "array": [
-		["string", "yourName.a", "array string, string possible, only capitals", "", 2, 10, "[A-Z]+"]
-	 ],
-	 
-	 
+ 
+	 "comment2":"example 5",
 	 "carsStruct": [
 	        ["delete", "example05.busSelected"],
 	        ["const","example05.carSelected",true],
@@ -65,15 +61,18 @@
 	 "busesStruct": [
 	        ["delete", "example05.carSelected"],
 	        ["const","example05.busSelected",true],
-       		["string", "example05.str", "string withotu rules", "", 0, 0, ""]
+       		["string", "example05.str", "string without rules", "", 0, 0, ""]
 	 ],
+ 
+	 "comment":"example 6 and 7 and 9 (part)",
 	 "option1": [
 	        ["select", "option1", "yes", "yes", "option1_yes", "no", "option1_no"]
 	 ],
 	 "option1_yes": [
 	 	["addreplace","example06_array2[],example06_array1[]"],
 	        ["const","example06_array1[].x[].testvalue,example06_array2[].testvalue","option1_yes"],
-	        ["string", "example06_array1[].x[].str", "str", "option1", 0, 0, ""]
+	        ["string", "example06_array1[].x[].str", "str", "option1", 0, 0, ""],
+	        ["index", "index1", "example06_array1[]"]
 	 ],
 	 "option1_no": [
 	        ["delete", "example06_array2[],example06_array1[]"]
@@ -84,12 +83,14 @@
 	 "option2_yes": [
 	 	["addreplace","example06_array2[],example06_array1[]"],
 	        ["const","example06_array1[].testvalue,example06_array2[].testvalue","option2_yes"],
-	        ["string", "example06_array1[].str", "str", "option2", 0, 0, ""],
-		["index", "indxxxxx"]
+	        ["string", "example06_array1[].str", "str1", "option2", 0, 0, ""],
+		["index", "index2", "example06_array2[]"]
 	 ],
 	 "option2_no": [
 	        ["delete", "example06_array2[],example06_array1[]"]
 	 ],
+ 
+	 "comment":"example 8",
 	 "option12": [
 	        ["select", "option1", "yes", "yes", "option18_yes", "no", "option18_no"],
 	        ["select", "option2", "no",  "yes", "option28_yes", "no", "option28_no"]
@@ -116,6 +117,8 @@
 	 	["string", "str1", "str", "str1", 0, 0, ""],
 	 	["string", "str2", "str", "str2", 0, 0, ""]
 	 ],
+ 
+	 "comment":"example 9 (part)",
 	 "example9_add": [
 		["addreplace","example09_array1[]","first_example09_array1[]"],
 		["addreplace","example09_array2[]"],

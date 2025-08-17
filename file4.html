@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html>
-
 <head>
     <script>
-       const version = "250809";
+           const debug = false, //do you want debug in browser console?
+       version = "250817";
        document.title = "DataCreator (MIT license) "+version;
     </script>
     <meta charset="utf-8">
@@ -27,8 +28,9 @@
 </head>
 
 <body>
-    <input type="file" id="file" name="file" />
-    <a id="getOutput" download="output.json" onclick='return getOutputJson();' href=''>Get JSON</a>
+    <input type="file" id="file" accept=".json" name="file" />
+    <a id="getOutput" download="output.json" onclick='return getOutputJson();' 
+       title='Click to get output file' href=''>Get JSON</a>
     <p><span id="info"></span>
     <div style="display: flex;">
         <span style="flex: 40%; display: grid; grid-template-columns: 1fr 1fr; max-width: 800px;">
@@ -41,7 +43,7 @@
             outputData={}, //generated JSON
             addArray, //something to processing in the end
             selectAddReplace, //replace strings for paths in generated JSON
-            processing; // string for debug info showing what is processed
+            processing; //string for debug info showing what is processed
 
         //alphabetical, values, objects, arrays
         function sortJson(dat) {
@@ -77,45 +79,62 @@
 //called after clicking 'Get JSON' - creating correct base64 URL
         function getOutputJson() {
             if (JSON.stringify(outputData, null, 2).length==2) {
-            	alert("Empty output file!");
+            	alert("Empty output file. Nothing to get.");
             	return false;
             } else {
+            var yesno = true;
+            const obj = document.getElementsByTagName("font");
+            for (var i in obj) {
+            	if (obj[i].color == "red" && yesno) {
+            	   if (!confirm("You still have errors. Continue?")) return false;
+            	   yesno = false;
+            	}
+            }
+
             document.getElementById("getOutput").setAttribute('href', 'data:;base64,' +
                 btoa(JSON.stringify(outputData, null, 2)));
                 return true;
                 }
         }
-        
+
         //show JSON in window
           function showFormattedOutputJson() {
             document.getElementById("json").innerHTML = JSON.stringify(sortJson(outputData), null, 2);
         }
 
-        function findOutputObject(path, canCreate) {
-            console.log("findOutputPath " + path);
+//find (canCreate = false) or find+create path (canCreate = true) in output json
+//example of paths:
+//1. array[] - we don't have index number in brackets and we have
+//to create new array element (when returnWholeArray = false) or return
+//array (when returnWholeArray = true)
+//2. array[1] - we get second array element
+//3. field1.field2.field3 - all elements are separated with dots
+//4. array[1].field1
+        function findOutputObject(pathInOutputData, canCreate, returnWholeArray) {
+            if (debug) console.log("findOutputPath start " + pathInOutputData);
             var obj = outputData;
-            var pathObj = path.split(".");
-            var newValue = false;
+            var pathObj = pathInOutputData.split(".");
             var retVal = {};
             retVal.path = pathObj.join(".");
+             retVal.isNewValue = false;
             for (var i = 0; i < pathObj.length; i++) {
-                console.log("element " + pathObj[i]);
+                if (debug) console.log("element " + pathObj[i]);
                 //array?
                 if (pathObj[i].includes("[")) {
                     var info = pathObj[i].split(/[\[,\]]/);
                     if (obj[info[0]] == null) {
                         if (!canCreate) return retVal;
                         obj[info[0]] = [];
-                        console.log("creating array");
-                        newValue = true;
+                        retVal.isNewValue = true;
+                        if (debug) console.log("creating array");
                     }
                     //we don't have index = we create new one
                     if (info[1] == "") {
                         obj = obj[info[0]];
                         retVal.obj = obj;
-                        if (!canCreate) return retVal;
+                        if (!canCreate || returnWholeArray) return retVal;
                         obj.push({});
-                        newValue = true;
+                        retVal.isNewValue = true;
                         pathObj[i] = info[0] + "[" + (obj.length - 1) + "]";
                         if (i == pathObj.length - 1) break;
                         obj = obj[obj.length - 1];
@@ -125,7 +144,7 @@
                             if (!canCreate) return retVal;
                             obj = obj[info[0]];
                             obj.push({});
-                            newValue = true;
+                            retVal.isNewValue = true;
                             if (Number(info[1]) == obj.length - 1) {
                                 obj = obj[info[1]];
                             }
@@ -136,7 +155,7 @@
                 } else { //no array
                     if (obj[pathObj[i]] == null) {
                         if (!canCreate) return retVal;
-                        newValue = true;
+                        retVal.isNewValue = true;
                         obj[pathObj[i]] = i != pathObj.length - 1 ? {} : "";
                     }
                     if (i == pathObj.length - 1) break;
@@ -146,14 +165,14 @@
             retVal.obj = obj;
             retVal.lastPathElement = pathObj[pathObj.length - 1];
             retVal.path = pathObj.join(".");
-            retVal.isNewValue = newValue;
-            console.log(retVal);
+            if (debug) console.log(retVal);
             return retVal;
         }
 
+//generate error info for some fields
         function parseEditErrors(inputDataSection, inputDataElement, value) {
             var retVal = "";
-            var obj = inputData[inputDataSection][inputDataElement];
+            const obj = inputData[inputDataSection][inputDataElement];
             if (obj[0] == "string") {
                 if (obj[6] != "" && value != null && !value.match(new RegExp("^" + obj[6] + "$"))) {
                     retVal += "<font color=red>Text doesn't match regular exp. " + obj[6] + "</font>";
@@ -173,32 +192,71 @@
                 if (Number(value) > Number(obj[5])) {
                     retVal += "<font color=red>Maximal value " + obj[5] + "</font>";
                 }
+             } else if (obj[0] == "multi" && (obj[3] != 0 || obj[4] != 0)) {
+                if (value.length < Number(obj[3])) {
+                    retVal += "<font color=red>Select at least " + obj[3] + " values</font>";
+                }
+                if (value.length > Number(obj[4])) {
+                    retVal += "<font color=red>Select maximally " + obj[4] + " values</font>";
+                }
             }
             return retVal;
         }
 
-        function setEditErrors(path, value, inputDataSection, inputDataElement) {
-            document.getElementById(path + "_error").innerHTML = 
+        function setEditErrors(pathInOutputData, value, inputDataSection, inputDataElement) {
+            document.getElementById(pathInOutputData + "_error").innerHTML = 
                parseEditErrors(inputDataSection, inputDataElement, value);
         }
+        
+         function setEditErrorsMulti(pathInOutputData, values, inputDataSection, inputDataElement) {
+         var val = [];
+        	for (var i=0;i<values.length;i++) {
+        		if (values[i].selected) val.push(values[i].value);
+        	}
+            document.getElementById(pathInOutputData + "_error").innerHTML = 
+               parseEditErrors(inputDataSection, inputDataElement, val);
+        }
 
-        function editStringBoolNum(path, value, num) {
-            const pathList = path.split(",");
+        //when we have arrayindex to array
+        function updateTooltip(id, value) {
+        	const obj = document.getElementById(id);
+        	 var pathObj = obj.attributes["name"]["nodeValue"].split(",");
+        	    const info = pathObj[pathObj.length-1].split(/[\[,\]]/);
+        	    pathObj[pathObj.length-1] = info[0]+"["+value+"]";
+         const obj2 = findOutputObject(pathObj.join("."), false, false);
+         obj.title = obj2.obj && obj2.obj[info[0]] && obj2.obj[info[0]][value]?
+         JSON.stringify(obj2.obj[info[0]][value]):"";
+        }
+
+//changing one value after changing string, boolean, number, etc.
+        function editStringBoolNum(pathInOutputData, value, isThisNum) {
+       if (debug) {
+        console.log("editStringBoolNum");
+        console.log(value);
+        }
+            const pathList = pathInOutputData.split(",");
             for (var p in pathList) {
-                var obj = findOutputObject(pathList[p], true);
-                obj.obj[obj.lastPathElement] = num ? Number(value) : value;
+                var obj = findOutputObject(pathList[p], true, Array.isArray(value));
+                obj.obj[obj.lastPathElement] = isThisNum ? Number(value) : value;
             }
             showFormattedOutputJson();
         }
 
-  //what when we have two array? todo
-        function processExtraArrayElements(editorPath) {
-        processing = "processExtraArrayElements "+editorPath;
+//after selecting smth in multiselect
+        function editMulti(pathInOutputData, values) {
+        	var val = [];
+        	for (var i=0;i<values.length;i++) {
+        		if (values[i].selected) val.push(values[i].value);
+        	}
+        	editStringBoolNum(pathInOutputData, val, false);
+        }
+
+  //add default sections from "adddelete" elements
+        function processExtraArrayElements() {
+        processing = "processExtraArrayElements";
             for (var z in addArray) {
-                if (addArray[z].editorPath != editorPath) {
-                    addArrayElement(addArray[z].editorPath,
-                        addArray[z].newEditorPath, addArray[z].parentPathInJson);
-                }
+                    addArrayStruct(addArray[z].editorPath,
+                        addArray[z].parentPathInJson, false);
             }
             addArray = [];
         }
@@ -209,9 +267,9 @@
             const obj = document.getElementsByTagName("select");
             for (var z in obj) {
                 if (obj[z].attributes && obj[z].attributes["name"]) {
-                    console.log("searching for " + obj[z].attributes["name"]["nodeValue"] + " for the end");
-                    const obj2 = findOutputObject(obj[z].attributes["name"]["nodeValue"], false);
-                    console.log(obj2);
+                    if (debug) console.log("searching for " + obj[z].attributes["name"]["nodeValue"] + " for the end");
+                    const obj2 = findOutputObject(obj[z].attributes["name"]["nodeValue"], false, false);
+                    if (debug) console.log(obj2);
                     if (obj2 != null && obj2.obj!=null) {
                         for (j = 0; j < obj2.obj.length; j++) {
                             var found = false;
@@ -225,76 +283,102 @@
                                 var op = document.createElement('option');
                                 op.value = j;
                                 op.innerHTML = j;
+                                if (obj[z].value=="") {
                                 obj[z].add(op);
+                                    editStringBoolNum(obj[z].id, j, true);
+                                   if (debug) {
+                                    console.log("before add element in option");
+                                    console.log(obj2);
+                                    }
+                                    //obj[z].title = JSON.stringify(obj2.obj);
+                                    } else {
+                                    obj[z].add(op);
+                                    }
                             }
                         }
+                           document.getElementById(obj[z].attributes["name"]["nodeValue"] + "_error").innerHTML = "";
+                    } else if (document.getElementById(obj[z].attributes["name"]["nodeValue"] + "_error")!=null) {
+                    document.getElementById(obj[z].attributes["name"]["nodeValue"] + "_error").innerHTML = 
+                    "<font color=red>Needs some value</font>";
                     }
                 }
             }
         }
 
-        function processSelect(pathInInputData, value, parentPath) {
+//called after selecting value in select
+        function processSelect(pathInInputData, value, outputDataParentPath) {
+            if (debug) {
             console.log("processSelect '" + pathInInputData + "' '" + value + "'");
             console.log(selectAddReplace);
-            var pathObj = pathInInputData.split(".");
-               var info = pathObj[pathObj.length-1].split(/[\[,\]]/);
-            var elementToProcess = inputData[info[0]][info[1]];
-            console.log(elementToProcess);
-            for (var j = 3; j < elementToProcess.length; j = j + 2) {
+            }
+            const pathObj = pathInInputData.split(".");
+               const info = pathObj[pathObj.length-1].split(/[\[,\]]/);
+            const elementToProcess = inputData[info[0]][info[1]];
+            if (debug) console.log(elementToProcess);
+            for (var j = 3; j < elementToProcess.length; j+=2) {
                 if (elementToProcess[j] == value) {
                     var retVal = "";
-                    var sectionObj = elementToProcess[j + 1].split(".");
+                    const sectionObj = elementToProcess[j + 1].split(".");
                     for (s in sectionObj) {
-                        retVal += processEditorPart(sectionObj[s], pathInInputData,parentPath,null);
+                        retVal += processEditorPart(sectionObj[s], pathInInputData,outputDataParentPath,null);
                     }
                     document.getElementById(pathInInputData+"_span").innerHTML = retVal;
-                    processExtraArrayElements("");
+                    processExtraArrayElements();
                     processAllRelatedIndexes();
                     showFormattedOutputJson();
-                    console.log("selectAddReplace after select");
-                    console.log(selectAddReplace);
                     break;
                 }
+            }
+            if (debug) {
+            console.log("processSelect end '" + pathInInputData + "' '" + value + "'");
+            console.log(selectAddReplace);
             }
         }
 
         //todo delete elements outside (with $.)
-        function deleteArrayElement(path, minimum) {
-            console.log("Delete array alement " + path);
-            var obj = findOutputObject(path, true);
+        function deleteArrayElement(pathInOutputData) {
+            if (debug) console.log("Delete array alement " + pathInOutputData);
+            var obj = findOutputObject(pathInOutputData, true, false);
             var info = obj.lastPathElement.split(/[\[,\]]/);
+             if (debug) {
              console.log("selectAddReplace before deleting");
                 console.log(selectAddReplace);
-                var pathObj = path.split(".");
+                }
+                var pathObj = pathInOutputData.split(".");
                 pathObj[pathObj.length - 1] = info[0];
                 for (var jj in selectAddReplace) {
                     obj2 = selectAddReplace[jj];
-                    for (jjj in obj2) {
-                       // console.log("jjj " + jjj);
+                    for (var jjj in obj2) {
                         if (obj2[jjj].startsWith(pathObj.join(".") + "[")) {
                             pathObj2 = obj2[jjj].split(".");
                             var info2 = pathObj2[pathObj2.length - 1].split(/[\[,\]]/);
                             if (Number(info2[1]) > Number(info[1])) {
                                 pathObj2[pathObj2.length - 1] = info2[0] + "[" + (Number(info2[1]) - 1) + "]";
                                 obj2[jjj] = pathObj2.join(".");
-                                 console.log("updating " + jjj);
+                                if (debug) { 
+                                console.log("updating " + jjj);
                             console.log(obj2[jjj]);
+                            }
                             } else if (Number(info2[1]) == Number(info[1])) {
-                               console.log("deleting " + jjj);
+                             if (debug) { 
+                              console.log("deleting " + jjj);
                             console.log(obj2);
+                            }
                             delete obj2[jjj];
                             }
                         }
                     }
                       if (Object.keys(obj2).length == 0) delete selectAddReplace[jj];
                 }
+                if (debug) {
                  console.log("selectAddReplace after deleting part 2");
                 console.log(selectAddReplace);
+                }
                 //remove from json
                 obj.obj[info[0]].splice(info[1], 1);
                 //remove from editor
-                if (document.getElementById(path) != null) {
-                    document.getElementById(path).remove();
+                if (document.getElementById(pathInOutputData) != null) {
+                    document.getElementById(pathInOutputData).remove();
                 }
                 //change id for allowing searching all elements
                 obj0 = [document.getElementsByTagName("input"),
@@ -308,7 +392,7 @@
                         //remove value from select with array index
                         if (obj[j].attributes && obj[j].attributes["name"]) {
                             if (obj[j].attributes["name"]["nodeValue"] == pathObj.join(".") + "[]") {
-                                console.log(obj[j]);
+                                if (debug) console.log(obj[j]);
                                 //remove highest value
                                 toDelete = -1;
                                 toDeleteValue = 0;
@@ -319,9 +403,11 @@
                                     }
                                 }
                                 obj[j].remove(toDelete);
-                                //todo: select new value in select
+                                editStringBoolNum(obj[j].id, obj[j].value, true);
                                 if (obj[j].length == 0) {
-                                    editStringBoolNum(obj[j].id, "", false);
+                                    editStringBoolNum(obj[j].id, "", false);                                   
+                                     document.getElementById(obj[j].attributes["name"]["nodeValue"] + "_error")
+                                     .innerHTML =   "<font color=red>Needs some value</font>";
                                 }
                             }
                         }
@@ -336,131 +422,161 @@
                                 //update json value for array indexes
                                 if (obj[j].attributes && obj[j].attributes["name"] &&
                                     obj[j].attributes["name"]["nodeValue"] == "arrayindex") {
-                                    var obj2 = findOutputObject(pathObj2.join("."), true);
+                                    var obj2 = findOutputObject(pathObj2.join("."), false, false);
+                                    if (obj2 && obj2.obj) {
                                     obj2.obj[obj2.lastPathElement] = Number(i - 1);
+                                    }
                                 }
                             }
                         }
                     }
                 }
                 showFormattedOutputJson();
+                if (debug) {
                 console.log("selectAddReplace after deleting");
                 console.log(selectAddReplace);
+                }
         }
 
-        function addArrayStruct(pathInInputData, parentPath) {
-            console.log("addArrayElement2 '" + pathInInputData + "'");
+        function addArrayStruct(outputDataParentPath, pathInInputData, nonDefault) {
+            if (debug) {
+            console.log("addArrayStruct '" + pathInInputData + "'");
             console.log(selectAddReplace);
-            var pathObj = pathInInputData.split(".");
-            var elementToProcess = inputData[pathObj[0]][pathObj[1]];
-            console.log(elementToProcess);
-            var existingNumberOfElements = 0;
-for (var i=0;i<1000;i++) {
-    var obj = document.getElementById(pathInInputData + "." + existingNumberOfElements + ".x");
-        if (obj == null) break;
-        existingNumberOfElements = existingNumberOfElements +1;
+            }
+            const pathObj = pathInInputData.split(".");
+            const elementToProcess = inputData[pathObj[0]][pathObj[1]];
+            if (debug) console.log(elementToProcess);
+ var elementIndex = 0;
+ for (var i = 3;i<elementToProcess.length;i+=2) {
+	if (elementToProcess[i+1] == nonDefault && 
+	document.getElementById(pathInInputData + "." + i + ".x") == null) {
+	elementIndex = i;
+		break;
+	}
 }
-            var ElementIndex = 3;
-            if (ElementIndex + existingNumberOfElements*2 >= elementToProcess.length) {
-                alert('Not possible. Maximal '+((elementToProcess.length-3)/2)+' elements');
+            if (elementIndex == 0) {
+                alert('Not possible. Maximal '+((elementToProcess.length-3)/2)+
+                ' elements in element '+pathInInputData);
             } else {
-                ElementIndex += existingNumberOfElements*2;
-            newButton = document.createElement('button');
-            newButton.id = pathInInputData + "." + (existingNumberOfElements) + ".x";
-            newButton.setAttribute("name", parentPath);
-            newButton.addEventListener('click', function(event) {
-                deleteArrayStruct(this.id.slice(0, -2), this.attributes["name"]["nodeValue"]);
-            });
-            newButton.innerText = "Delete";
-            newDiv = document.createElement('span');
-            newDiv.classList.add("full");
-            newDiv.style = "display: grid; grid-template-columns: 1fr 1fr;";
+//first create new menu section
+var newLabel = document.createElement('label');
+newLabel.innerHTML = "<b>" + elementToProcess[1] + "</b>";
 
-            var retVal = "";
-            var sectionObj = elementToProcess[ElementIndex].split(".");
-            for (s in sectionObj) {
-                retVal += processEditorPart(sectionObj[s],
-                   parentPath + pathInInputData + "." + existingNumberOfElements , parentPath,null);
+var             newSpan = document.createElement('span');
+            newSpan.classList.add("full");
+newSpan.innerHTML =  "<br>&nbsp;<br>";
+ newSpan.id = outputDataParentPath + pathInInputData + "." + elementIndex;
+
+//now create delete button and span for menu
+ if (nonDefault) {
+            var newDelButton = document.createElement('button');
+            newDelButton.id = pathInInputData + "." + elementIndex + ".x";
+            newDelButton.setAttribute("name", outputDataParentPath);
+            newDelButton.addEventListener('click', function(event) {
+                if (confirm("Continue?")) {
+                deleteArrayStruct(this.id.slice(0, -2), this.attributes["name"]["nodeValue"]);
+                }
+            });
+            newDelButton.innerText = "Delete";
             }
 
-            newDiv.innerHTML = retVal;
-            newDiv.id = pathInInputData + "." + (existingNumberOfElements);
-            newDiv.appendChild(newButton);
-            document.getElementById(pathInInputData).appendChild(newDiv);
+            var newInternSpan = document.createElement('span');
+            newInternSpan.classList.add("full");
+            newInternSpan.style = "display: grid; grid-template-columns: 1fr 1fr;";
+            var retVal = "";
+            const sectionObj = elementToProcess[elementIndex].split(".");
+            for (s in sectionObj) {
+                retVal += processEditorPart(sectionObj[s],
+                   outputDataParentPath + pathInInputData + "." + elementIndex , 
+                   outputDataParentPath,null);
+            }
+            newInternSpan.innerHTML = retVal;
+ 
+            if (nonDefault) newInternSpan.appendChild(newDelButton);
+ newSpan.appendChild(newLabel);
+            newSpan.appendChild(newInternSpan);
+   document.getElementById(pathInInputData).appendChild(newSpan);
 
-            processExtraArrayElements("");
             processAllRelatedIndexes();
             showFormattedOutputJson();
             }
+            if (debug) {
             console.log("selectAddReplace after select");
             console.log(selectAddReplace);
+            }
         }
 
-        function deleteArrayStruct(pathInInputDataNumber, parentPath) {
-            var pathObj = pathInInputDataNumber.split(".");
-            var elementToProcess = inputData[pathObj[0]][pathObj[1]];
-
-            var sectionObj = elementToProcess[2].split(".");
+        function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {
+            const pathObj = pathInInputDataWithIndex.split(".");
+            const elementToProcess = inputData[pathObj[0]][pathObj[1]];
+            const sectionObj = elementToProcess[2].split(".");
             for (s in sectionObj) {
                 processEditorPart(sectionObj[s], 
-                parentPath + pathInInputDataNumber,parentPath,null);
+                outputDataParentPath + pathInInputDataWithIndex,outputDataParentPath,null);
             }
-
-            document.getElementById(pathInInputDataNumber).remove();
+            document.getElementById(outputDataParentPath + pathInInputDataWithIndex).remove();
+            //  processAllRelatedIndexes();
             showFormattedOutputJson();
         }
 
-        function loadBase64File(f, path) {
+        function loadBase64File(f, pathInOutputData) {
             const reader = new FileReader();
             reader.onload = function(e2) {
-                var obj = findOutputObject(path, true);
+                var obj = findOutputObject(pathInOutputData, false, false);
                 obj.obj[obj.lastPathElement] = (new Uint8Array(e2.target.result)).toBase64();
-                document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
-                document.getElementById(path + "_get").setAttribute('download', document.getElementById(path).files[0].name);
+                showFormattedOutputJson();
+                document.getElementById(pathInOutputData + "_get")
+                    .setAttribute('download', document.getElementById(pathInOutputData).files[0].name);
             };
             reader.readAsArrayBuffer(f);
         }
 
-        function getOutputBase64File(path) {
-            const obj = findOutputObject(path, false);
+          function loadHexFile(f, pathInOutputData) {
+            const reader = new FileReader();
+            reader.onload = function(e2) {
+                var obj = findOutputObject(pathInOutputData, false, false);
+                obj.obj[obj.lastPathElement] = (new Uint8Array(e2.target.result)).toHex().toUpperCase();
+                showFormattedOutputJson();
+                document.getElementById(pathInOutputData + "_get")
+                    .setAttribute('download', document.getElementById(pathInOutputData).files[0].name);
+            };
+            reader.readAsArrayBuffer(f);
+        }
+
+        function getOutputBase64File(pathInOutputData) {
+            const obj = findOutputObject(pathInOutputData, false, false);
             if (obj.obj[obj.lastPathElement].length != 0) {
-                document.getElementById(path + "_get").setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
+                document.getElementById(pathInOutputData + "_get")
+                    .setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
                 return true;
             } else {
-                alert('Empty file content');
+                alert('Empty file content. Nothing to get.');
                 return false;
             }
         }
 
-        function loadHexFile(f, path) {
-            const reader = new FileReader();
-            reader.onload = function(e2) {
-                var obj = findOutputObject(path, true);
-                obj.obj[obj.lastPathElement] = (new Uint8Array(e2.target.result)).toHex().toUpperCase();
-                document.getElementById("json").innerHTML = JSON.stringify(outputData, null, 2);
-                document.getElementById(path + "_get").setAttribute('download', document.getElementById(path).files[0].name);
-            };
-            reader.readAsArrayBuffer(f);
-        }
-
-        function getOutputHexFile(path) {
-            const obj = findOutputObject(path, false);
+        function getOutputHexFile(pathInOutputData) {
+            const obj = findOutputObject(pathInOutputData, false, false);
             if (obj.obj[obj.lastPathElement].length != 0) {
                 var obj2 = new Uint8Array(obj.obj[obj.lastPathElement].length / 2);
                 obj2.setFromHex(obj.obj[obj.lastPathElement].toLowerCase());
-                document.getElementById(path + "_get").setAttribute('href', 'data:;base64,' + (new Uint8Array(obj2)).toBase64());
+                document.getElementById(pathInOutputData + "_get")
+                    .setAttribute('href', 'data:;base64,' + (new Uint8Array(obj2)).toBase64());
                 return true;
             } else {
-                alert('Empty file content');
+                alert('Empty file content. Nothing to get.');
                 return false;
             }
         }
 
-        function getPathValueToCheck(parentPath, path, value, addreplace) {
-            var valueToCheck = value;
-            const pathList = path.split(",");
+//find value in output JSON (if exists) or set it to value
+        function getPathValueToCheck(outputDataParentPath, pathInOutputData, value, addReplace, returnWholeArray) {
+            var valueToCheck = value!=null && Array.isArray(value) ?JSON.parse(JSON.stringify(value)):value;
+            const pathList = pathInOutputData.split(",");
             for (var p in pathList) {
-                var obj = findOutputObject(getAddReplace(parentPath, pathList[p], addreplace), value != null);
+                var obj = findOutputObject(getAddReplace(outputDataParentPath, pathList[p], addReplace),
+                   value != null, returnWholeArray);
+                  if (debug) console.log(obj);
                 if (obj.isNewValue) {
                     if (value != null) obj.obj[obj.lastPathElement] = value;
                 } else {
@@ -474,30 +590,36 @@ for (var i=0;i<1000;i++) {
             return retVal;
         }
 
-        function getAddReplace(parentPath, path, addReplace) {
-            console.log("getAddReplace start '" + parentPath + "' '" + path+"'");
+//find path in output JSON after all possible path replacements
+        function getAddReplace(outputDataParentPath, pathInOutputData, addReplace) {
+            if (debug) {
+            console.log("getAddReplace start '" + outputDataParentPath + "' '" + pathInOutputData+"'");
             console.log(addReplace);
-            var pathList = path.split(",");
+            }
+            var pathList = pathInOutputData.split(",");
             for (var p in pathList) {
                 if (pathList[p].startsWith("$.")) {
                     pathList[p] = pathList[p].substring(2);
                 } else {
-                pathList[p] = parentPath + pathList[p];
+                pathList[p] = outputDataParentPath + pathList[p];
                 }
                     for (var a in addReplace) {
-                        pathList[p] = pathList[p].replace(a, addReplace[a]);                        
+                        pathList[p] = pathList[p].replace(a, addReplace[a]);
                     }
             }
-            console.log("getAddReplace end " + pathList.join(","));
+            if (debug) console.log("getAddReplace end '" + outputDataParentPath + "' '" + 
+            pathInOutputData + "' -> "+pathList.join(","));
             return pathList.join(",");
         }
 
         function processEditorPart(inputDataSectionPathToProcess, inputDataParentPath,
              outputDataParentPath,addreplace) {
-             processing  = "processEditorPart start '" + inputDataSectionPathToProcess + "' '" + 
-                inputDataParentPath+"' '"+ outputDataParentPath + "'";                
-            console.log(processing );          
+             processing  = "processEditorPart '" + inputDataSectionPathToProcess + "' '" + 
+                inputDataParentPath+"' '"+ outputDataParentPath + "'";
+           if (debug) {
+            console.log(processing);
             console.log(addreplace);
+            }
             var editorText = "";
             const sectionList = inputDataSectionPathToProcess.split(",");
             var addReplace = JSON.parse(JSON.stringify(
@@ -505,66 +627,75 @@ for (var i=0;i<1000;i++) {
                (selectAddReplace[inputDataParentPath]==null?
                   {}:selectAddReplace[inputDataParentPath]):
                addreplace));
+              if (debug) {
                console.log("addReplace");
                console.log(addReplace);
+               }
             for (var s in sectionList) {
                 const sectionName = sectionList[s];
-                const elementsToProcess = inputData[sectionName];             
+                const elementsToProcess = inputData[sectionName];
                 for (var i in elementsToProcess) {
-                    console.log(elementsToProcess[i]);
+                   if (debug)  console.log(elementsToProcess[i]);
                     const elementToProcessName = inputDataParentPath+
                       (inputDataParentPath==""?"":".")+
                       sectionName + "[" + i+"]";
                     processing = elementToProcessName+ " "+JSON.stringify(elementsToProcess[i]);
+                    if (debug) {
+            console.log(processing);
+            console.log(addreplace);
+            }
                     if (elementsToProcess[i][0] == "select") {
                         //option menu. Can do something extra during changing to concrete value.
                         //0 type, 1 description, 2 default, (3 name, 4 section for processing)...
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
-                        editorText += "<select name='"+elementToProcessName+"' "+
-                        " id='"+elementToProcessName+"'"+
-                        " onchange=processSelect(this.id,this.value,'" + outputDataParentPath + "');>";
+                        editorText += "<select name='"+elementToProcessName+"'";
+                        editorText += " id='"+elementToProcessName+"'";
+                        editorText += " title='Default "+elementsToProcess[i][2]+"'";
+                        editorText+= " onchange=processSelect(this.id,this.value,'" + outputDataParentPath + "');>";
                         for (var j = 3; j < elementsToProcess[i].length; j = j + 2) {
                             editorText += "<option value='" + elementsToProcess[i][j] + "'";
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) editorText += " selected";
                             editorText += ">" + elementsToProcess[i][j] + "</option>";
                         }
-                        editorText += "</select>";                      
+                        editorText += "</select>";
                         editorText += "<span id='" + elementToProcessName + "_span' class=full>";
-                        for (var j = 3; j < elementsToProcess[i].length; j = j + 2) {
+                        for (var j = 3; j < elementsToProcess[i].length; j+=2) {
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) {
                                 editorText += processEditorPart(elementsToProcess[i][j + 1],
-                                elementToProcessName, 
+                                elementToProcessName,
                                     outputDataParentPath, addReplace);
                             }
                         }
                         editorText += "</span>";
-                        editorText += "</span>";                 
+                        editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "adddelete") {
                         //array with adding/removing elements
                         //0 type, 1 description, 2 section delete,
-                        //(3 section add, 4 section add min, 5 section add max)...
+                        //(3 section add, 4 section can delete)...
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
                         editorText += "<input type=button value='Add'";
-                         editorText += " name='"+elementToProcessName+"'";                       
-                        editorText += " onclick=addArrayStruct('" + sectionName + "." + i + "','" + 
-                            outputDataParentPath + "');>";
+                         editorText += " name='"+elementToProcessName+"'";
+                        editorText += " onclick=addArrayStruct('" + outputDataParentPath + "',"+
+                        "'" + sectionName + "." + i + "',true);>";
                         editorText += "<span id='" + outputDataParentPath + sectionName + "." + i + "' class=full></span>";
-                        /* for (var j = 0; j < Number(elementsToProcess[i][4]); j++) {
+                        //add sections, which cannot be later deleted
+                         for (var j = 3; j < elementsToProcess[i].length; j+=2) {
+                              if (elementsToProcess[i][j+1]==false) {
                              var ret = {};
-                             ret.editorPath = section + "." + i;
-                             ret.newEditorPath = elementsToProcess[i][3];
-                             ret.parentPathInJson = parentPath + elementsToProcess[i][1];
+                             ret.editorPath = sectionName + "." + i;
+                             ret.parentPathInJson =  outputDataParentPath;
                              addArray.push(ret);
-                         }*/
+                             }
+                         }
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "link") {
                         //link to existing structure
                         //0 type, 1 path, 2 section
                         if (elementsToProcess[i][1] != "") {
                             const obj = findOutputObject(getAddReplace(outputDataParentPath, 
-                                       elementsToProcess[i][1], addReplace), true);                            
+                                       elementsToProcess[i][1], addReplace), true, false);
                             editorText += processEditorPart(elementsToProcess[i][2], 
                             elementToProcessName,obj.path + ".", addReplace);
                         } else {
@@ -572,45 +703,61 @@ for (var i=0;i<1000;i++) {
                             elementToProcessName,"", addReplace);
                         }
                     } else if (elementsToProcess[i][0] == "index") {
-                        //field with index of existing array: 0 type, 1 path   
-                        //fixme: support for all types, needs extra param                 
-                        if (elementsToProcess[i].length==2) {
-                        const obj2 = outputDataParentPath.slice(0, -1).split(".");
-                        const info = obj2[obj2.length - 1].split(/[\[,\]]/);
-                        const pathValue = getPathValueToCheck(outputDataParentPath, 
-                             elementsToProcess[i][1], Number(info[1]), addReplace);
-                        editorText += "<span name=arrayindex id='" + pathValue.path + "'></span>";
+                        //field with index of existing "other array": 0 type, 1 field inside "other array",
+                        //2 "other array" path 
+                        if (elementsToProcess[i].length==3) {
+                        const obj = findOutputObject(getAddReplace(outputDataParentPath, 
+                                       elementsToProcess[i][2]+"."+elementsToProcess[i][1], addReplace), true, false);
+                                       const obj2 = findOutputObject(getAddReplace(outputDataParentPath, 
+                                       elementsToProcess[i][2], addReplace), true, false);
+                      if (debug) {
+                        console.log("new index");
+                          console.log(obj);    
+                          console.log(obj2);
+                          console.log(addReplace);
+                          }
+                        const info = obj2.lastPathElement.split(/[\[,\]]/);
+                          obj.obj[obj.lastPathElement] = Number(info[1]);
+                             editorText += "<span name=arrayindex id='" + obj.path + "'></span>";
                     }   else {
                     //field with "other array" index (for selecting): 
-                        //0 type, 1 path, 2 description, 3 "other array" path
-                        //fixme: default values
-                        const obj = findOutputObject(outputDataParentPath + elementsToProcess[i][1], true);
+                        //0 type, 1 path, 2 description, 3 "other array" path                       
+                        const obj = findOutputObject(outputDataParentPath + elementsToProcess[i][1], true, false);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
-                        editorText += "<select name='" + elementsToProcess[i][3] + "' id='" + elementsToProcess[i][1] + "'";
-                        editorText += " oninput=editStringBoolNum(this.id,this.value,false);>";
+                        editorText += "<select name='" + elementsToProcess[i][3]+"'";
+                        editorText += " id='" + outputDataParentPath+elementsToProcess[i][1] + "'";
+                        //values in title can be not always actual in developer tools
+                        editorText += " oninput=editStringBoolNum(this.id,this.value,true);";
+                         editorText += " onmouseover=updateTooltip(this.id,this.value);>";
                         editorText += "</select>";
+                        editorText += "<span id='" + elementsToProcess[i][3] + "_error'>";
+                        editorText += "</span>";
                         editorText += "</span>";
                         }
                     } else if (elementsToProcess[i][0] == "delete") {
                         //deleting smth from json
                         //0 type, 1 path
+                       if (debug) {
                         console.log(addReplace);
                         console.log(selectAddReplace);
+                        }
                         const pathList = elementsToProcess[i][1].split(",");
                         for (var p in pathList) {
+                         if (debug) {
                             console.log("delete with");
                             console.log(pathList);
                             console.log(pathList[p]);
+                            }
                             var obj = findOutputObject(getAddReplace(outputDataParentPath, 
-                                 pathList[p],addReplace), false);                               
+                                 pathList[p],addReplace), false, false);
                             if (obj.obj != null && obj.lastPathElement != null) {
                                 if (obj.lastPathElement.includes("[")) {
-                                    deleteArrayElement(obj.path, 0);                                                   
+                                    deleteArrayElement(obj.path);
                                 } else {
-                                    console.log("deleting " + obj.lastPathElement);
+                                    if (debug) console.log("deleting " + obj.lastPathElement);
                                     delete obj.obj[obj.lastPathElement];
-                                    console.log(obj.obj);
+                                    if (debug) console.log(obj.obj);
                                 }
                             }
                         }
@@ -618,7 +765,8 @@ for (var i=0;i<1000;i++) {
                         //0 type, 1 path, 2 value
                         const pathList = elementsToProcess[i][1].split(",");
                         for (var p in pathList) {
-                            var obj = findOutputObject(getAddReplace(outputDataParentPath, pathList[p], addReplace), true);
+                            var obj = findOutputObject(getAddReplace(outputDataParentPath, pathList[p], addReplace), 
+                            true, false);
                             if (obj.isNewValue) {
                                 obj.obj[obj.lastPathElement] = elementsToProcess[i][2];
                             }
@@ -632,7 +780,7 @@ for (var i=0;i<1000;i++) {
                             s += elementsToProcess[i][2].charAt(Math.random() * elementsToProcess[i][2].length);
                         }
                         getPathValueToCheck(outputDataParentPath, elementsToProcess[i][1],
-                            elementsToProcess[i][4] + s + elementsToProcess[i][5], addReplace);
+                            elementsToProcess[i][4] + s + elementsToProcess[i][5], addReplace, false);
                     } else if (elementsToProcess[i][0] == "separator") {
                         //just menu section written in bold
                         //0 type, 1 text
@@ -646,29 +794,39 @@ for (var i=0;i<1000;i++) {
                         //0 type, 1 path, 2 (optional) name
                         const pathList = elementsToProcess[i][1].split(",");
                         for (p in pathList) {
-                            obj = findOutputObject(outputDataParentPath + pathList[p], true);
+                            obj = findOutputObject(outputDataParentPath + pathList[p], true, false);
                             addReplace[elementsToProcess[i].length == 3 ? 
                                elementsToProcess[i][2] : 
                                getAddReplace(outputDataParentPath, pathList[p], addReplace)] = obj.path;
                         }
+                        if (debug) {
                         console.log("addReplace");
                         console.log(addReplace);
-                            selectAddReplace[inputDataParentPath] = JSON.parse(JSON.stringify(addReplace));                                           
+                        }
+                            selectAddReplace[inputDataParentPath] = JSON.parse(JSON.stringify(addReplace));
                     } else if (elementsToProcess[i][0] == "string") {
                         //string parameter
-                        //0 type, 1 path, 2 description, 3 default, 4 minimum len, 5 maximum len, 6 (optional) parsing regexp
+                        //0 type, 1 path, 2 description, 3 default, 4 minimum len, 5 maximum len, 
+                        //6 empty or parsing regexp
                         const pathValue = getPathValueToCheck(outputDataParentPath, 
-                            elementsToProcess[i][1], elementsToProcess[i][3], addReplace);
+                            elementsToProcess[i][1], elementsToProcess[i][3], addReplace, false);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input";
                         if (pathValue.value != null) editorText += " value='" + pathValue.value + "'";
                         editorText += " id='" + pathValue.path + "'";
                         editorText += " name='"+elementToProcessName+"'";
+                           var title = ""; 
                         if (elementsToProcess[i][4] != elementsToProcess[i][5]) {
                             editorText += " minlength=" + elementsToProcess[i][4];
                             editorText += " maxlength=" + elementsToProcess[i][5];
+                            title+="Minimum length "+elementsToProcess[i][4];
+                            title+=", maximum length "+elementsToProcess[i][5];
+                        } else {
+                            title+="No minimum and maximum length";
                         }
+                        title+=", default \""+pathValue.value+"\"";
+                        editorText+=" title='"+title+"'";
                         editorText += " oninput=editStringBoolNum(this.id,this.value,false);setEditErrors(this.id,this.value,'" +
                             sectionName + "','" + i + "');><br>";
                         editorText += "<span id='" + pathValue.path + "_error'>";
@@ -677,44 +835,69 @@ for (var i=0;i<1000;i++) {
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "number") {
                     //number parameter
-                        //0 type, 1 path, 2 description, 3 default, 4 minimum, 5 maximum, 6 (optional) step
+                        //0 type, 1 path, 2 description, 3 default, 4 minimum, 5 maximum, 6 zero or step
                         const pathValue = getPathValueToCheck(outputDataParentPath, 
-                            elementsToProcess[i][1], elementsToProcess[i][3], addReplace);
+                            elementsToProcess[i][1], elementsToProcess[i][3], addReplace, false);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input";
-                        if (pathValue.value != null) editorText += " value=" + pathValue.value;
-                       if (Number(elementsToProcess[i][6])!=0) editorText += " step=" + elementsToProcess[i][6];
                        editorText+= " type=number id='" + pathValue.path + "'";
-                         editorText += " name='"+elementToProcessName+"'";                        
+                         editorText += " name='"+elementToProcessName+"'";
+                        var title = "";                       
                         if (elementsToProcess[i][4] != elementsToProcess[i][5]) {
                             editorText += " min=" + elementsToProcess[i][4];
                             editorText += " max=" + elementsToProcess[i][5];
+                            title+="Minimum "+elementsToProcess[i][4];
+                            title+=", maximum "+elementsToProcess[i][5];
+                        } else {
+                            title+="No minimum and maximum";
                         }
+                        if (Number(elementsToProcess[i][6])!=0) {
+                       		editorText += " step=" + elementsToProcess[i][6];
+                       		title+=", step " + elementsToProcess[i][6];
+                       		}
+                        if (pathValue.value != null) {
+                           editorText += " value=" + pathValue.value;
+                           title+=", default "+pathValue.value;
+                           }
+                        editorText+=" title='"+title+"'";
                         editorText += " oninput=editStringBoolNum(this.id,this.value,true);setEditErrors(this.id,this.value,'" +
                             sectionName + "','" + i + "');><br>";
                         editorText += "<span id='" + pathValue.path + "_error'>";
                         editorText += parseEditErrors(sectionName, i, pathValue.value);
                         editorText += "</span>";
                         editorText += "</span>";
-                    } else if (elementsToProcess[i][0] == "date") {
-                    //date parameter
-                        //0 type, 1 path, 2 description, 3 default (when not given, today), 4 minimum, 5 maximum
+                    } else if (elementsToProcess[i][0] == "date" || elementsToProcess[i][0] == "time") {
+                    //date or time parameter
+                        //0 type, 1 path, 2 description, 3 default (today or now, when empty), 4 minimum, 5 maximum
                         const date = new Date();
-                        const dateVal = date.getFullYear() + "-" +
+                        const defVal = elementsToProcess[i][0] == "date"?
+                           date.getFullYear() + "-" +
                             (date.getMonth() + 1 < 10 ? "0" : "") + (date.getMonth() + 1) + "-" +
-                            (date.getDate() < 10 ? "0" : "") + date.getDate();
+                            (date.getDate() < 10 ? "0" : "") + date.getDate():
+                            (date.getHours() < 10 ? "0" : "") + date.getHours() + ":" +
+                            (date.getMinutes() < 10 ? "0" : "") + date.getMinutes() + ":" +
+                            (date.getSeconds() < 10 ? "0" : "") + date.getSeconds();
                         const pathValue = getPathValueToCheck(outputDataParentPath, elementsToProcess[i][1],
-                            elementsToProcess[i][3] == "" ? dateVal : elementsToProcess[i][3], addReplace);
+                            elementsToProcess[i][3] == "" ? defVal : elementsToProcess[i][3], addReplace, false);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input value='" + pathValue.value + "' ";
-                         editorText += " name='"+elementToProcessName+"'";                        
+                         editorText += " name='"+elementToProcessName+"'";
+                       var  title="";
                         if (elementsToProcess[i][4] != elementsToProcess[i][5]) {
                             editorText += " min=" + elementsToProcess[i][4];
                             editorText += " max=" + elementsToProcess[i][5];
+                           title+="Minimum "+elementsToProcess[i][4];
+                            title+=", maximum "+elementsToProcess[i][5];
+                        } else {
+                            title+="No minimum and maximum";
                         }
-                        editorText += " id='" + pathValue.path + "' type=date oninput=editStringBoolNum(this.id,this.value,false);><br>";
+                        title+=", default "+pathValue.value;
+                        editorText+=" title='"+title+"'";
+                        editorText += " id='" + pathValue.path + "'";
+                        editorText += " type="+elementsToProcess[i][0];
+                        editorText += " oninput=editStringBoolNum(this.id,this.value,false);><br>";
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "checkbox") {
                         //real true & false in json. For string use option
@@ -725,40 +908,76 @@ for (var i=0;i<1000;i++) {
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input type=checkbox";
                          editorText += " name='"+elementToProcessName+"'";
-                        
-                        if (elementsToProcess[i][3]) editorText += " checked";
+                          editorText += " checked title='Default "+elementsToProcess[i][3]+"'";
                         editorText += " id='" + pathValue.path + "' oninput=editStringBoolNum(this.id,this.checked,false);><br>";
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "option") {
                         //select one of predefined options
                         //0 type, 1 path, 2 description, 3 default, (4 value)...
                         const pathValue = getPathValueToCheck(outputDataParentPath, 
-                           elementsToProcess[i][1], elementsToProcess[i][3], addReplace);
+                           elementsToProcess[i][1], elementsToProcess[i][3], addReplace, false);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
-                        editorText += "<select id='" + pathValue.path + "'";                        
-                         editorText += " name='"+elementToProcessName+"'";                        
+                        editorText += "<select id='" + pathValue.path + "'";
+                         editorText += " name='"+elementToProcessName+"'";
+                         editorText+=" title='Default "+ elementsToProcess[i][3]+"'"; 
                          editorText+= " onchange=editStringBoolNum(this.id,this.value,false);>";
-                        for (j = 4; j < elementsToProcess[i].length; j++) {
+                        for (var j = 4; j < elementsToProcess[i].length; j++) {
                             editorText += "<option value='" + elementsToProcess[i][j] + "'";
                             if (elementsToProcess[i][3] == elementsToProcess[i][j]) editorText += " selected";
                             editorText += ">" + elementsToProcess[i][j] + "</option>";
                         }
                         editorText += "</select>";
                         editorText += "</span>";
-                    } else if (elementsToProcess[i][0] == "file64" || elementsToProcess[i][0] == "fileHex") {
-                        //Base64 or HexDec encoded file
-                        //0 type, 1 path, 2 description, 3 default
+                        } else if (elementsToProcess[i][0] == "multi") {
+                        //select one or more predefined options
+                        //0 type, 1 path, 2 description, 3 minimum, 4 maximum, (5 value, 6 selected)...
+                        var def = [];
+                        for (var j = 5; j < elementsToProcess[i].length; j+=2) {
+                            if (elementsToProcess[i][j+1] == true)def.push(elementsToProcess[i][j]);
+                        }
                         const pathValue = getPathValueToCheck(outputDataParentPath, 
-                           elementsToProcess[i][1], elementsToProcess[i][3], addReplace);
+                           elementsToProcess[i][1], def, addReplace, true);
+                         if (debug)  console.log(pathValue);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
-                        editorText += "<a id='" + pathValue.path + "_get' href='' download='" + elementsToProcess[i][1];
-                         editorText += " name='"+elementToProcessName+"'";                        
-                        editorText += "' onclick=\"return getOutput";
+                        editorText += "<select multiple id='" + pathValue.path + "'";
+                         editorText += " name='"+elementToProcessName+"'"; 
+                         var title = "Default "+ JSON.stringify(def); 
+                         if (elementsToProcess[i][3]!=0 || elementsToProcess[i][4]!=0) {
+                         	title+=", minimum "+elementsToProcess[i][3]+" elements";
+                         	title+=", maximum "+elementsToProcess[i][4]+" elements";
+                         }
+                         editorText+=" title='"+title+"'";
+                         editorText += " oninput=editMulti(this.id,this.options);setEditErrorsMulti(this.id,this.options,'" +
+                            sectionName + "','" + i + "');>";
+                        for (var j = 5; j < elementsToProcess[i].length; j+=2) {
+                          editorText += "<option value='" + elementsToProcess[i][j] + "'";
+                           if (elementsToProcess[i][j+1] == true)editorText += " selected";
+                            editorText += ">" + elementsToProcess[i][j] + "</option>";
+                        } 
+                        editorText += "</select>";
+                        editorText += "<span id='" + pathValue.path + "_error'>";
+                        editorText += parseEditErrors(sectionName, i, def);
+                        editorText += "</span>";
+                        editorText += "</span>";
+                    } else if (elementsToProcess[i][0] == "file64" || elementsToProcess[i][0] == "fileHex") {
+                        //Base64 or HexDec encoded file
+                        //0 type, 1 path, 2 description, 3 default value, 
+                        //4 default download name (mandatory), 5 empty or filter
+                        const pathValue = getPathValueToCheck(outputDataParentPath, 
+                           elementsToProcess[i][1], elementsToProcess[i][3], addReplace, false);
+                        editorText += "<span class=full>";
+                        editorText += "<label>" + elementsToProcess[i][2] + "</label>";
+                        editorText += "<a id='" + pathValue.path + "_get' href=''";
+                        editorText += " title='Click to get file content from "+elementToProcessName+"'";
+                        if (elementsToProcess[i][4]!="") editorText+=" download='"+elementsToProcess[i][4]+"'";                        
+                        editorText += " name='"+elementToProcessName+"'";
+                        editorText += " onclick='return getOutput";
                         editorText += (elementsToProcess[i][0] == "file64"?"Base64":"Hex");
-                        editorText+= "File('" + pathValue.path + "');\";>Get File</a>";
+                        editorText+= "File(\"" + pathValue.path + "\");'>Get file</a>";
                         editorText += "<input type=file id='" + pathValue.path + "'";
+                        if (elementsToProcess[i][5]!="") editorText+=" accept='"+elementsToProcess[i][5]+"'";
                         editorText += " onchange=load";
                         editorText += (elementsToProcess[i][0] == "file64"?"Base64":"Hex");
                         editorText+="File(this.files[0],this.id);><br>";
@@ -766,7 +985,10 @@ for (var i=0;i<1000;i++) {
                     }
                 }
             }
-            console.log("processEditorPart end '" + outputDataParentPath + "'");
+         if (debug) {
+            console.log("processEditorPart end '" + inputDataSectionPathToProcess + "' '" + 
+                inputDataParentPath+"' '"+ outputDataParentPath + "'");
+                }
             return editorText;
         }
 
@@ -786,13 +1008,13 @@ for (var i=0;i<1000;i++) {
                             addArray = [];
                             selectAddReplace = {};
                             document.getElementById("editor").innerHTML = processEditorPart("start", "","",{});
-                            processExtraArrayElements('');
+                            processExtraArrayElements();
                             processAllRelatedIndexes();
-                            showFormattedOutputJson()
-                            console.log(selectAddReplace);
+                            showFormattedOutputJson();
+                           if (debug)  console.log(selectAddReplace);
                             document.title = document.getElementById('file').files[0].name + " - DataCreator (MIT license) "+version;
                 	    const info = inputData["info"]; 
-                            document.getElementById('info').innerHTML = "";                	                
+                            document.getElementById('info').innerHTML = "";
                              for (var s in info) {
                              if (document.getElementById('info').innerHTML!="") {
                               document.getElementById('info').innerHTML = 
