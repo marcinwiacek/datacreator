@@ -4,7 +4,7 @@
 <head>
     <script>
         const debug = true, //do you want debug in browser console?
-            version = "250817";
+            version = "250818";
         document.title = "DataCreator (MIT license) " + version;
     </script>
     <meta charset="utf-8">
@@ -294,12 +294,12 @@
                                     obj[z].add(op);
                                 }
                             }
-                        }                     
+                        }
                     }
-                    if (document.getElementById(obj[z].id + "_error")!=null) {
-                     document.getElementById(obj[z].id + "_error").innerHTML = 
-                           obj[z].options.length == 0?"<font color=red>Needs some value</font>":"";
-                           }
+                    if (document.getElementById(obj[z].id + "_error") != null) {
+                        document.getElementById(obj[z].id + "_error").innerHTML =
+                            obj[z].options.length == 0 ? "<font color=red>Needs some value</font>" : "";
+                    }
                 }
             }
         }
@@ -442,13 +442,13 @@
                 console.log("addArrayStruct '" + pathInInputData + "'");
                 console.log(selectAddReplace);
             }
-            const pathObj = pathInInputData.split(/[\[,\]]/);             
+            const pathObj = pathInInputData.split(/[\[,\]]/);
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
             if (debug) console.log(elementToProcess);
             var elementIndex = 0;
             for (var i = 3; i < elementToProcess.length; i += 2) {
                 if (elementToProcess[i + 1] == nonDefault &&
-                    document.getElementById(outputDataParentPath+pathInInputData + "[" + i + "].x") == null) {
+                    document.getElementById(outputDataParentPath + pathInInputData + "[" + i + "].x") == null) {
                     elementIndex = i;
                     break;
                 }
@@ -457,7 +457,7 @@
                 alert('Not possible. Maximal ' + ((elementToProcess.length - 3) / 2) +
                     ' elements in element ' + pathInInputData);
             } else {
-                const newID = outputDataParentPath+pathInInputData + "["+ elementIndex+"]";
+                const newID = outputDataParentPath + pathInInputData + "[" + elementIndex + "]";
 
                 //first create new menu section
                 var newLabel = document.createElement('label');
@@ -508,7 +508,7 @@
         }
 
         function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {
-///            const pathObj = pathInInputDataWithIndex.split(".");
+            ///            const pathObj = pathInInputDataWithIndex.split(".");
             const pathObj = pathInInputDataWithIndex.split(/[\[,\]]/);
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
             const sectionObj = elementToProcess[2].split(".");
@@ -662,7 +662,7 @@
                         }
                         editorText += "</select>";
                         editorText += "<span id='" + elementToProcessName + "_span' class=full>";
-                        for (var j = 3; j < elementsToProcess[i].length; j += 2) {                          
+                        for (var j = 3; j < elementsToProcess[i].length; j += 2) {
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) {
                                 editorText += processEditorPart(elementsToProcess[i][j + 1],
                                     elementToProcessName,
@@ -680,7 +680,7 @@
                         editorText += "<input type=button value='Add'";
                         editorText += " name='" + elementToProcessName + "'";
                         editorText += " onclick=addArrayStruct('" + outputDataParentPath + "'," +
-                            "'" + elementToProcessName +"',true);>";
+                            "'" + elementToProcessName + "',true);>";
                         editorText += "<span id='" + elementToProcessName + "' class=full></span>";
                         //add sections, which cannot be later deleted
                         for (var j = 3; j < elementsToProcess[i].length; j += 2) {
@@ -705,28 +705,22 @@
                                 elementToProcessName, "", addReplace);
                         }
                     } else if (elementsToProcess[i][0] == "index") {
-                       //field with index of existing "other array": 0 type, 1 field inside "other array"
+                        //field with index of existing "other array": 0 type, 1 field inside "other array"
                         if (elementsToProcess[i].length == 2) {
                             const obj = findOutputObject(getAddReplace(outputDataParentPath,
                                 elementsToProcess[i][1], addReplace), true, false);
-                                  const info = obj.path.split(".");
-                            const info2 = info[info.length-2].split(/[\[,\]]/);                          
+                            const info = obj.path.split(".");
+                            const info2 = info[info.length - 2].split(/[\[,\]]/);
                             obj.obj[obj.lastPathElement] = Number(info2[1]);
-                                                       
-
                             var x = obj.path.split(".");
-                         
                             x = x.pop();
-                   
-                            editorText += "<span name=arrayindex id='" + 
-                               (Array.isArray(x)?x.join("."):x) + "'></span>";
-                        } else 
-                    
-                        //field with index of existing "other array": 0 type, 1 field path,
-                        //2 "other array" path 
-                        if (elementsToProcess[i].length == 3) {
+                            editorText += "<span name=arrayindex id='" +
+                                (Array.isArray(x) ? x.join(".") : x) + "'></span>";
+                        } else if (elementsToProcess[i].length == 3) {
+                            //field with index of existing "other array": 0 type, 1 field path,
+                            //2 "other array" path
                             const obj = findOutputObject(getAddReplace(outputDataParentPath,
-                                 elementsToProcess[i][1], addReplace), true, false);
+                                elementsToProcess[i][1], addReplace), true, false);
                             const obj2 = findOutputObject(getAddReplace(outputDataParentPath,
                                 elementsToProcess[i][2], addReplace), true, false);
                             if (debug) {
@@ -740,10 +734,10 @@
                             editorText += "<span name=arrayindex id='" + obj.path + "'></span>";
                         } else {
                             //field with "other array" index (for selecting): 
-                            //0 type, 1 path, 2 description, 3 "other array" path                       
+                            //0 type, 1 path, 2 description, 3 "other array" path
                             const obj = findOutputObject(
-                            getAddReplace(outputDataParentPath,
-                                elementsToProcess[i][1], addReplace), true, false);
+                                getAddReplace(outputDataParentPath,
+                                    elementsToProcess[i][1], addReplace), true, false);
                             editorText += "<span class=full>";
                             editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                             editorText += "<select name='" + elementsToProcess[i][3] + "'";
@@ -824,7 +818,7 @@
                             console.log("addReplace");
                             console.log(addReplace);
                         }
-                         var x = inputDataParentPath.split(".");
+                        var x = inputDataParentPath.split(".");
                         selectAddReplace[x[0]] = JSON.parse(JSON.stringify(addReplace));
                     } else if (elementsToProcess[i][0] == "string") {
                         //string parameter
@@ -1034,7 +1028,7 @@
                             processAllRelatedIndexes();
                             showFormattedOutputJson();
                             if (debug) console.log(selectAddReplace);
-                            document.title = document.getElementById('file').files[0].name + 
+                            document.title = document.getElementById('file').files[0].name +
                                 " - DataCreator (MIT license) " + version;
                             const info = inputData["info"];
                             document.getElementById('info').innerHTML = "";
