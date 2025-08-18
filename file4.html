@@ -3,6 +3,8 @@
 
 <head>
     <script>
+        //fixme: adddelete inside adddelete
+
         const debug = true, //do you want debug in browser console?
             version = "250818";
         document.title = "DataCreator (MIT license) " + version;
@@ -337,7 +339,7 @@
         //todo delete elements outside (with $.)
         function deleteArrayElement(pathInOutputData) {
             if (debug) console.log("Delete array alement " + pathInOutputData);
-            var obj = findOutputObject(pathInOutputData, true, false);
+            var obj = findOutputObject(pathInOutputData, false, false);
             var info = obj.lastPathElement.split(/[\[,\]]/);
             if (debug) {
                 console.log("selectAddReplace before deleting");
@@ -442,7 +444,8 @@
                 console.log("addArrayStruct '" + pathInInputData + "'");
                 console.log(selectAddReplace);
             }
-            const pathObj = pathInInputData.split(/[\[,\]]/);
+            const x = pathInInputData.split(".");
+            const pathObj = x[x.length-1].split(/[\[,\]]/);
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
             if (debug) console.log(elementToProcess);
             var elementIndex = 0;
@@ -741,12 +744,12 @@
                             editorText += "<span class=full>";
                             editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                             editorText += "<select name='" + elementsToProcess[i][3] + "'";
-                            editorText += " id='" + elementToProcessName + "'";
+                            editorText += " id='" + obj.path + "'";
                             //values in title can be not always actual in developer tools
                             editorText += " oninput=editStringBoolNum(this.id,this.value,true);";
                             editorText += " onmouseover=updateTooltip(this.id,this.value);>";
                             editorText += "</select>";
-                            editorText += "<span id='" + elementToProcessName + "_error'>";
+                            editorText += "<span id='" + obj.path + "_error'>";
                             editorText += "</span>";
                             editorText += "</span>";
                         }
@@ -1005,6 +1008,7 @@
                 console.log("processEditorPart end '" + inputDataSectionPathToProcess + "' '" +
                     inputDataParentPath + "' '" + outputDataParentPath + "'");
             }
+            console.log(selectAddReplace);
             return editorText;
         }
 
