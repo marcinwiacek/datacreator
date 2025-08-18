@@ -3,7 +3,7 @@
 
 <head>
     <script>
-        const debug = false, //do you want debug in browser console?
+        const debug = true, //do you want debug in browser console?
             version = "250817";
         document.title = "DataCreator (MIT license) " + version;
     </script>
@@ -255,8 +255,7 @@
         function processExtraArrayElements() {
             processing = "processExtraArrayElements";
             for (var z in addArray) {
-                addArrayStruct(addArray[z].editorPath,
-                    addArray[z].parentPathInJson, false);
+                addArrayStruct(addArray[z].parentPathInJson, addArray[z].editorPath, false);
             }
             addArray = [];
         }
@@ -443,13 +442,13 @@
                 console.log("addArrayStruct '" + pathInInputData + "'");
                 console.log(selectAddReplace);
             }
-            const pathObj = pathInInputData.split(".");
+            const pathObj = pathInInputData.split(/[\[,\]]/);             
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
             if (debug) console.log(elementToProcess);
             var elementIndex = 0;
             for (var i = 3; i < elementToProcess.length; i += 2) {
                 if (elementToProcess[i + 1] == nonDefault &&
-                    document.getElementById(pathInInputData + "." + i + ".x") == null) {
+                    document.getElementById(outputDataParentPath+pathInInputData + "[" + i + "].x") == null) {
                     elementIndex = i;
                     break;
                 }
@@ -458,6 +457,8 @@
                 alert('Not possible. Maximal ' + ((elementToProcess.length - 3) / 2) +
                     ' elements in element ' + pathInInputData);
             } else {
+                const newID = outputDataParentPath+pathInInputData + "["+ elementIndex+"]";
+
                 //first create new menu section
                 var newLabel = document.createElement('label');
                 newLabel.innerHTML = "<b>" + elementToProcess[1] + "</b>";
@@ -465,12 +466,12 @@
                 var newSpan = document.createElement('span');
                 newSpan.classList.add("full");
                 newSpan.innerHTML = "<br>&nbsp;<br>";
-                newSpan.id = outputDataParentPath + pathInInputData + "." + elementIndex;
+                newSpan.id = newID;
 
                 //now create delete button and span for menu
                 if (nonDefault) {
                     var newDelButton = document.createElement('button');
-                    newDelButton.id = pathInInputData + "." + elementIndex + ".x";
+                    newDelButton.id = newID + ".x";
                     newDelButton.setAttribute("name", outputDataParentPath);
                     newDelButton.addEventListener('click', function(event) {
                         if (confirm("Continue?")) {
@@ -487,7 +488,7 @@
                 const sectionObj = elementToProcess[elementIndex].split(".");
                 for (s in sectionObj) {
                     retVal += processEditorPart(sectionObj[s],
-                        outputDataParentPath + pathInInputData + "." + elementIndex,
+                        newID,
                         outputDataParentPath, null);
                 }
                 newInternSpan.innerHTML = retVal;
@@ -507,7 +508,8 @@
         }
 
         function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {
-            const pathObj = pathInInputDataWithIndex.split(".");
+///            const pathObj = pathInInputDataWithIndex.split(".");
+            const pathObj = pathInInputDataWithIndex.split(/[\[,\]]/);
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
             const sectionObj = elementToProcess[2].split(".");
             for (s in sectionObj) {
@@ -622,9 +624,10 @@
             }
             var editorText = "";
             const sectionList = inputDataSectionPathToProcess.split(",");
+            var x = inputDataParentPath.split(".");
             var addReplace = JSON.parse(JSON.stringify(
                 addreplace == null ?
-                (selectAddReplace[inputDataParentPath] == null ? {} : selectAddReplace[inputDataParentPath]) :
+                (selectAddReplace[x[0]] == null ? {} : selectAddReplace[x[0]]) :
                 addreplace));
             if (debug) {
                 console.log("addReplace");
@@ -659,7 +662,7 @@
                         }
                         editorText += "</select>";
                         editorText += "<span id='" + elementToProcessName + "_span' class=full>";
-                        for (var j = 3; j < elementsToProcess[i].length; j += 2) {
+                        for (var j = 3; j < elementsToProcess[i].length; j += 2) {                          
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) {
                                 editorText += processEditorPart(elementsToProcess[i][j + 1],
                                     elementToProcessName,
@@ -677,13 +680,13 @@
                         editorText += "<input type=button value='Add'";
                         editorText += " name='" + elementToProcessName + "'";
                         editorText += " onclick=addArrayStruct('" + outputDataParentPath + "'," +
-                            "'" + sectionName + "." + i + "',true);>";
-                        editorText += "<span id='" + outputDataParentPath + sectionName + "." + i + "' class=full></span>";
+                            "'" + elementToProcessName +"',true);>";
+                        editorText += "<span id='" + elementToProcessName + "' class=full></span>";
                         //add sections, which cannot be later deleted
                         for (var j = 3; j < elementsToProcess[i].length; j += 2) {
                             if (elementsToProcess[i][j + 1] == false) {
                                 var ret = {};
-                                ret.editorPath = sectionName + "." + i;
+                                ret.editorPath = elementToProcessName;
                                 ret.parentPathInJson = outputDataParentPath;
                                 addArray.push(ret);
                             }
@@ -702,11 +705,24 @@
                                 elementToProcessName, "", addReplace);
                         }
                     } else if (elementsToProcess[i][0] == "index") {
-                        //field with index of existing "other array": 0 type, 1 field inside "other array",
+                       //field with index of existing "other array": 0 type, 1 field inside "other array"
+                        if (elementsToProcess[i].length == 2) {
+                            const obj = findOutputObject(getAddReplace(outputDataParentPath,
+                                elementsToProcess[i][1], addReplace), true, false);
+                                  const info = obj.path.split(".");
+                            const info2 = info[info.length-2].split(/[\[,\]]/);
+                            console.log("ala ma kota");
+                            console.log(obj);
+                            console.log(info);
+                            obj.obj[obj.lastPathElement] = Number(info2[1]);
+                            editorText += "<span name=arrayindex id='" + obj.path + "'></span>";
+                        } else 
+                    
+                        //field with index of existing "other array": 0 type, 1 field path,
                         //2 "other array" path 
                         if (elementsToProcess[i].length == 3) {
                             const obj = findOutputObject(getAddReplace(outputDataParentPath,
-                                elementsToProcess[i][2] + "." + elementsToProcess[i][1], addReplace), true, false);
+                                 elementsToProcess[i][1], addReplace), true, false);
                             const obj2 = findOutputObject(getAddReplace(outputDataParentPath,
                                 elementsToProcess[i][2], addReplace), true, false);
                             if (debug) {
@@ -721,7 +737,9 @@
                         } else {
                             //field with "other array" index (for selecting): 
                             //0 type, 1 path, 2 description, 3 "other array" path                       
-                            const obj = findOutputObject(outputDataParentPath + elementsToProcess[i][1], true, false);
+                            const obj = findOutputObject(
+                            getAddReplace(outputDataParentPath,
+                                elementsToProcess[i][1], addReplace), true, false);
                             editorText += "<span class=full>";
                             editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                             editorText += "<select name='" + elementsToProcess[i][3] + "'";
@@ -802,7 +820,8 @@
                             console.log("addReplace");
                             console.log(addReplace);
                         }
-                        selectAddReplace[inputDataParentPath] = JSON.parse(JSON.stringify(addReplace));
+                         var x = inputDataParentPath.split(".");
+                        selectAddReplace[x[0]] = JSON.parse(JSON.stringify(addReplace));
                     } else if (elementsToProcess[i][0] == "string") {
                         //string parameter
                         //0 type, 1 path, 2 description, 3 default, 4 minimum len, 5 maximum len, 
