@@ -294,12 +294,12 @@
                                     obj[z].add(op);
                                 }
                             }
-                        }
-                        document.getElementById(obj[z].attributes["name"]["nodeValue"] + "_error").innerHTML = "";
-                    } else if (document.getElementById(obj[z].attributes["name"]["nodeValue"] + "_error") != null) {
-                        document.getElementById(obj[z].attributes["name"]["nodeValue"] + "_error").innerHTML =
-                            "<font color=red>Needs some value</font>";
+                        }                     
                     }
+                    if (document.getElementById(obj[z].id + "_error")!=null) {
+                     document.getElementById(obj[z].id + "_error").innerHTML = 
+                           obj[z].options.length == 0?"<font color=red>Needs some value</font>":"";
+                           }
                 }
             }
         }
@@ -405,7 +405,7 @@
                             editStringBoolNum(obj[j].id, obj[j].value, true);
                             if (obj[j].length == 0) {
                                 editStringBoolNum(obj[j].id, "", false);
-                                document.getElementById(obj[j].attributes["name"]["nodeValue"] + "_error")
+                                document.getElementById(obj[j].id + "_error")
                                     .innerHTML = "<font color=red>Needs some value</font>";
                             }
                         }
@@ -710,12 +710,16 @@
                             const obj = findOutputObject(getAddReplace(outputDataParentPath,
                                 elementsToProcess[i][1], addReplace), true, false);
                                   const info = obj.path.split(".");
-                            const info2 = info[info.length-2].split(/[\[,\]]/);
-                            console.log("ala ma kota");
-                            console.log(obj);
-                            console.log(info);
+                            const info2 = info[info.length-2].split(/[\[,\]]/);                          
                             obj.obj[obj.lastPathElement] = Number(info2[1]);
-                            editorText += "<span name=arrayindex id='" + obj.path + "'></span>";
+                                                       
+
+                            var x = obj.path.split(".");
+                         
+                            x = x.pop();
+                   
+                            editorText += "<span name=arrayindex id='" + 
+                               (Array.isArray(x)?x.join("."):x) + "'></span>";
                         } else 
                     
                         //field with index of existing "other array": 0 type, 1 field path,
@@ -743,12 +747,12 @@
                             editorText += "<span class=full>";
                             editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                             editorText += "<select name='" + elementsToProcess[i][3] + "'";
-                            editorText += " id='" + outputDataParentPath + elementsToProcess[i][1] + "'";
+                            editorText += " id='" + elementToProcessName + "'";
                             //values in title can be not always actual in developer tools
                             editorText += " oninput=editStringBoolNum(this.id,this.value,true);";
                             editorText += " onmouseover=updateTooltip(this.id,this.value);>";
                             editorText += "</select>";
-                            editorText += "<span id='" + elementsToProcess[i][3] + "_error'>";
+                            editorText += "<span id='" + elementToProcessName + "_error'>";
                             editorText += "</span>";
                             editorText += "</span>";
                         }
