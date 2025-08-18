@@ -508,7 +508,7 @@
         }
 
         function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {
-            ///            const pathObj = pathInInputDataWithIndex.split(".");
+            // const pathObj = pathInInputDataWithIndex.split(".");
             const pathObj = pathInInputDataWithIndex.split(/[\[,\]]/);
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
             const sectionObj = elementToProcess[2].split(".");
