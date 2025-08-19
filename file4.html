@@ -477,13 +477,7 @@
                 newSpanSpan.id = newID+".y";
                 newSpanSpan.style = 'text-align:right';
 	        newSpanSpan.addEventListener('click', function(event) {
-                       if (document.getElementById(this.id.slice(0, -2)+'.z').style.display == 'none') {
-                       		document.getElementById(this.id.slice(0, -2)+'.z').style.display = 'block';
-                       		this.innerHTML = '&nbsp;[-]';
-                       } else {
-                       		document.getElementById(this.id.slice(0, -2)+'.z').style.display = 'none';
-                       		this.innerHTML = '&nbsp;[+]';
-                       }
+	        	openClose(this.id.slice(0, -2));
                     });
                     
                   var newLabel = document.createElement('label');
@@ -618,6 +612,16 @@
             retVal.path = pathList.join(",");
             retVal.value = valueToCheck;
             return retVal;
+        }
+        
+        function openClose(ID) {
+          if (document.getElementById(ID+'.z').style.display == 'none') {
+                       		document.getElementById(ID+'.z').style.display = 'block';
+                       		document.getElementById(ID+'.y').innerHTML = '&nbsp;[-]';
+                       } else {
+                       		document.getElementById(ID+'.z').style.display = 'none';
+                       		document.getElementById(ID+'.y').innerHTML = '&nbsp;[+]';
+                       }
         }
 
         //find path in output JSON after all possible path replacements
