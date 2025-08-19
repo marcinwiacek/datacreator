@@ -132,9 +132,16 @@
                     }
                     //we don't have index = we create new one
                     if (info[1] == "") {
+                        if (returnWholeArray) {
+	                         retVal.obj = obj;
+	                         retVal.lastPathElement = info[0];
+	                         console.log("array return");
+	                         console.log(retVal);
+                         	return retVal;
+                        }                    
                         obj = obj[info[0]];
                         retVal.obj = obj;
-                        if (!canCreate || returnWholeArray) return retVal;
+                        if (!canCreate) return retVal;
                         obj.push({});
                         retVal.isNewValue = true;
                         pathObj[i] = info[0] + "[" + (obj.length - 1) + "]";
