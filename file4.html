@@ -463,9 +463,25 @@
                 const newID = outputDataParentPath + pathInInputData + "[" + elementIndex + "]";
 
                 //first create new menu section
-                var newLabel = document.createElement('label');
-                newLabel.innerHTML = "<b>" + elementToProcess[1] + "</b>";
-
+               
+                
+                var newSpanSpan = document.createElement('span');
+                newSpanSpan.innerHTML = "&nbsp;[-]";
+                newSpanSpan.id = newID+".y";
+                newSpanSpan.style = 'text-align:right';
+	        newSpanSpan.addEventListener('click', function(event) {
+                       if (document.getElementById(this.id.slice(0, -2)+'.z').style.display == 'none') {
+                       		document.getElementById(this.id.slice(0, -2)+'.z').style.display = 'block';
+                       		this.innerHTML = '&nbsp;[-]';
+                       } else {
+                       		document.getElementById(this.id.slice(0, -2)+'.z').style.display = 'none';
+                       		this.innerHTML = '&nbsp;[+]';
+                       }
+                    });
+                    
+                  var newLabel = document.createElement('label');
+                newLabel.innerHTML = "<b>" + elementToProcess[1] + "</b>";                   
+                
                 var newSpan = document.createElement('span');
                 newSpan.classList.add("full");
                 newSpan.innerHTML = "<br>&nbsp;<br>";
@@ -487,6 +503,7 @@
                 var newInternSpan = document.createElement('span');
                 newInternSpan.classList.add("full");
                 newInternSpan.style = "display: grid; grid-template-columns: 1fr 1fr;";
+                newInternSpan.id = newID+".z";
                 var retVal = "";
                 const sectionObj = elementToProcess[elementIndex].split(".");
                 for (s in sectionObj) {
@@ -498,6 +515,7 @@
 
                 if (nonDefault) newInternSpan.appendChild(newDelButton);
                 newSpan.appendChild(newLabel);
+                newSpan.appendChild(newSpanSpan);
                 newSpan.appendChild(newInternSpan);
                 document.getElementById(pathInInputData).appendChild(newSpan);
 
