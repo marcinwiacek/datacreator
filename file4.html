@@ -458,7 +458,7 @@
             var elementIndex = 0;
             for (var i = 3; i < elementToProcess.length; i += 2) {
                 if (elementToProcess[i + 1] == nonDefault &&
-                    document.getElementById(outputDataParentPath + pathInInputData + "[" + i + "].x") == null) {
+                    document.getElementById("[" + i + "]"+outputDataParentPath + pathInInputData + "[" + i + "].x") == null) {
                     elementIndex = i;
                     break;
                 }
@@ -467,7 +467,7 @@
                 alert('Not possible. Maximal ' + ((elementToProcess.length - 3) / 2) +
                     ' elements in element ' + pathInInputData);
             } else {
-                const newID = outputDataParentPath + pathInInputData + "[" + elementIndex + "]";
+                const newID = "[" + elementIndex + "]"+outputDataParentPath + pathInInputData + "[" + elementIndex + "]";
 
                 //first create new menu section
                
