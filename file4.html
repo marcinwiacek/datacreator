@@ -238,15 +238,17 @@
         }
 
         //changing one value after changing string, boolean, number, etc.
-        function editStringBoolNum(pathInOutputData, value, isThisNum) {
+        function editStringBoolNum(pathInOutputData, value, isThisNum, canCreate) {
             if (debug) {
                 console.log("editStringBoolNum");
                 console.log(value);
             }
             const pathList = pathInOutputData.split(",");
             for (var p in pathList) {
-                var obj = findOutputObject(pathList[p], true, Array.isArray(value));
-                obj.obj[obj.lastPathElement] = isThisNum ? Number(value) : value;
+                var obj = findOutputObject(pathList[p], canCreate, Array.isArray(value));
+                if (obj && obj.obj && obj.lastPathElement) {
+	                obj.obj[obj.lastPathElement] = isThisNum ? Number(value) : value;
+	        }
             }
             showFormattedOutputJson();
         }
@@ -257,7 +259,7 @@
             for (var i = 0; i < values.length; i++) {
                 if (values[i].selected) val.push(values[i].value);
             }
-            editStringBoolNum(pathInOutputData, val, false);
+            editStringBoolNum(pathInOutputData, val, false, true);
         }
 
         //add default sections from "adddelete" elements
@@ -293,7 +295,7 @@
                                 op.innerHTML = j;
                                 if (obj[z].value == "") {
                                     obj[z].add(op);
-                                    editStringBoolNum(obj[z].id, j, true);
+                                    editStringBoolNum(obj[z].id, j, true, true);
                                     if (debug) {
                                         console.log("before add element in option");
                                         console.log(obj2);
@@ -411,9 +413,9 @@
                                 }
                             }
                             obj[j].remove(toDelete);
-                            editStringBoolNum(obj[j].id, obj[j].value, true);
+                            editStringBoolNum(obj[j].id, obj[j].value, true, true);
                             if (obj[j].length == 0) {
-                                editStringBoolNum(obj[j].id, "", false);
+                                editStringBoolNum(obj[j].id, "", false, true);
                                 document.getElementById(obj[j].id + "_error")
                                     .innerHTML = "<font color=red>Needs some value</font>";
                             }
@@ -775,7 +777,7 @@
                             editorText += "<select name='" + elementsToProcess[i][3] + "'";
                             editorText += " id='" + obj.path + "'";
                             //values in title can be not always actual in developer tools
-                            editorText += " oninput=editStringBoolNum(this.id,this.value,true);";
+                            editorText += " oninput=editStringBoolNum(this.id,this.value,true,true);";
                             editorText += " onmouseover=updateTooltip(this.id,this.value);>";
                             editorText += "</select>";
                             editorText += "<span id='" + obj.path + "_error'>";
@@ -875,7 +877,7 @@
                         }
                         title += ", default \"" + pathValue.value + "\"";
                         editorText += " title='" + title + "'";
-                        editorText += " oninput=editStringBoolNum(this.id,this.value,false);setEditErrors(this.id,this.value,'" +
+                        editorText += " oninput=editStringBoolNum(this.id,this.value,false,true);setEditErrors(this.id,this.value,'" +
                             sectionName + "','" + i + "');><br>";
                         editorText += "<span id='" + pathValue.path + "_error'>";
                         editorText += parseEditErrors(sectionName, i, pathValue.value);
@@ -883,7 +885,7 @@
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "number") {
                         //number parameter
-                        //0 type, 1 path, 2 description, 3 default, 4 minimum, 5 maximum, 6 zero or step
+                        //0 type, 1 path, 2 description, 3 default, 4 minimum, 5 maximum, 6 zero or step, 7 (optional) don't create elements
                         const pathValue = getPathValueToCheck(outputDataParentPath,
                             elementsToProcess[i][1], elementsToProcess[i][3], addReplace, false);
                         editorText += "<span class=full>";
@@ -909,7 +911,7 @@
                             title += ", default " + pathValue.value;
                         }
                         editorText += " title='" + title + "'";
-                        editorText += " oninput=editStringBoolNum(this.id,this.value,true);setEditErrors(this.id,this.value,'" +
+                        editorText += " oninput=editStringBoolNum(this.id,this.value,true,"+!(elementsToProcess[i].length==8)+");setEditErrors(this.id,this.value,'" +
                             sectionName + "','" + i + "');><br>";
                         editorText += "<span id='" + pathValue.path + "_error'>";
                         editorText += parseEditErrors(sectionName, i, pathValue.value);
@@ -945,9 +947,9 @@
                         editorText += " title='" + title + "'";
                         editorText += " id='" + pathValue.path + "'";
                         editorText += " type=" + elementsToProcess[i][0];
-                        editorText += " oninput=editStringBoolNum(this.id,this.value,false);><br>";
+                        editorText += " oninput=editStringBoolNum(this.id,this.value,false,true);><br>";
                         editorText += "</span>";
-                    } else if (elementsToProcess[i][0] == "checkbox") {
+                    } else if (elementsToProcess[i][0] == "checkbox" || elementsToProcess[i][0] == "checkfalse") {
                         //real true & false in json. For string use option
                         //0 type, 1 path, 2 description, 3 default
                         const pathValue = getPathValueToCheck(outputDataParentPath,
@@ -956,8 +958,10 @@
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input type=checkbox";
                         editorText += " name='" + elementToProcessName + "'";
-                        editorText += " checked title='Default " + elementsToProcess[i][3] + "'";
-                        editorText += " id='" + pathValue.path + "' oninput=editStringBoolNum(this.id,this.checked,false);><br>";
+                        if (elementsToProcess[i][3]==(elementsToProcess[i][0] == "checkbox")) editorText += " checked";
+                        editorText += " title='Default " + elementsToProcess[i][3] + "'";
+                        editorText += " id='" + pathValue.path + "' oninput=editStringBoolNum(this.id,"+
+                        	(elementsToProcess[i][0] == "checkbox"?"":"!") +"this.checked,false,true);><br>";
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "option") {
                         //select one of predefined options
@@ -969,7 +973,7 @@
                         editorText += "<select id='" + pathValue.path + "'";
                         editorText += " name='" + elementToProcessName + "'";
                         editorText += " title='Default " + elementsToProcess[i][3] + "'";
-                        editorText += " onchange=editStringBoolNum(this.id,this.value,false);>";
+                        editorText += " onchange=editStringBoolNum(this.id,this.value,false,true);>";
                         for (var j = 4; j < elementsToProcess[i].length; j++) {
                             editorText += "<option value='" + elementsToProcess[i][j] + "'";
                             if (elementsToProcess[i][3] == elementsToProcess[i][j]) editorText += " selected";
