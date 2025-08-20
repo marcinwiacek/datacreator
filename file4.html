@@ -460,7 +460,7 @@
             var elementIndex = 0;
             for (var i = 3; i < elementToProcess.length; i += 2) {
                 if (elementToProcess[i + 1] == nonDefault &&
-                    document.getElementById("[" + i + "]"+outputDataParentPath + pathInInputData + "[" + i + "].x") == null) {
+                    document.getElementById(pathInInputData + "(" + i + ").x") == null) {
                     elementIndex = i;
                     break;
                 }
@@ -469,7 +469,7 @@
                 alert('Not possible. Maximal ' + ((elementToProcess.length - 3) / 2) +
                     ' elements in element ' + pathInInputData);
             } else {
-                const newID = "[" + elementIndex + "]"+outputDataParentPath + pathInInputData + "[" + elementIndex + "]";
+                const newID =  pathInInputData + "(" + elementIndex + ")";
 
                 //first create new menu section
                
@@ -511,7 +511,7 @@
                 const sectionObj = elementToProcess[elementIndex].split(".");
                 for (s in sectionObj) {
                     retVal += processEditorPart(sectionObj[s],
-                        newID,
+                        replaceNameFromPathInInputData(newID),
                         outputDataParentPath, null);
                 }
                 newInternSpan.innerHTML = retVal;
@@ -531,14 +531,27 @@
             }
         }
 
-        function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {
-            // const pathObj = pathInInputDataWithIndex.split(".");
+//example: e[1](2).e[2].e[3] gives e[1](2)
+//e[1](2).e[2](4).e[3] gives e[1](2)(4)
+function replaceNameFromPathInInputData(pathInInputData) {
+		var retVal = "";
+	    const x = pathInInputData.split(".");
+	    for (var s in x) {
+             const pathObj3 = x[s].split(/[\(,\)]/);
+             alert(pathObj3);
+             if (pathObj3.length > 1) retVal+="("+pathObj3[1]+")";
+	    }	 
+            const pathObj2 = x[0].split(/[\[,\]]/);
+            return pathObj2[0]+"["+pathObj2[1]+"]"+retVal;
+}
+
+        function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {	                                      
             const pathObj = pathInInputDataWithIndex.split(/[\[,\]]/);
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
             const sectionObj = elementToProcess[2].split(".");
             for (s in sectionObj) {
                 processEditorPart(sectionObj[s],
-                    outputDataParentPath + pathInInputDataWithIndex, outputDataParentPath, null);
+                    pathInInputDataWithIndex, outputDataParentPath, null);
             }
             document.getElementById(outputDataParentPath + pathInInputDataWithIndex).remove();
             //  processAllRelatedIndexes();
@@ -658,10 +671,9 @@
             }
             var editorText = "";
             const sectionList = inputDataSectionPathToProcess.split(",");
-            var x = inputDataParentPath.split(".");
             var addReplace = JSON.parse(JSON.stringify(
                 addreplace == null ?
-                (selectAddReplace[x[0]] == null ? {} : selectAddReplace[x[0]]) :
+                (selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)] == null ? {} : selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)]) :
                 addreplace));
             if (debug) {
                 console.log("addReplace");
@@ -852,8 +864,8 @@
                             console.log("addReplace");
                             console.log(addReplace);
                         }
-                        var x = inputDataParentPath.split(".");
-                        selectAddReplace[x[0]] = JSON.parse(JSON.stringify(addReplace));
+                       
+                        selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)] = JSON.parse(JSON.stringify(addReplace));
                     } else if (elementsToProcess[i][0] == "string") {
                         //string parameter
                         //0 type, 1 path, 2 description, 3 default, 4 minimum len, 5 maximum len, 
