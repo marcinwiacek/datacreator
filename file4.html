@@ -334,7 +334,7 @@
                     var retVal = "";
                     const sectionObj = elementToProcess[j + 1].split(".");
                     for (s in sectionObj) {
-                        retVal += processEditorPart(sectionObj[s], pathInInputData, outputDataParentPath, null);
+                        retVal += processEditorPart(sectionObj[s], pathInInputData, outputDataParentPath);
                     }
                     document.getElementById(pathInInputData + "_span").innerHTML = retVal;
                     processExtraArrayElements();
@@ -514,7 +514,7 @@
                 for (s in sectionObj) {
                     retVal += processEditorPart(sectionObj[s],
                         replaceNameFromPathInInputData(newID),
-                        outputDataParentPath, null);
+                        outputDataParentPath);
                 }
                 newInternSpan.innerHTML = retVal;
 
@@ -552,7 +552,7 @@
             const sectionObj = elementToProcess[2].split(".");
             for (s in sectionObj) {
                 processEditorPart(sectionObj[s],
-                    pathInInputDataWithIndex, outputDataParentPath, null);
+                    pathInInputDataWithIndex, outputDataParentPath);
             }
             document.getElementById(outputDataParentPath + pathInInputDataWithIndex).remove();
             showFormattedOutputJson();
@@ -662,19 +662,19 @@
         }
 
         function processEditorPart(inputDataSectionPathToProcess, inputDataParentPath,
-            outputDataParentPath, addreplace) {
+            outputDataParentPath) {
             processing = "processEditorPart '" + inputDataSectionPathToProcess + "' '" +
                 inputDataParentPath + "' '" + outputDataParentPath + "'";
             if (debug) {
                 console.log(processing);
-                console.log(addreplace);
             }
             var editorText = "";
             const sectionList = inputDataSectionPathToProcess.split(",");
             var addReplace = JSON.parse(JSON.stringify(
-                addreplace == null ?
-                (selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)] == null ? {} : selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)]) :
-                addreplace));
+            	inputDataParentPath == ""? {}:
+                (selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)] == null ? 
+                   {} : 
+                   selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)])));
             if (debug) {
                 console.log("addReplace");
                 console.log(addReplace);
@@ -689,8 +689,7 @@
                         sectionName + "[" + i + "]";
                     processing = elementToProcessName + " " + JSON.stringify(elementsToProcess[i]);
                     if (debug) {
-                        console.log(processing);
-                        console.log(addreplace);
+                        console.log(processing);                     
                     }
                     if (elementsToProcess[i][0] == "select") {
                         //option menu. Can do something extra during changing to concrete value.
@@ -712,7 +711,7 @@
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) {
                                 editorText += processEditorPart(elementsToProcess[i][j + 1],
                                     elementToProcessName,
-                                    outputDataParentPath, addReplace);
+                                    outputDataParentPath);
                             }
                         }
                         editorText += "</span>";
@@ -745,10 +744,10 @@
                             const obj = findOutputObject(getAddReplace(outputDataParentPath,
                                 elementsToProcess[i][1], addReplace), true, false);
                             editorText += processEditorPart(elementsToProcess[i][2],
-                                elementToProcessName, obj.path + ".", addReplace);
+                                elementToProcessName, obj.path + ".");
                         } else {
                             editorText += processEditorPart(elementsToProcess[i][2],
-                                elementToProcessName, "", addReplace);
+                                elementToProcessName, "");
                         }
                     } else if (elementsToProcess[i][0] == "index") {
                         //field with index of existing "other array": 0 type, 1 field inside "other array"
@@ -1073,7 +1072,7 @@
                             outputData = {};
                             addArray = [];
                             selectAddReplace = {};
-                            document.getElementById("editor").innerHTML = processEditorPart("start", "", "", {});
+                            document.getElementById("editor").innerHTML = processEditorPart("start", "", "");
                             processExtraArrayElements();
                             processAllRelatedIndexes();
                             showFormattedOutputJson();
