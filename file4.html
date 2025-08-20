@@ -133,12 +133,12 @@
                     //we don't have index = we create new one
                     if (info[1] == "") {
                         if (returnWholeArray) {
-	                         retVal.obj = obj;
-	                         retVal.lastPathElement = info[0];
-	                         console.log("array return");
-	                         console.log(retVal);
-                         	return retVal;
-                        }                    
+                            retVal.obj = obj;
+                            retVal.lastPathElement = info[0];
+                            console.log("array return");
+                            console.log(retVal);
+                            return retVal;
+                        }
                         obj = obj[info[0]];
                         retVal.obj = obj;
                         if (!canCreate) return retVal;
@@ -247,8 +247,8 @@
             for (var p in pathList) {
                 var obj = findOutputObject(pathList[p], canCreate, Array.isArray(value));
                 if (obj && obj.obj && obj.lastPathElement) {
-	                obj.obj[obj.lastPathElement] = isThisNum ? Number(value) : value;
-	        }
+                    obj.obj[obj.lastPathElement] = isThisNum ? Number(value) : value;
+                }
             }
             showFormattedOutputJson();
         }
@@ -454,7 +454,7 @@
                 console.log(selectAddReplace);
             }
             const x = pathInInputData.split(".");
-            const pathObj = x[x.length-1].split(/[\[,\]]/);
+            const pathObj = x[x.length - 1].split(/[\[,\]]/);
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
             if (debug) console.log(elementToProcess);
             var elementIndex = 0;
@@ -469,22 +469,22 @@
                 alert('Not possible. Maximal ' + ((elementToProcess.length - 3) / 2) +
                     ' elements in element ' + pathInInputData);
             } else {
-                const newID =  pathInInputData + "(" + elementIndex + ")";
+                const newID = pathInInputData + "(" + elementIndex + ")";
 
                 //first create new menu section
-               
-                
+
+
                 var newSpanSpan = document.createElement('span');
                 newSpanSpan.innerHTML = "&nbsp;[-]";
-                newSpanSpan.id = newID+".y";
+                newSpanSpan.id = newID + ".y";
                 newSpanSpan.style = 'text-align:right';
-	        newSpanSpan.addEventListener('click', function(event) {
-	        	openClose(this.id.slice(0, -2));
-                    });
-                    
-                  var newLabel = document.createElement('label');
-                newLabel.innerHTML = "<b>" + elementToProcess[1] + "</b>";                   
-                
+                newSpanSpan.addEventListener('click', function(event) {
+                    openClose(this.id.slice(0, -2));
+                });
+
+                var newLabel = document.createElement('label');
+                newLabel.innerHTML = "<b>" + elementToProcess[1] + "</b>";
+
                 var newSpan = document.createElement('span');
                 newSpan.classList.add("full");
                 newSpan.innerHTML = "<br>&nbsp;<br>";
@@ -506,7 +506,7 @@
                 var newInternSpan = document.createElement('span');
                 newInternSpan.classList.add("full");
                 newInternSpan.style = "display: grid; grid-template-columns: 1fr 1fr;";
-                newInternSpan.id = newID+".z";
+                newInternSpan.id = newID + ".z";
                 var retVal = "";
                 const sectionObj = elementToProcess[elementIndex].split(".");
                 for (s in sectionObj) {
@@ -531,21 +531,21 @@
             }
         }
 
-//example: e[1](2).e[2].e[3] gives e[1](2)
-//e[1](2).e[2](4).e[3] gives e[1](2)(4)
-function replaceNameFromPathInInputData(pathInInputData) {
-		var retVal = "";
-	    const x = pathInInputData.split(".");
-	    for (var s in x) {
-             const pathObj3 = x[s].split(/[\(,\)]/);
-             alert(pathObj3);
-             if (pathObj3.length > 1) retVal+="("+pathObj3[1]+")";
-	    }	 
+        //example: e[1](2).e[2].e[3] gives e[1](2)
+        //e[1](2).e[2](4).e[3] gives e[1](2)(4)
+        function replaceNameFromPathInInputData(pathInInputData) {
+            var retVal = "";
+            const x = pathInInputData.split(".");
+            for (var s in x) {
+                const pathObj3 = x[s].split(/[\(,\)]/);
+                alert(pathObj3);
+                if (pathObj3.length > 1) retVal += "(" + pathObj3[1] + ")";
+            }
             const pathObj2 = x[0].split(/[\[,\]]/);
-            return pathObj2[0]+"["+pathObj2[1]+"]"+retVal;
-}
+            return pathObj2[0] + "[" + pathObj2[1] + "]" + retVal;
+        }
 
-        function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {	                                      
+        function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {
             const pathObj = pathInInputDataWithIndex.split(/[\[,\]]/);
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
             const sectionObj = elementToProcess[2].split(".");
@@ -628,15 +628,15 @@ function replaceNameFromPathInInputData(pathInInputData) {
             retVal.value = valueToCheck;
             return retVal;
         }
-        
+
         function openClose(ID) {
-          if (document.getElementById(ID+'.z').style.display == 'none') {
-                       		document.getElementById(ID+'.z').style.display = 'block';
-                       		document.getElementById(ID+'.y').innerHTML = '&nbsp;[-]';
-                       } else {
-                       		document.getElementById(ID+'.z').style.display = 'none';
-                       		document.getElementById(ID+'.y').innerHTML = '&nbsp;[+]';
-                       }
+            if (document.getElementById(ID + '.z').style.display == 'none') {
+                document.getElementById(ID + '.z').style.display = 'block';
+                document.getElementById(ID + '.y').innerHTML = '&nbsp;[-]';
+            } else {
+                document.getElementById(ID + '.z').style.display = 'none';
+                document.getElementById(ID + '.y').innerHTML = '&nbsp;[+]';
+            }
         }
 
         //find path in output JSON after all possible path replacements
@@ -777,7 +777,7 @@ function replaceNameFromPathInInputData(pathInInputData) {
                             }
                             const info = obj2.lastPathElement.split(/[\[,\]]/);
                             obj.obj[obj.lastPathElement] = Number(info[1]);
-                            editorText += "<span name=arrayindex2 id='" + obj.path + "'></span>";  //fixme
+                            editorText += "<span name=arrayindex2 id='" + obj.path + "'></span>"; //fixme
                         } else {
                             //field with "other array" index (for selecting): 
                             //0 type, 1 path, 2 description, 3 "other array" path
@@ -864,7 +864,7 @@ function replaceNameFromPathInInputData(pathInInputData) {
                             console.log("addReplace");
                             console.log(addReplace);
                         }
-                       
+
                         selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)] = JSON.parse(JSON.stringify(addReplace));
                     } else if (elementsToProcess[i][0] == "string") {
                         //string parameter
@@ -923,7 +923,7 @@ function replaceNameFromPathInInputData(pathInInputData) {
                             title += ", default " + pathValue.value;
                         }
                         editorText += " title='" + title + "'";
-                        editorText += " oninput=editStringBoolNum(this.id,this.value,true,"+!(elementsToProcess[i].length==8)+");setEditErrors(this.id,this.value,'" +
+                        editorText += " oninput=editStringBoolNum(this.id,this.value,true," + !(elementsToProcess[i].length == 8) + ");setEditErrors(this.id,this.value,'" +
                             sectionName + "','" + i + "');><br>";
                         editorText += "<span id='" + pathValue.path + "_error'>";
                         editorText += parseEditErrors(sectionName, i, pathValue.value);
@@ -970,11 +970,11 @@ function replaceNameFromPathInInputData(pathInInputData) {
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input type=checkbox";
                         editorText += " name='" + elementToProcessName + "'";
-                        if (elementsToProcess[i][3]==(elementsToProcess[i][0] == "checkbox")) editorText += " checked";
-                        editorText += " title='Default " + 
-                             (elementsToProcess[i][0] == "checkbox"?elementsToProcess[i][3]:!elementsToProcess[i][3]) + "'";
-                        editorText += " id='" + pathValue.path + "' oninput=editStringBoolNum(this.id,"+
-                        	(elementsToProcess[i][0] == "checkbox"?"":"!") +"this.checked,false,true);><br>";
+                        if (elementsToProcess[i][3] == (elementsToProcess[i][0] == "checkbox")) editorText += " checked";
+                        editorText += " title='Default " +
+                            (elementsToProcess[i][0] == "checkbox" ? elementsToProcess[i][3] : !elementsToProcess[i][3]) + "'";
+                        editorText += " id='" + pathValue.path + "' oninput=editStringBoolNum(this.id," +
+                            (elementsToProcess[i][0] == "checkbox" ? "" : "!") + "this.checked,false,true);><br>";
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "option") {
                         //select one of predefined options
