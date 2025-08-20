@@ -3,10 +3,14 @@
 
 <head>
     <script>
-        //fixme: adddelete inside adddelete
+        //fixme: number with last param false
+        //tooltip for indexes (arrayindex and arrayindex2 fixes)
+        //copy from value
+        //multiple addremove for the same array
+        //delete button location
 
         const debug = true, //do you want debug in browser console?
-            version = "250819";
+            version = "250820";
         document.title = "DataCreator (MIT license) " + version;
     </script>
     <meta charset="utf-8">
@@ -472,8 +476,6 @@
                 const newID = pathInInputData + "(" + elementIndex + ")";
 
                 //first create new menu section
-
-
                 var newSpanSpan = document.createElement('span');
                 newSpanSpan.innerHTML = "&nbsp;[-]";
                 newSpanSpan.id = newID + ".y";
@@ -538,7 +540,6 @@
             const x = pathInInputData.split(".");
             for (var s in x) {
                 const pathObj3 = x[s].split(/[\(,\)]/);
-                alert(pathObj3);
                 if (pathObj3.length > 1) retVal += "(" + pathObj3[1] + ")";
             }
             const pathObj2 = x[0].split(/[\[,\]]/);
@@ -554,7 +555,6 @@
                     pathInInputDataWithIndex, outputDataParentPath, null);
             }
             document.getElementById(outputDataParentPath + pathInInputDataWithIndex).remove();
-            //  processAllRelatedIndexes();
             showFormattedOutputJson();
         }
 
