@@ -765,7 +765,7 @@
                             }
                             const info = obj2.lastPathElement.split(/[\[,\]]/);
                             obj.obj[obj.lastPathElement] = Number(info[1]);
-                            editorText += "<span name=arrayindex id='" + obj.path + "'></span>";
+                            editorText += "<span name=arrayindex2 id='" + obj.path + "'></span>";  //fixme
                         } else {
                             //field with "other array" index (for selecting): 
                             //0 type, 1 path, 2 description, 3 "other array" path
@@ -959,7 +959,8 @@
                         editorText += "<input type=checkbox";
                         editorText += " name='" + elementToProcessName + "'";
                         if (elementsToProcess[i][3]==(elementsToProcess[i][0] == "checkbox")) editorText += " checked";
-                        editorText += " title='Default " + elementsToProcess[i][3] + "'";
+                        editorText += " title='Default " + 
+                             (elementsToProcess[i][0] == "checkbox"?elementsToProcess[i][3]:!elementsToProcess[i][3]) + "'";
                         editorText += " id='" + pathValue.path + "' oninput=editStringBoolNum(this.id,"+
                         	(elementsToProcess[i][0] == "checkbox"?"":"!") +"this.checked,false,true);><br>";
                         editorText += "</span>";
