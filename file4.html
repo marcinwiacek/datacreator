@@ -560,11 +560,13 @@
             showFormattedOutputJson();
         }
 
-        function loadBase64File(f, pathInOutputData) {
+        function loadFile(f, pathInOutputData, isHex) {
             const reader = new FileReader();
             reader.onload = function(e2) {
-                var obj = findOutputObject(pathInOutputData, false, false);
-                obj.obj[obj.lastPathElement] = (new Uint8Array(e2.target.result)).toBase64();
+                var obj = findOutputObject(pathInOutputData, false, false);                
+                obj.obj[obj.lastPathElement] = isHex?
+                	(new Uint8Array(e2.target.result)).toHex().toUpperCase():
+                	(new Uint8Array(e2.target.result)).toBase64();
                 showFormattedOutputJson();
                 document.getElementById(pathInOutputData + "_get")
                     .setAttribute('download', document.getElementById(pathInOutputData).files[0].name);
@@ -572,37 +574,18 @@
             reader.readAsArrayBuffer(f);
         }
 
-        function loadHexFile(f, pathInOutputData) {
-            const reader = new FileReader();
-            reader.onload = function(e2) {
-                var obj = findOutputObject(pathInOutputData, false, false);
-                obj.obj[obj.lastPathElement] = (new Uint8Array(e2.target.result)).toHex().toUpperCase();
-                showFormattedOutputJson();
-                document.getElementById(pathInOutputData + "_get")
-                    .setAttribute('download', document.getElementById(pathInOutputData).files[0].name);
-            };
-            reader.readAsArrayBuffer(f);
-        }
-
-        function getOutputBase64File(pathInOutputData) {
+        function getOutputFile(pathInOutputData, isHex) {
             const obj = findOutputObject(pathInOutputData, false, false);
             if (obj.obj[obj.lastPathElement].length != 0) {
-                document.getElementById(pathInOutputData + "_get")
-                    .setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
-                return true;
-            } else {
-                alert('Empty file content. Nothing to get.');
-                return false;
-            }
-        }
-
-        function getOutputHexFile(pathInOutputData) {
-            const obj = findOutputObject(pathInOutputData, false, false);
-            if (obj.obj[obj.lastPathElement].length != 0) {
+            	if (isHex) {
                 var obj2 = new Uint8Array(obj.obj[obj.lastPathElement].length / 2);
                 obj2.setFromHex(obj.obj[obj.lastPathElement].toLowerCase());
                 document.getElementById(pathInOutputData + "_get")
                     .setAttribute('href', 'data:;base64,' + (new Uint8Array(obj2)).toBase64());
+                    } else {
+                document.getElementById(pathInOutputData + "_get")
+                    .setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
+                    }
                 return true;
             } else {
                 alert('Empty file content. Nothing to get.');
@@ -1050,14 +1033,14 @@
                         editorText += " title='Click to get file content from " + elementToProcessName + "'";
                         if (elementsToProcess[i][4] != "") editorText += " download='" + elementsToProcess[i][4] + "'";
                         editorText += " name='" + elementToProcessName + "'";
-                        editorText += " onclick='return getOutput";
-                        editorText += (elementsToProcess[i][0] == "file64" ? "Base64" : "Hex");
-                        editorText += "File(\"" + pathValue.path + "\");'>Get file</a>";
+                        editorText += " onclick='return getOutputFile(\"" + pathValue.path + "\",";
+                        editorText += (elementsToProcess[i][0] == "fileHex");
+                        editorText += ");'>Get file</a>";
                         editorText += "<input type=file id='" + pathValue.path + "'";
                         if (elementsToProcess[i][5] != "") editorText += " accept='" + elementsToProcess[i][5] + "'";
-                        editorText += " onchange=load";
-                        editorText += (elementsToProcess[i][0] == "file64" ? "Base64" : "Hex");
-                        editorText += "File(this.files[0],this.id);><br>";
+                        editorText += " onchange=loadFile(this.files[0],this.id,";
+                        editorText += (elementsToProcess[i][0] == "fileHex");
+			editorText += ");><br>";
                         editorText += "</span>";
                     }
                 }
