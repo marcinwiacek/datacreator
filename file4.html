@@ -553,7 +553,6 @@
             const x = pathInInputDataWithIndex.split(".");
             const pathObj = x[x.length - 1].split(/[\[,\]]/);
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
-
             const sectionObj = elementToProcess[2].split(".");
             for (s in sectionObj) {
                 processEditorPart(sectionObj[s],
@@ -649,15 +648,13 @@
             return pathList.join(",");
         }
 
-        function processEditorPart(inputDataSectionPathToProcess, inputDataParentPath,
-            outputDataParentPath) {
+        function processEditorPart(inputDataSectionPathToProcess, inputDataParentPath, outputDataParentPath) {
             processing = "processEditorPart '" + inputDataSectionPathToProcess + "' '" +
                 inputDataParentPath + "' '" + outputDataParentPath + "'";
             if (debug) {
                 console.log(processing);
             }
-            var editorText = "";
-            const sectionList = inputDataSectionPathToProcess.split(",");
+            var editorText = "";            
             var addReplace = JSON.parse(JSON.stringify(
                 inputDataParentPath == "" ? {} :
                 (selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)] == null ? {} :
@@ -666,6 +663,7 @@
                 console.log("addReplace");
                 console.log(addReplace);
             }
+            const sectionList = inputDataSectionPathToProcess.split(",");
             for (var s in sectionList) {
                 const sectionName = sectionList[s];
                 const elementsToProcess = inputData[sectionName];
