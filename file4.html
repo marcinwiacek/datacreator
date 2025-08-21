@@ -9,6 +9,7 @@
         //3.copy from json / select value
         //4.multiple addremove for the same array
         //5.delete button location
+        //6.correct sorting fields
 
         const debug = true, //do you want debug in browser console?
             version = "250821";
@@ -135,7 +136,7 @@
                         retVal.isNewValue = true;
                         if (debug) console.log("creating array");
                     }
-                    //we don't have index = we create new one
+                    //we don't have index
                     if (info[1] == "") {
                         if (returnWholeArray) {
                             retVal.obj = obj;
@@ -144,6 +145,7 @@
                             console.log(retVal);
                             return retVal;
                         }
+                        //we create new one
                         obj = obj[info[0]];
                         retVal.obj = obj;
                         if (!canCreate) return retVal;
@@ -152,9 +154,9 @@
                         pathObj[i] = info[0] + "[" + (obj.length - 1) + "]";
                         if (i == pathObj.length - 1) break;
                         obj = obj[obj.length - 1];
-                    } else {
+                    } else { //we have concrete index
                         if (i == pathObj.length - 1) break;
-                        if (obj[info[0]][info[1]] == null) {
+                        if (obj[info[0]][info[1]] == null) { //no value with this index
                             if (!canCreate) return retVal;
                             obj = obj[info[0]];
                             obj.push({});
@@ -162,7 +164,7 @@
                             if (Number(info[1]) == obj.length - 1) {
                                 obj = obj[info[1]];
                             }
-                        } else {
+                        } else { //return concrete index
                             obj = obj[info[0]][info[1]];
                         }
                     }
@@ -480,7 +482,7 @@
                 var newSpanSpan = document.createElement('span');
                 newSpanSpan.innerHTML = "&nbsp;[-]";
                 newSpanSpan.id = newID + ".y";
-                newSpanSpan.style = 'text-align:right';
+                newSpanSpan.style = 'text-align:right;cursor:pointer;';
                 newSpanSpan.addEventListener('click', function(event) {
                     openClose(this.id.slice(0, -2));
                 });
@@ -695,8 +697,7 @@
                         for (var j = 3; j < elementsToProcess[i].length; j += 2) {
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) {
                                 editorText += processEditorPart(elementsToProcess[i][j + 1],
-                                    elementToProcessName,
-                                    outputDataParentPath);
+                                    elementToProcessName, outputDataParentPath);
                             }
                         }
                         editorText += "</span>";
@@ -724,13 +725,14 @@
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "link") {
                         //link to existing structure
-                        //0 type, 1 path, 2 section, (optional 3 put into +- section)                        
+                        //0 type, 1 path, 2 section, (optional 3 title string for +- section)                        
                         if (elementsToProcess[i].length == 4) {
                             editorText += "<span class=full><br>&nbsp;<br>";
                             editorText += "<label><b>" + elementsToProcess[i][3] + "</b></label>";
-                            editorText += "<span id='" + elementToProcessName + ".y' style='text-align:right'";
+                            editorText += "<span id='" + elementToProcessName + ".y' style='text-align:right;cursor:pointer;'";
                             editorText += " onclick='openClose(this.id.slice(0, -2));'>&nbsp;[-]</span>";
-                            editorText += "<span id='" + elementToProcessName + ".z' class=full style='display: grid; grid-template-columns: 1fr 1fr;'>";
+                            editorText += "<span id='" + elementToProcessName + ".z' class=full";
+                            editorText += " style='display: grid; grid-template-columns: 1fr 1fr;'>";
                         }
                         if (elementsToProcess[i][1] != "") {
                             const obj = findOutputObject(getAddReplace(outputDataParentPath,
@@ -838,7 +840,7 @@
                         getPathValueToCheck(outputDataParentPath, elementsToProcess[i][1],
                             elementsToProcess[i][4] + s + elementsToProcess[i][5], addReplace, false);
                     } else if (elementsToProcess[i][0] == "separator") {
-                        //just menu section written in bold
+                        //just menu section written in bold. alternative: link with extra string param in the end
                         //0 type, 1 text
                         editorText += "<span class=full><br>&nbsp;<br>";
                         editorText += "<label><b>" + elementsToProcess[i][1] + "</b></label>";
@@ -859,7 +861,6 @@
                             console.log("addReplace");
                             console.log(addReplace);
                         }
-
                         selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)] = JSON.parse(JSON.stringify(addReplace));
                     } else if (elementsToProcess[i][0] == "string") {
                         //string parameter
@@ -892,7 +893,8 @@
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "number") {
                         //number parameter
-                        //0 type, 1 path, 2 description, 3 default, 4 minimum, 5 maximum, 6 zero or step, 7 (optional) don't create elements
+                        //0 type, 1 path, 2 description, 3 default, 4 minimum, 5 maximum, 6 zero or step, 
+                        //7 (optional) don't create elements
                         const pathValue = getPathValueToCheck(outputDataParentPath,
                             elementsToProcess[i][1], elementsToProcess[i][3], addReplace, false);
                         editorText += "<span class=full>";
@@ -918,7 +920,8 @@
                             title += ", default " + pathValue.value;
                         }
                         editorText += " title='" + title + "'";
-                        editorText += " oninput=editStringBoolNum(this.id,this.value,true," + !(elementsToProcess[i].length == 8) + ");setEditErrors(this.id,this.value,'" +
+                        editorText += " oninput=editStringBoolNum(this.id,this.value,true,";
+                        editorText += !(elementsToProcess[i].length == 8) + ");setEditErrors(this.id,this.value,'" +
                             sectionName + "','" + i + "');><br>";
                         editorText += "<span id='" + pathValue.path + "_error'>";
                         editorText += parseEditErrors(sectionName, i, pathValue.value);
