@@ -3,14 +3,15 @@
 
 <head>
     <script>
-        //fixme: number with last param false
-        //tooltip for indexes (arrayindex and arrayindex2 fixes)
-        //copy from value
-        //multiple addremove for the same array
-        //delete button location
+        //fixme: 1.number with last param false
+        //2.tooltip for indexes (arrayindex and arrayindex2 fixes; 
+        //select array should delete arrayindex?)
+        //3.copy from json / select value
+        //4.multiple addremove for the same array
+        //5.delete button location
 
         const debug = true, //do you want debug in browser console?
-            version = "250820";
+            version = "250821";
         document.title = "DataCreator (MIT license) " + version;
     </script>
     <meta charset="utf-8">
@@ -546,11 +547,11 @@
             return pathObj2[0] + "[" + pathObj2[1] + "]" + retVal;
         }
 
-        function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {        
+        function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {
             const x = pathInInputDataWithIndex.split(".");
             const pathObj = x[x.length - 1].split(/[\[,\]]/);
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
-            
+
             const sectionObj = elementToProcess[2].split(".");
             for (s in sectionObj) {
                 processEditorPart(sectionObj[s],
@@ -563,10 +564,10 @@
         function loadFile(f, pathInOutputData, isHex) {
             const reader = new FileReader();
             reader.onload = function(e2) {
-                var obj = findOutputObject(pathInOutputData, false, false);                
-                obj.obj[obj.lastPathElement] = isHex?
-                	(new Uint8Array(e2.target.result)).toHex().toUpperCase():
-                	(new Uint8Array(e2.target.result)).toBase64();
+                var obj = findOutputObject(pathInOutputData, false, false);
+                obj.obj[obj.lastPathElement] = isHex ?
+                    (new Uint8Array(e2.target.result)).toHex().toUpperCase() :
+                    (new Uint8Array(e2.target.result)).toBase64();
                 showFormattedOutputJson();
                 document.getElementById(pathInOutputData + "_get")
                     .setAttribute('download', document.getElementById(pathInOutputData).files[0].name);
@@ -577,15 +578,15 @@
         function getOutputFile(pathInOutputData, isHex) {
             const obj = findOutputObject(pathInOutputData, false, false);
             if (obj.obj[obj.lastPathElement].length != 0) {
-            	if (isHex) {
-                var obj2 = new Uint8Array(obj.obj[obj.lastPathElement].length / 2);
-                obj2.setFromHex(obj.obj[obj.lastPathElement].toLowerCase());
-                document.getElementById(pathInOutputData + "_get")
-                    .setAttribute('href', 'data:;base64,' + (new Uint8Array(obj2)).toBase64());
-                    } else {
-                document.getElementById(pathInOutputData + "_get")
-                    .setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
-                    }
+                if (isHex) {
+                    var obj2 = new Uint8Array(obj.obj[obj.lastPathElement].length / 2);
+                    obj2.setFromHex(obj.obj[obj.lastPathElement].toLowerCase());
+                    document.getElementById(pathInOutputData + "_get")
+                        .setAttribute('href', 'data:;base64,' + (new Uint8Array(obj2)).toBase64());
+                } else {
+                    document.getElementById(pathInOutputData + "_get")
+                        .setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
+                }
                 return true;
             } else {
                 alert('Empty file content. Nothing to get.');
@@ -656,10 +657,9 @@
             var editorText = "";
             const sectionList = inputDataSectionPathToProcess.split(",");
             var addReplace = JSON.parse(JSON.stringify(
-            	inputDataParentPath == ""? {}:
-                (selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)] == null ? 
-                   {} : 
-                   selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)])));
+                inputDataParentPath == "" ? {} :
+                (selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)] == null ? {} :
+                    selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)])));
             if (debug) {
                 console.log("addReplace");
                 console.log(addReplace);
@@ -674,7 +674,7 @@
                         sectionName + "[" + i + "]";
                     processing = elementToProcessName + " " + JSON.stringify(elementsToProcess[i]);
                     if (debug) {
-                        console.log(processing);                     
+                        console.log(processing);
                     }
                     if (elementsToProcess[i][0] == "select") {
                         //option menu. Can do something extra during changing to concrete value.
@@ -725,13 +725,13 @@
                     } else if (elementsToProcess[i][0] == "link") {
                         //link to existing structure
                         //0 type, 1 path, 2 section, (optional 3 put into +- section)                        
-                    	if (elementsToProcess[i].length == 4) {
-                        	 editorText += "<span class=full><br>&nbsp;<br>";
+                        if (elementsToProcess[i].length == 4) {
+                            editorText += "<span class=full><br>&nbsp;<br>";
                             editorText += "<label><b>" + elementsToProcess[i][3] + "</b></label>";
-                    	    editorText += "<span id='"+elementToProcessName+".y' style='text-align:right'";
-                    	    editorText += " onclick='openClose(this.id.slice(0, -2));'>&nbsp;[-]</span>";
-                    	    editorText += "<span id='"+elementToProcessName+".z' class=full style='display: grid; grid-template-columns: 1fr 1fr;'>";                    	                            
-                    	}                
+                            editorText += "<span id='" + elementToProcessName + ".y' style='text-align:right'";
+                            editorText += " onclick='openClose(this.id.slice(0, -2));'>&nbsp;[-]</span>";
+                            editorText += "<span id='" + elementToProcessName + ".z' class=full style='display: grid; grid-template-columns: 1fr 1fr;'>";
+                        }
                         if (elementsToProcess[i][1] != "") {
                             const obj = findOutputObject(getAddReplace(outputDataParentPath,
                                 elementsToProcess[i][1], addReplace), true, false);
@@ -741,10 +741,10 @@
                             editorText += processEditorPart(elementsToProcess[i][2],
                                 elementToProcessName, "");
                         }
-                    	if (elementsToProcess[i].length == 4) {
-                    	    editorText += "</span>";
-                           editorText += "</span>";
-                    	}
+                        if (elementsToProcess[i].length == 4) {
+                            editorText += "</span>";
+                            editorText += "</span>";
+                        }
                     } else if (elementsToProcess[i][0] == "index") {
                         //field with index of existing "other array": 0 type, 1 field inside "other array"
                         if (elementsToProcess[i].length == 2) {
@@ -1040,7 +1040,7 @@
                         if (elementsToProcess[i][5] != "") editorText += " accept='" + elementsToProcess[i][5] + "'";
                         editorText += " onchange=loadFile(this.files[0],this.id,";
                         editorText += (elementsToProcess[i][0] == "fileHex");
-			editorText += ");><br>";
+                        editorText += ");><br>";
                         editorText += "</span>";
                     }
                 }
