@@ -741,7 +741,14 @@
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "link") {
                         //link to existing structure
-                        //0 type, 1 path, 2 section
+                        //0 type, 1 path, 2 section, (optional 3 put into +- section)                        
+                    	if (elementsToProcess[i].length == 4) {
+                        	 editorText += "<span class=full><br>&nbsp;<br>";
+                            editorText += "<label><b>" + elementsToProcess[i][3] + "</b></label>";
+                    	    editorText += "<span id='"+elementToProcessName+".y' style='text-align:right'";
+                    	    editorText += " onclick='openClose(this.id.slice(0, -2));'>&nbsp;[-]</span>";
+                    	    editorText += "<span id='"+elementToProcessName+".z' class=full style='display: grid; grid-template-columns: 1fr 1fr;'>";                    	                            
+                    	}                
                         if (elementsToProcess[i][1] != "") {
                             const obj = findOutputObject(getAddReplace(outputDataParentPath,
                                 elementsToProcess[i][1], addReplace), true, false);
@@ -751,6 +758,10 @@
                             editorText += processEditorPart(elementsToProcess[i][2],
                                 elementToProcessName, "");
                         }
+                    	if (elementsToProcess[i].length == 4) {
+                    	    editorText += "</span>";
+                           editorText += "</span>";
+                    	}
                     } else if (elementsToProcess[i][0] == "index") {
                         //field with index of existing "other array": 0 type, 1 field inside "other array"
                         if (elementsToProcess[i].length == 2) {

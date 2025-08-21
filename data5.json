@@ -22,8 +22,7 @@
 	        ["separator", "example 2 - link without path"],
 		["link", "", "link"],
 
-	        ["separator", "example 3 - link with path"],
-		["link", "example03[]", "link"],
+		["link", "example03[]", "link", "example 3 - link with path"],
 
 	        ["separator", "example 5 - select"],
 		["select", "Select what you like", "buses",  "cars", "carsStruct", "buses", "busesStruct"],
