@@ -546,9 +546,11 @@
             return pathObj2[0] + "[" + pathObj2[1] + "]" + retVal;
         }
 
-        function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {
-            const pathObj = pathInInputDataWithIndex.split(/[\[,\]]/);
+        function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {        
+            const x = pathInInputDataWithIndex.split(".");
+            const pathObj = x[x.length - 1].split(/[\[,\]]/);
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
+            
             const sectionObj = elementToProcess[2].split(".");
             for (s in sectionObj) {
                 processEditorPart(sectionObj[s],
