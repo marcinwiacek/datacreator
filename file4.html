@@ -8,7 +8,6 @@
         //select array should delete arrayindex?)
         //3.copy from json / select value
         //4.multiple addremove for the same array
-        //5.delete button location
         //6.correct sorting fields
 
         const debug = true, //do you want debug in browser console?
@@ -618,7 +617,7 @@
 
         function openClose(ID) {
             if (document.getElementById(ID + '.z').style.display == 'none') {
-                document.getElementById(ID + '.z').style.display = 'block';
+                document.getElementById(ID + '.z').style.display = 'grid';
                 document.getElementById(ID + '.y').innerHTML = '&nbsp;[-]';
             } else {
                 document.getElementById(ID + '.z').style.display = 'none';
