@@ -52,6 +52,60 @@
             selectAddReplace, //replace strings for paths in generated JSON
             processing; //string for debug info showing what is processed
 
+//called after clicking 'Get JSON' - creating correct base64 URL
+        function getOutputJson() {
+            if (JSON.stringify(outputData, null, 2).length == 2) {
+                alert("Empty output file. Nothing to get.");
+                return false;
+            } else {
+                var yesno = true;
+                const obj = document.getElementsByTagName("font");
+                for (var i in obj) {
+                    if (obj[i].color == "red" && yesno) {
+                        if (!confirm("You still have errors. Continue?")) return false;
+                        yesno = false;
+                    }
+                }
+
+                document.getElementById("getOutput").setAttribute('href', 'data:;base64,' +
+                    btoa(JSON.stringify(outputData, null, 2)));
+                return true;
+            }
+        }
+        
+         function getOutputFile(pathInOutputData, isHex) {
+            const obj = findOutputObject(pathInOutputData, false, false);
+            if (obj.obj[obj.lastPathElement].length != 0) {
+                if (isHex) {
+                    var obj2 = new Uint8Array(obj.obj[obj.lastPathElement].length / 2);
+                    obj2.setFromHex(obj.obj[obj.lastPathElement].toLowerCase());
+                    document.getElementById(pathInOutputData + "_get")
+                        .setAttribute('href', 'data:;base64,' + (new Uint8Array(obj2)).toBase64());
+                } else {
+                    document.getElementById(pathInOutputData + "_get")
+                        .setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
+                }
+                return true;
+            } else {
+                alert('Empty file content. Nothing to get.');
+                return false;
+            }
+        }
+        
+         function loadFile(f, pathInOutputData, isHex) {
+            const reader = new FileReader();
+            reader.onload = function(e2) {
+                var obj = findOutputObject(pathInOutputData, false, false);
+                obj.obj[obj.lastPathElement] = isHex ?
+                    (new Uint8Array(e2.target.result)).toHex().toUpperCase() :
+                    (new Uint8Array(e2.target.result)).toBase64();
+                showFormattedOutputJson();
+                document.getElementById(pathInOutputData + "_get")
+                    .setAttribute('download', document.getElementById(pathInOutputData).files[0].name);
+            };
+            reader.readAsArrayBuffer(f);
+        }
+        
         //alphabetical, values, objects, arrays
         function sortJson(dat) {
             return Object.keys(dat).sort(
@@ -81,32 +135,6 @@
                     //console.log(dat[key]);
                     return newObj;
                 }, {});
-        }
-
-        //called after clicking 'Get JSON' - creating correct base64 URL
-        function getOutputJson() {
-            if (JSON.stringify(outputData, null, 2).length == 2) {
-                alert("Empty output file. Nothing to get.");
-                return false;
-            } else {
-                var yesno = true;
-                const obj = document.getElementsByTagName("font");
-                for (var i in obj) {
-                    if (obj[i].color == "red" && yesno) {
-                        if (!confirm("You still have errors. Continue?")) return false;
-                        yesno = false;
-                    }
-                }
-
-                document.getElementById("getOutput").setAttribute('href', 'data:;base64,' +
-                    btoa(JSON.stringify(outputData, null, 2)));
-                return true;
-            }
-        }
-
-        //show JSON in window
-        function showFormattedOutputJson() {
-            document.getElementById("json").innerHTML = JSON.stringify(sortJson(outputData), null, 2);
         }
 
         //find (canCreate = false) or find+create path (canCreate = true) in output json
@@ -182,6 +210,67 @@
             retVal.path = pathObj.join(".");
             if (debug) console.log(retVal);
             return retVal;
+        }
+        
+                //find value in output JSON (if exists) or set it to value
+        function getPathValueToCheck(outputDataParentPath, pathInOutputData, value, addReplace, returnWholeArray) {
+            var valueToCheck = value != null && Array.isArray(value) ? JSON.parse(JSON.stringify(value)) : value;
+            const pathList = pathInOutputData.split(",");
+            for (var p in pathList) {
+                var obj = findOutputObject(getAddReplace(outputDataParentPath, pathList[p], addReplace),
+                    value != null, returnWholeArray);
+                if (debug) console.log(obj);
+                if (obj.isNewValue) {
+                    if (value != null) obj.obj[obj.lastPathElement] = value;
+                } else if (obj.obj != null) {
+                    valueToCheck = obj.obj[obj.lastPathElement];
+                }
+                pathList[p] = obj.path;
+            }
+            var retVal = {};
+            retVal.path = pathList.join(",");
+            retVal.value = valueToCheck;
+            return retVal;
+        }
+
+        //find path in output JSON after all possible path replacements
+        function getAddReplace(outputDataParentPath, pathInOutputData, addReplace) {
+            if (debug) {
+                console.log("getAddReplace start '" + outputDataParentPath + "' '" + pathInOutputData + "'");
+                console.log(addReplace);
+            }
+            var pathList = pathInOutputData.split(",");
+            for (var p in pathList) {
+                if (pathList[p].startsWith("$.")) {
+                    pathList[p] = pathList[p].substring(2);
+                } else {
+                    pathList[p] = outputDataParentPath + pathList[p];
+                }
+                for (var a in addReplace) {
+                    pathList[p] = pathList[p].replace(a, addReplace[a]);
+                }
+            }
+            if (debug) console.log("getAddReplace end '" + outputDataParentPath + "' '" +
+                pathInOutputData + "' -> " + pathList.join(","));
+            return pathList.join(",");
+        }
+        
+        //example: e[1](2).e[2].e[3] gives e[1](2)
+        //e[1](2).e[2](4).e[3] gives e[1](2)(4)
+        function getReplaceNameFromPathInInputData(pathInInputData) {
+            var retVal = "";
+            const x = pathInInputData.split(".");
+            for (var s in x) {
+                const pathObj3 = x[s].split(/[\(,\)]/);
+                if (pathObj3.length > 1) retVal += "(" + pathObj3[1] + ")";
+            }
+            const pathObj2 = x[0].split(/[\[,\]]/);
+            return pathObj2[0] + "[" + pathObj2[1] + "]" + retVal;
+        }
+        
+         //show JSON in window
+        function showFormattedOutputJson() {
+            document.getElementById("json").innerHTML = JSON.stringify(sortJson(outputData), null, 2);
         }
 
         //generate error info for some fields
@@ -268,63 +357,10 @@
             editStringBoolNum(pathInOutputData, val, false, true);
         }
 
-        //add default sections from "adddelete" elements
-        function processExtraArrayElements() {
-            processing = "processExtraArrayElements";
-            for (var z in addArray) {
-                addArrayStruct(addArray[z].parentPathInJson, addArray[z].editorPath, false);
-            }
-            addArray = [];
-        }
-
-        //add new value into all related indexes
-        function processAllRelatedIndexes() {
-            processing = "processAllRelatedIndexes";
-            const obj = document.getElementsByTagName("select");
-            for (var z in obj) {
-                if (obj[z].attributes && obj[z].attributes["name"]) {
-                    if (debug) console.log("searching for " + obj[z].attributes["name"]["nodeValue"] + " for the end");
-                    const obj2 = findOutputObject(obj[z].attributes["name"]["nodeValue"], false, false);
-                    if (debug) console.log(obj2);
-                    if (obj2 != null && obj2.obj != null) {
-                        for (j = 0; j < obj2.obj.length; j++) {
-                            var found = false;
-                            for (jj = 0; jj < obj[z].options.length; jj++) {
-                                if (obj[z].options[jj].value == j) {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            if (!found) {
-                                var op = document.createElement('option');
-                                op.value = j;
-                                op.innerHTML = j;
-                                if (obj[z].value == "") {
-                                    obj[z].add(op);
-                                    editStringBoolNum(obj[z].id, j, true, true);
-                                    if (debug) {
-                                        console.log("before add element in option");
-                                        console.log(obj2);
-                                    }
-                                    //obj[z].title = JSON.stringify(obj2.obj);
-                                } else {
-                                    obj[z].add(op);
-                                }
-                            }
-                        }
-                    }
-                    if (document.getElementById(obj[z].id + "_error") != null) {
-                        document.getElementById(obj[z].id + "_error").innerHTML =
-                            obj[z].options.length == 0 ? "<font color=red>Needs some value</font>" : "";
-                    }
-                }
-            }
-        }
-
         //called after selecting value in select
-        function processSelect(pathInInputData, value, outputDataParentPath) {
+        function editSelect(pathInInputData, value, outputDataParentPath) {
             if (debug) {
-                console.log("processSelect '" + pathInInputData + "' '" + value + "'");
+                console.log("editSelect '" + pathInInputData + "' '" + value + "'");
                 console.log(selectAddReplace);
             }
             const pathObj = pathInInputData.split(".");
@@ -346,7 +382,7 @@
                 }
             }
             if (debug) {
-                console.log("processSelect end '" + pathInInputData + "' '" + value + "'");
+                console.log("editSelect end '" + pathInInputData + "' '" + value + "'");
                 console.log(selectAddReplace);
             }
         }
@@ -453,6 +489,30 @@
                 console.log(selectAddReplace);
             }
         }
+        
+        function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {
+            const x = pathInInputDataWithIndex.split(".");
+            const pathObj = x[x.length - 1].split(/[\[,\]]/);
+            const elementToProcess = inputData[pathObj[0]][pathObj[1]];
+            const sectionObj = elementToProcess[2].split(".");
+            for (s in sectionObj) {
+                processEditorPart(sectionObj[s],
+                    pathInInputDataWithIndex, outputDataParentPath);
+            }
+            document.getElementById(outputDataParentPath + pathInInputDataWithIndex).remove();
+            showFormattedOutputJson();
+        }
+        
+        //close/open expandable sections
+        function openClose(ID) {
+            if (document.getElementById(ID + '.z').style.display == 'none') {
+                document.getElementById(ID + '.z').style.display = 'grid';
+                document.getElementById(ID + '.y').innerHTML = '&nbsp;[-]';
+            } else {
+                document.getElementById(ID + '.z').style.display = 'none';
+                document.getElementById(ID + '.y').innerHTML = '&nbsp;[+]';
+            }
+        }
 
         function addArrayStruct(outputDataParentPath, pathInInputData, nonDefault) {
             if (debug) {
@@ -532,118 +592,58 @@
                 console.log(selectAddReplace);
             }
         }
-
-        function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {
-            const x = pathInInputDataWithIndex.split(".");
-            const pathObj = x[x.length - 1].split(/[\[,\]]/);
-            const elementToProcess = inputData[pathObj[0]][pathObj[1]];
-            const sectionObj = elementToProcess[2].split(".");
-            for (s in sectionObj) {
-                processEditorPart(sectionObj[s],
-                    pathInInputDataWithIndex, outputDataParentPath);
-            }
-            document.getElementById(outputDataParentPath + pathInInputDataWithIndex).remove();
-            showFormattedOutputJson();
-        }
-
-        function loadFile(f, pathInOutputData, isHex) {
-            const reader = new FileReader();
-            reader.onload = function(e2) {
-                var obj = findOutputObject(pathInOutputData, false, false);
-                obj.obj[obj.lastPathElement] = isHex ?
-                    (new Uint8Array(e2.target.result)).toHex().toUpperCase() :
-                    (new Uint8Array(e2.target.result)).toBase64();
-                showFormattedOutputJson();
-                document.getElementById(pathInOutputData + "_get")
-                    .setAttribute('download', document.getElementById(pathInOutputData).files[0].name);
-            };
-            reader.readAsArrayBuffer(f);
-        }
-
-        function getOutputFile(pathInOutputData, isHex) {
-            const obj = findOutputObject(pathInOutputData, false, false);
-            if (obj.obj[obj.lastPathElement].length != 0) {
-                if (isHex) {
-                    var obj2 = new Uint8Array(obj.obj[obj.lastPathElement].length / 2);
-                    obj2.setFromHex(obj.obj[obj.lastPathElement].toLowerCase());
-                    document.getElementById(pathInOutputData + "_get")
-                        .setAttribute('href', 'data:;base64,' + (new Uint8Array(obj2)).toBase64());
-                } else {
-                    document.getElementById(pathInOutputData + "_get")
-                        .setAttribute('href', 'data:;base64,' + obj.obj[obj.lastPathElement]);
-                }
-                return true;
-            } else {
-                alert('Empty file content. Nothing to get.');
-                return false;
-            }
-        }
-
-        //find value in output JSON (if exists) or set it to value
-        function getPathValueToCheck(outputDataParentPath, pathInOutputData, value, addReplace, returnWholeArray) {
-            var valueToCheck = value != null && Array.isArray(value) ? JSON.parse(JSON.stringify(value)) : value;
-            const pathList = pathInOutputData.split(",");
-            for (var p in pathList) {
-                var obj = findOutputObject(getAddReplace(outputDataParentPath, pathList[p], addReplace),
-                    value != null, returnWholeArray);
-                if (debug) console.log(obj);
-                if (obj.isNewValue) {
-                    if (value != null) obj.obj[obj.lastPathElement] = value;
-                } else if (obj.obj != null) {
-                    valueToCheck = obj.obj[obj.lastPathElement];
-                }
-                pathList[p] = obj.path;
-            }
-            var retVal = {};
-            retVal.path = pathList.join(",");
-            retVal.value = valueToCheck;
-            return retVal;
-        }
-
-	//close/open expandable sections
-        function openClose(ID) {
-            if (document.getElementById(ID + '.z').style.display == 'none') {
-                document.getElementById(ID + '.z').style.display = 'grid';
-                document.getElementById(ID + '.y').innerHTML = '&nbsp;[-]';
-            } else {
-                document.getElementById(ID + '.z').style.display = 'none';
-                document.getElementById(ID + '.y').innerHTML = '&nbsp;[+]';
-            }
-        }
-
-        //find path in output JSON after all possible path replacements
-        function getAddReplace(outputDataParentPath, pathInOutputData, addReplace) {
-            if (debug) {
-                console.log("getAddReplace start '" + outputDataParentPath + "' '" + pathInOutputData + "'");
-                console.log(addReplace);
-            }
-            var pathList = pathInOutputData.split(",");
-            for (var p in pathList) {
-                if (pathList[p].startsWith("$.")) {
-                    pathList[p] = pathList[p].substring(2);
-                } else {
-                    pathList[p] = outputDataParentPath + pathList[p];
-                }
-                for (var a in addReplace) {
-                    pathList[p] = pathList[p].replace(a, addReplace[a]);
-                }
-            }
-            if (debug) console.log("getAddReplace end '" + outputDataParentPath + "' '" +
-                pathInOutputData + "' -> " + pathList.join(","));
-            return pathList.join(",");
-        }
         
-        //example: e[1](2).e[2].e[3] gives e[1](2)
-        //e[1](2).e[2](4).e[3] gives e[1](2)(4)
-        function getReplaceNameFromPathInInputData(pathInInputData) {
-            var retVal = "";
-            const x = pathInInputData.split(".");
-            for (var s in x) {
-                const pathObj3 = x[s].split(/[\(,\)]/);
-                if (pathObj3.length > 1) retVal += "(" + pathObj3[1] + ")";
+         //add default sections from "adddelete" elements
+        function processExtraArrayElements() {
+            processing = "processExtraArrayElements";
+            for (var z in addArray) {
+                addArrayStruct(addArray[z].parentPathInJson, addArray[z].editorPath, false);
             }
-            const pathObj2 = x[0].split(/[\[,\]]/);
-            return pathObj2[0] + "[" + pathObj2[1] + "]" + retVal;
+            addArray = [];
+        }
+
+        //add new value into all related indexes
+        function processAllRelatedIndexes() {
+            processing = "processAllRelatedIndexes";
+            const obj = document.getElementsByTagName("select");
+            for (var z in obj) {
+                if (obj[z].attributes && obj[z].attributes["name"]) {
+                    if (debug) console.log("searching for " + obj[z].attributes["name"]["nodeValue"] + " for the end");
+                    const obj2 = findOutputObject(obj[z].attributes["name"]["nodeValue"], false, false);
+                    if (debug) console.log(obj2);
+                    if (obj2 != null && obj2.obj != null) {
+                        for (j = 0; j < obj2.obj.length; j++) {
+                            var found = false;
+                            for (jj = 0; jj < obj[z].options.length; jj++) {
+                                if (obj[z].options[jj].value == j) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                var op = document.createElement('option');
+                                op.value = j;
+                                op.innerHTML = j;
+                                if (obj[z].value == "") {
+                                    obj[z].add(op);
+                                    editStringBoolNum(obj[z].id, j, true, true);
+                                    if (debug) {
+                                        console.log("before add element in option");
+                                        console.log(obj2);
+                                    }
+                                    //obj[z].title = JSON.stringify(obj2.obj);
+                                } else {
+                                    obj[z].add(op);
+                                }
+                            }
+                        }
+                    }
+                    if (document.getElementById(obj[z].id + "_error") != null) {
+                        document.getElementById(obj[z].id + "_error").innerHTML =
+                            obj[z].options.length == 0 ? "<font color=red>Needs some value</font>" : "";
+                    }
+                }
+            }
         }
 
         function processEditorPart(inputDataSectionPathToProcess, inputDataParentPath, outputDataParentPath) {
@@ -683,7 +683,7 @@
                         editorText += "<select name='" + elementToProcessName + "'";
                         editorText += " id='" + elementToProcessName + "'";
                         editorText += " title='Default " + elementsToProcess[i][2] + "'";
-                        editorText += " onchange=processSelect(this.id,this.value,'" + outputDataParentPath + "');>";
+                        editorText += " onchange=editSelect(this.id,this.value,'" + outputDataParentPath + "');>";
                         for (var j = 3; j < elementsToProcess[i].length; j = j + 2) {
                             editorText += "<option value='" + elementsToProcess[i][j] + "'";
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) editorText += " selected";
