@@ -131,6 +131,12 @@ No menu for user, just always the same value in JSON. It will be added into JSON
 1. only when doesn't exist (**const** with two params)
 2. only when exists (**const** with third param true)
 
+## copy
+
+    ["copy", "example01.bool2", "example01.bool3"]
+
+Copy value from path from parameter 2 to path from last parameter (only when src path exists)
+
 ## random
 
     ["random", "example01.random", "abcdefGHJ", 6,"start-","-end"]

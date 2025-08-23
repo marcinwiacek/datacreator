@@ -6,7 +6,6 @@
         //fixme: 1.number with last param false
         //2.tooltip for indexes (arrayindex and arrayindex2 fixes; 
         //select array should delete arrayindex?)
-        //3.copy from json / select value
         //4.multiple addremove for the same array
 
         const debug = true, //do you want debug in browser console?
@@ -109,7 +108,6 @@
             const k = Object.keys(dat);
             var retVal = [];
             for (var x in k) {
-                //console.log(k[x]," ",Array.isArray(dat[k[x]]) ," ",dat[k[x]] instanceof Object);
                 if (!Array.isArray(dat[k[x]]) && !(dat[k[x]] instanceof Object)) retVal.push(k[x]);
             }
             retVal = retVal.sort();
@@ -125,7 +123,6 @@
             }
             k2 = k2.sort();
             retVal = retVal.concat(k2);
-            //console.log("len ",k.length," ",retVal.length);
             return retVal.reduce(
                 (newObj, key) => {
                     if (Array.isArray(dat[key])) {
@@ -135,10 +132,8 @@
                             newObj[key].push(Array.isArray(dat[key][x]) || dat[key][x] instanceof Object ?
                                 sortJson(dat[key][x]) : dat[key][x]);
                         }
-                    } else if (dat[key] instanceof Object) {
-                        newObj[key] = sortJson(dat[key]);
                     } else {
-                        newObj[key] = dat[key];
+                        newObj[key] = dat[key] instanceof Object ? sortJson(dat[key]):dat[key];
                     }
                     return newObj;
                 }, {});
@@ -834,6 +829,18 @@
                                 obj.obj[obj.lastPathElement] = elementsToProcess[i][2];
                             }
                         }
+                    } else if (elementsToProcess[i][0] == "copy") {
+                        //0 type, 1 path, 2 src path
+                        //copy element from src path (only when src exists)
+                          const pathValue = getPathValueToCheck(outputDataParentPath,
+                            elementsToProcess[i][1], null, addReplace, false);
+                          if (pathValue!=null) {
+                         const obj = findOutputObject(getAddReplace(outputDataParentPath,
+                                elementsToProcess[i][2], addReplace), true, false);
+                                if (obj.obj != null && obj.lastPathElement != null) {
+                                 obj.obj[obj.lastPathElement] = pathValue.value;                           
+                                }
+                          }
                     } else if (elementsToProcess[i][0] == "random") {
                         //put into json random value. When you put this is before string,
                         //it can replace default value from string (only when it didn't exist in json)

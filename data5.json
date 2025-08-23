@@ -15,6 +15,7 @@
 		["fileHex", "example01.doc2", "some document hex", "","", ""],
 		["checkbox", "example01.bool", "are you happy?", true],
 		["checkfalse", "example01.bool2", "are you not happy?", false],
+		["copy", "example01.bool2", "example01.bool3"],
 	        ["const","example01.alwaysTheSameConst","onetwothree"],
 		["random", "example01.random", "abcdefGHJ", 6,"start-","-end"],
 		["option", "example01.option", "I can select luck level", "good", "excellent", "perfect", "good"],
