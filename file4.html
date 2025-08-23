@@ -107,18 +107,27 @@
 
         //alphabetical, values, objects, arrays
         function sortJson(dat) {
-            return Object.keys(dat).sort(
-                function(a, b) {
-                    if (dat[a] instanceof Object == dat[b] instanceof Object &&
-                        Array.isArray(dat[a]) == Array.isArray(dat[b])) {
-                        return a.localeCompare(b);
-                    } else if (Array.isArray(dat[b])) {
-                        return -1;
-                    } else {
-                        return 1;
-                    }
-                }
-            ).reduce(
+            var k = Object.keys(dat);
+            var retVal=[];
+            for (var x in k) {
+                 console.log(k[x]," ",Array.isArray(dat[k[x]]) ," ",dat[k[x]] instanceof Object);
+            	 if (! Array.isArray(dat[k[x]]) && !(dat[k[x]] instanceof Object)) retVal.push(k[x]);
+            }
+            retVal= retVal.sort();
+            var k2=[];
+            for (var x in k) {
+            	 if (! Array.isArray(dat[k[x]]) && (dat[k[x]] instanceof Object)) k2.push(k[x]); //{
+            }
+            k2=k2.sort();
+            retVal = retVal.concat(k2);
+            var k2=[];
+            for (var x in k) {
+            	 if (Array.isArray(dat[k[x]]) && (dat[k[x]] instanceof Object)) k2.push(k[x]); //[
+            }
+            k2=k2.sort();
+            retVal = retVal.concat(k2);
+            console.log("len ",k.length," ",retVal.length);
+            return retVal.reduce(
                 (newObj, key) => {
                     if (Array.isArray(dat[key])) {
                         newObj[key] = [];
