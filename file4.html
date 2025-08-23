@@ -8,7 +8,6 @@
         //select array should delete arrayindex?)
         //3.copy from json / select value
         //4.multiple addremove for the same array
-        //6.correct sorting fields
 
         const debug = true, //do you want debug in browser console?
             version = "250821";
@@ -105,28 +104,28 @@
             reader.readAsArrayBuffer(f);
         }
 
-        //alphabetical, values, objects, arrays
+        //grouping with values, objects, arrays + alphabetical sorting in every group
         function sortJson(dat) {
-            var k = Object.keys(dat);
+            const k = Object.keys(dat);
             var retVal=[];
             for (var x in k) {
-                 console.log(k[x]," ",Array.isArray(dat[k[x]]) ," ",dat[k[x]] instanceof Object);
-            	 if (! Array.isArray(dat[k[x]]) && !(dat[k[x]] instanceof Object)) retVal.push(k[x]);
+                 //console.log(k[x]," ",Array.isArray(dat[k[x]]) ," ",dat[k[x]] instanceof Object);
+            	 if (!Array.isArray(dat[k[x]]) && !(dat[k[x]] instanceof Object)) retVal.push(k[x]);
             }
             retVal= retVal.sort();
             var k2=[];
             for (var x in k) {
-            	 if (! Array.isArray(dat[k[x]]) && (dat[k[x]] instanceof Object)) k2.push(k[x]); //{
+            	 if (!Array.isArray(dat[k[x]]) && (dat[k[x]] instanceof Object)) k2.push(k[x]); //{
             }
             k2=k2.sort();
             retVal = retVal.concat(k2);
-            var k2=[];
+            k2=[];
             for (var x in k) {
             	 if (Array.isArray(dat[k[x]]) && (dat[k[x]] instanceof Object)) k2.push(k[x]); //[
             }
             k2=k2.sort();
             retVal = retVal.concat(k2);
-            console.log("len ",k.length," ",retVal.length);
+            //console.log("len ",k.length," ",retVal.length);
             return retVal.reduce(
                 (newObj, key) => {
                     if (Array.isArray(dat[key])) {
@@ -140,7 +139,6 @@
                     } else {
                         newObj[key] = dat[key];
                     }
-                    //console.log(dat[key]);
                     return newObj;
                 }, {});
         }
