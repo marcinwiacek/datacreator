@@ -514,9 +514,7 @@
                 var retVal = "";
                 const sectionObj = elementToProcess[elementIndex].split(".");
                 for (s in sectionObj) {
-                    retVal += processEditorPart(sectionObj[s],
-                        replaceNameFromPathInInputData(newID),
-                        outputDataParentPath);
+                    retVal += processEditorPart(sectionObj[s], newID, outputDataParentPath);
                 }
                 newInternSpan.innerHTML = retVal;
 
@@ -533,19 +531,6 @@
                 console.log("selectAddReplace after select");
                 console.log(selectAddReplace);
             }
-        }
-
-        //example: e[1](2).e[2].e[3] gives e[1](2)
-        //e[1](2).e[2](4).e[3] gives e[1](2)(4)
-        function replaceNameFromPathInInputData(pathInInputData) {
-            var retVal = "";
-            const x = pathInInputData.split(".");
-            for (var s in x) {
-                const pathObj3 = x[s].split(/[\(,\)]/);
-                if (pathObj3.length > 1) retVal += "(" + pathObj3[1] + ")";
-            }
-            const pathObj2 = x[0].split(/[\[,\]]/);
-            return pathObj2[0] + "[" + pathObj2[1] + "]" + retVal;
         }
 
         function deleteArrayStruct(pathInInputDataWithIndex, outputDataParentPath) {
@@ -604,8 +589,8 @@
                 if (debug) console.log(obj);
                 if (obj.isNewValue) {
                     if (value != null) obj.obj[obj.lastPathElement] = value;
-                } else {
-                    if (obj.obj != null) valueToCheck = obj.obj[obj.lastPathElement];
+                } else if (obj.obj != null) {
+                    valueToCheck = obj.obj[obj.lastPathElement];
                 }
                 pathList[p] = obj.path;
             }
@@ -615,6 +600,7 @@
             return retVal;
         }
 
+	//close/open expandable sections
         function openClose(ID) {
             if (document.getElementById(ID + '.z').style.display == 'none') {
                 document.getElementById(ID + '.z').style.display = 'grid';
@@ -646,6 +632,19 @@
                 pathInOutputData + "' -> " + pathList.join(","));
             return pathList.join(",");
         }
+        
+        //example: e[1](2).e[2].e[3] gives e[1](2)
+        //e[1](2).e[2](4).e[3] gives e[1](2)(4)
+        function getReplaceNameFromPathInInputData(pathInInputData) {
+            var retVal = "";
+            const x = pathInInputData.split(".");
+            for (var s in x) {
+                const pathObj3 = x[s].split(/[\(,\)]/);
+                if (pathObj3.length > 1) retVal += "(" + pathObj3[1] + ")";
+            }
+            const pathObj2 = x[0].split(/[\[,\]]/);
+            return pathObj2[0] + "[" + pathObj2[1] + "]" + retVal;
+        }
 
         function processEditorPart(inputDataSectionPathToProcess, inputDataParentPath, outputDataParentPath) {
             processing = "processEditorPart '" + inputDataSectionPathToProcess + "' '" +
@@ -653,11 +652,12 @@
             if (debug) {
                 console.log(processing);
             }
-            var editorText = "";            
+            var editorText = "";         
+            const replaceName = inputDataParentPath == ""?
+               "":getReplaceNameFromPathInInputData(inputDataParentPath);
             var addReplace = JSON.parse(JSON.stringify(
                 inputDataParentPath == "" ? {} :
-                (selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)] == null ? {} :
-                    selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)])));
+                (selectAddReplace[replaceName] == null ? {} : selectAddReplace[replaceName])));
             if (debug) {
                 console.log("addReplace");
                 console.log(addReplace);
@@ -859,7 +859,7 @@
                             console.log("addReplace");
                             console.log(addReplace);
                         }
-                        selectAddReplace[replaceNameFromPathInInputData(inputDataParentPath)] = JSON.parse(JSON.stringify(addReplace));
+                        selectAddReplace[replaceName] = JSON.parse(JSON.stringify(addReplace));
                     } else if (elementsToProcess[i][0] == "string") {
                         //string parameter
                         //0 type, 1 path, 2 description, 3 default, 4 minimum len, 5 maximum len, 
