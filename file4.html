@@ -107,23 +107,23 @@
         //grouping with values, objects, arrays + alphabetical sorting in every group
         function sortJson(dat) {
             const k = Object.keys(dat);
-            var retVal=[];
+            var retVal = [];
             for (var x in k) {
-                 //console.log(k[x]," ",Array.isArray(dat[k[x]]) ," ",dat[k[x]] instanceof Object);
-            	 if (!Array.isArray(dat[k[x]]) && !(dat[k[x]] instanceof Object)) retVal.push(k[x]);
+                //console.log(k[x]," ",Array.isArray(dat[k[x]]) ," ",dat[k[x]] instanceof Object);
+                if (!Array.isArray(dat[k[x]]) && !(dat[k[x]] instanceof Object)) retVal.push(k[x]);
             }
-            retVal= retVal.sort();
-            var k2=[];
+            retVal = retVal.sort();
+            var k2 = [];
             for (var x in k) {
-            	 if (!Array.isArray(dat[k[x]]) && (dat[k[x]] instanceof Object)) k2.push(k[x]); //{
+                if (!Array.isArray(dat[k[x]]) && (dat[k[x]] instanceof Object)) k2.push(k[x]); //{
             }
-            k2=k2.sort();
+            k2 = k2.sort();
             retVal = retVal.concat(k2);
-            k2=[];
+            k2 = [];
             for (var x in k) {
-            	 if (Array.isArray(dat[k[x]]) && (dat[k[x]] instanceof Object)) k2.push(k[x]); //[
+                if (Array.isArray(dat[k[x]]) && (dat[k[x]] instanceof Object)) k2.push(k[x]); //[
             }
-            k2=k2.sort();
+            k2 = k2.sort();
             retVal = retVal.concat(k2);
             //console.log("len ",k.length," ",retVal.length);
             return retVal.reduce(
@@ -132,8 +132,8 @@
                         newObj[key] = [];
                         dat[key].sort();
                         for (var x in dat[key]) {
-                            newObj[key].push(Array.isArray(dat[key][x])||dat[key][x] instanceof Object?
-                             sortJson(dat[key][x]):dat[key][x]);
+                            newObj[key].push(Array.isArray(dat[key][x]) || dat[key][x] instanceof Object ?
+                                sortJson(dat[key][x]) : dat[key][x]);
                         }
                     } else if (dat[key] instanceof Object) {
                         newObj[key] = sortJson(dat[key]);
