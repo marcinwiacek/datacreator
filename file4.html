@@ -132,7 +132,8 @@
                         newObj[key] = [];
                         dat[key].sort();
                         for (var x in dat[key]) {
-                            newObj[key].push(dat[key][x]);
+                            newObj[key].push(Array.isArray(dat[key][x])||dat[key][x] instanceof Object?
+                             sortJson(dat[key][x]):dat[key][x]);
                         }
                     } else if (dat[key] instanceof Object) {
                         newObj[key] = sortJson(dat[key]);
