@@ -71,6 +71,8 @@ Many elements are supporting multiple paths - they are separated with comma.
 
 First field (**separator**) shows field type, second contains string with section name written in bold. We don't put anything in output JSON.
 
+Note: expandable/collapsable sections can be done with **link** element.
+
 ## string
 
     ["string", "example01.yourName.stringWithNumber,example2.str", "first string, only numbers", "", 2, 10, "[0-9]+"]
@@ -111,16 +113,23 @@ Editor with time. First element is type, than we have path, info for user, defau
 
 Editors with file content (Base64 or HexEncoded). Second parameter is path in output JSON, than we have info for user, default value (can be empty), default file name (important, when user didn't uploaded file itself) and filter for file picker (for example: **.jpeg**)
 
-## checkbox
+## checkbox, checkfalse
     ["checkbox", "example01.bool", "are you happy?", true]
 
-True/false editor. In output JSON we write boolean value.
+    ["checkfalse", "example01.bool", "are you tired?", true]
+
+True/false editor. In output JSON we write boolean value (**checkbox**) or reversed boolean value (**checkfalse**).
 
 ## const
 
     ["const","example01.alwaysTheSameConst","onetwothree"]
 
-No menu for user, just always the same value in JSON.
+    ["const","example01.alwaysTheSameConst","onetwothree", true]
+
+No menu for user, just always the same value in JSON. It will be added into JSON:
+
+1. only when doesn't exist (**const** with two params)
+2. only when exists (**const** with third param true)
 
 ## random
 
@@ -199,6 +208,10 @@ This section is sponsored by modularity word. One section in JSON definition fil
     }
 
 First **link** element above will not change anything in paths from **linksection**, second will put **example03[].** in their prefix (they will be somehow sandboxed).
+
+    ["link", "", "linksection", "Section name for user"]
+
+**link** element can have (optionally) third parameter string. When it's given, everything inside will be put into expandable/collapsable section.
 
 # Arrays with multiple data set
 

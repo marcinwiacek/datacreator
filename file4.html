@@ -818,12 +818,13 @@
                             }
                         }
                     } else if (elementsToProcess[i][0] == "const") {
-                        //0 type, 1 path, 2 value
+                        //0 type, 1 path, 2 value, (optional 3 true set only when exists)
                         const pathList = elementsToProcess[i][1].split(",");
                         for (var p in pathList) {
                             var obj = findOutputObject(getAddReplace(outputDataParentPath, pathList[p], addReplace),
                                 true, false);
-                            if (obj.isNewValue) {
+                            if (obj.isNewValue || 
+                                (!obj.isNewValue && elementsToProcess[i].length == 3 && elementsToProcess[i][2]==true)) {
                                 obj.obj[obj.lastPathElement] = elementsToProcess[i][2];
                             }
                         }
