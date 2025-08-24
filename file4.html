@@ -257,10 +257,10 @@
             return pathList.join(",");
         }
 
-        //example: e[1](2).e[2].e[3] gives e[1](2)
-        //e[1](2).e[2](4).e[3] gives e[1](2)(4)
         function getReplaceNameFromPathInInputData(pathInInputData) {
-            var retVal = "";
+            //example: e[1](2).e[2].e[3] gives e[1](2)
+            //e[1](2).e[2](4).e[3] gives e[1](2)(4)
+            /*var retVal = "";
             const x = pathInInputData.split(".");
             for (var s in x) {
                 const pathObj3 = x[s].split(/[\(,\)]/);
@@ -268,6 +268,8 @@
             }
             const pathObj2 = x[0].split(/[\[,\]]/);
             return pathObj2[0] + "[" + pathObj2[1] + "]" + retVal;
+            */
+            return pathInInputData;
         }
 
         //show JSON in window
