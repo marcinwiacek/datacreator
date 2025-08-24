@@ -108,18 +108,18 @@
             const k = Object.keys(dat);
             var retVal = [];
             for (var x in k) {
-                if (!Array.isArray(dat[k[x]]) && !(dat[k[x]] instanceof Object)) retVal.push(k[x]);
+                if (!Array.isArray(dat[k[x]]) && !(dat[k[x]] instanceof Object)) retVal.push(k[x]); //"simple" elements
             }
             retVal = retVal.sort();
             var k2 = [];
             for (var x in k) {
-                if (!Array.isArray(dat[k[x]]) && (dat[k[x]] instanceof Object)) k2.push(k[x]); //{
+                if (!Array.isArray(dat[k[x]]) && (dat[k[x]] instanceof Object)) k2.push(k[x]); //{ elements
             }
             k2 = k2.sort();
             retVal = retVal.concat(k2);
             k2 = [];
             for (var x in k) {
-                if (Array.isArray(dat[k[x]]) && (dat[k[x]] instanceof Object)) k2.push(k[x]); //[
+                if (Array.isArray(dat[k[x]]) && (dat[k[x]] instanceof Object)) k2.push(k[x]); //[ elements
             }
             k2 = k2.sort();
             retVal = retVal.concat(k2);
@@ -516,7 +516,7 @@
             }
         }
 
-        function addArrayStruct(outputDataParentPath, pathInInputData, nonDefault) {
+        function addArrayStruct(outputDataParentPath, pathInInputData, def) {
             if (debug) {
                 console.log("addArrayStruct '" + pathInInputData + "'");
                 console.log(selectAddReplace);
@@ -527,7 +527,7 @@
             if (debug) console.log(elementToProcess);
             var elementIndex = 0;
             for (var i = 3; i < elementToProcess.length; i += 2) {
-                if (elementToProcess[i + 1] == nonDefault &&
+                if (elementToProcess[i + 1] == def &&
                     document.getElementById(pathInInputData + "(" + i + ").x") == null) {
                     elementIndex = i;
                     break;
@@ -557,7 +557,7 @@
                 newSpan.id = newID;
 
                 //now create delete button and span for menu
-                if (nonDefault) {
+                if (!def) {
                     var newDelButton = document.createElement('button');
                     newDelButton.id = newID + ".x";
                     newDelButton.setAttribute("name", outputDataParentPath);
@@ -580,7 +580,7 @@
                 }
                 newInternSpan.innerHTML = retVal;
 
-                if (nonDefault) newInternSpan.appendChild(newDelButton);
+                if (!def) newInternSpan.appendChild(newDelButton);
                 newSpan.appendChild(newLabel);
                 newSpan.appendChild(newSpanSpan);
                 newSpan.appendChild(newInternSpan);
@@ -599,7 +599,7 @@
         function processExtraArrayElements() {
             processing = "processExtraArrayElements";
             for (var z in addArray) {
-                addArrayStruct(addArray[z].parentPathInJson, addArray[z].editorPath, false);
+                addArrayStruct(addArray[z].parentPathInJson, addArray[z].editorPath, true);
             }
             addArray = [];
         }
@@ -710,11 +710,11 @@
                         editorText += "<input type=button value='Add'";
                         editorText += " name='" + elementToProcessName + "'";
                         editorText += " onclick=addArrayStruct('" + outputDataParentPath + "'," +
-                            "'" + elementToProcessName + "',true);>";
+                            "'" + elementToProcessName + "',false);>";
                         editorText += "<span id='" + elementToProcessName + "' class=full></span>";
                         //add sections, which cannot be later deleted
                         for (var j = 3; j < elementsToProcess[i].length; j += 2) {
-                            if (elementsToProcess[i][j + 1] == false) {
+                            if (elementsToProcess[i][j + 1] == true) {
                                 var ret = {};
                                 ret.editorPath = elementToProcessName;
                                 ret.parentPathInJson = outputDataParentPath;
@@ -728,7 +728,8 @@
                         if (elementsToProcess[i].length == 4) {
                             editorText += "<span class=full><br>&nbsp;<br>";
                             editorText += "<label><b>" + elementsToProcess[i][3] + "</b></label>";
-                            editorText += "<span id='" + elementToProcessName + ".y' style='text-align:right;cursor:pointer;'";
+                            editorText += "<span id='" + elementToProcessName + ".y'";
+                            editorText += " style='text-align:right;cursor:pointer;'";
                             editorText += " onclick='openClose(this.id.slice(0, -2));'>&nbsp;[-]</span>";
                             editorText += "<span id='" + elementToProcessName + ".z' class=full";
                             editorText += " style='display: grid; grid-template-columns: 1fr 1fr;'>";
@@ -897,8 +898,8 @@
                         }
                         title += ", default \"" + pathValue.value + "\"";
                         editorText += " title='" + title + "'";
-                        editorText += " oninput=editStringBoolNum(this.id,this.value,false,true);setEditErrors(this.id,this.value,'" +
-                            sectionName + "','" + i + "');><br>";
+                        editorText += " oninput=editStringBoolNum(this.id,this.value,false,true);";
+                        editorText += "setEditErrors(this.id,this.value,'" + sectionName + "','" + i + "');><br>";
                         editorText += "<span id='" + pathValue.path + "_error'>";
                         editorText += parseEditErrors(sectionName, i, pathValue.value);
                         editorText += "</span>";
@@ -933,8 +934,8 @@
                         }
                         editorText += " title='" + title + "'";
                         editorText += " oninput=editStringBoolNum(this.id,this.value,true,";
-                        editorText += !(elementsToProcess[i].length == 8) + ");setEditErrors(this.id,this.value,'" +
-                            sectionName + "','" + i + "');><br>";
+                        editorText += !(elementsToProcess[i].length == 8) + ");";
+                        editorText += "setEditErrors(this.id,this.value,'" + sectionName + "','" + i + "');><br>";
                         editorText += "<span id='" + pathValue.path + "_error'>";
                         editorText += parseEditErrors(sectionName, i, pathValue.value);
                         editorText += "</span>";
@@ -1024,7 +1025,8 @@
                             title += ", maximum " + elementsToProcess[i][4] + " elements";
                         }
                         editorText += " title='" + title + "'";
-                        editorText += " oninput=editMulti(this.id,this.options);setEditErrorsMulti(this.id,this.options,'" +
+                        editorText += " oninput=editMulti(this.id,this.options);";
+                        editorText += "setEditErrorsMulti(this.id,this.options,'" +
                             sectionName + "','" + i + "');>";
                         for (var j = 5; j < elementsToProcess[i].length; j += 2) {
                             editorText += "<option value='" + elementsToProcess[i][j] + "'";

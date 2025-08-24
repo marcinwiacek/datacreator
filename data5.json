@@ -14,7 +14,7 @@
 		["file64",  "example01.doc", "some document base64", "T0s=","example",""],
 		["fileHex", "example01.doc2", "some document hex", "","", ""],
 		["checkbox", "example01.bool", "are you happy?", true],
-		["checkfalse", "example01.bool2", "are you not happy?", false],
+		["checkfalse", "example01.bool2", "are you not happy?", true],
 		["copy", "example01.bool2", "example01.bool3"],
 	        ["const","example01.alwaysTheSameConst","onetwothree"],
 		["random", "example01.random", "abcdefGHJ", 6,"start-","-end"],
@@ -45,7 +45,7 @@
                 ["separator", "example 9 - combo"],
                 ["index", "example09.index1toselect", "array index1 to select", "example09_array1[]"],
 		["index", "example09.index2toselect", "array index2 to select", "example09_array2[]"],
-                ["adddelete", "extra array", "example9_delete", "example9_add", true, "example9_add2", true, "example9_add2", true,"example9_add2", true]
+                ["adddelete", "extra array", "example9_delete", "example9_add", true, "example9_add2", false, "example9_add2", false,"example9_add2", false]
 	 ],
 
 	 "comment":"example 2 and 3",
