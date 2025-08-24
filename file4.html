@@ -133,7 +133,7 @@
                                 sortJson(dat[key][x]) : dat[key][x]);
                         }
                     } else {
-                        newObj[key] = dat[key] instanceof Object ? sortJson(dat[key]):dat[key];
+                        newObj[key] = dat[key] instanceof Object ? sortJson(dat[key]) : dat[key];
                     }
                     return newObj;
                 }, {});
@@ -833,15 +833,15 @@
                     } else if (elementsToProcess[i][0] == "copy") {
                         //0 type, 1 path, 2 src path
                         //copy element from src path (only when src exists)
-                          const pathValue = getPathValueToCheck(outputDataParentPath,
+                        const pathValue = getPathValueToCheck(outputDataParentPath,
                             elementsToProcess[i][1], null, addReplace, false);
-                          if (pathValue!=null) {
-                         const obj = findOutputObject(getAddReplace(outputDataParentPath,
+                        if (pathValue != null) {
+                            const obj = findOutputObject(getAddReplace(outputDataParentPath,
                                 elementsToProcess[i][2], addReplace), true, false);
-                                if (obj.obj != null && obj.lastPathElement != null) {
-                                 obj.obj[obj.lastPathElement] = pathValue.value;                           
-                                }
-                          }
+                            if (obj.obj != null && obj.lastPathElement != null) {
+                                obj.obj[obj.lastPathElement] = pathValue.value;
+                            }
+                        }
                     } else if (elementsToProcess[i][0] == "random") {
                         //put into json random value. When you put this is before string,
                         //it can replace default value from string (only when it didn't exist in json)
