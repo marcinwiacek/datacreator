@@ -1,4 +1,4 @@
-Research project for easy creating data JSON files (in future maybe also XML & others) using JSON definitions with info about fields, data format, dependiencies, etc.
+Project with tool for easy creating data JSON files (in future maybe also XML & others) using JSON definitions with info about fields, data format, dependiencies, etc.
 
 This should be better than existing formats, for example [OpenAPI Specification](https://swagger.io/specification/).
 
@@ -23,6 +23,8 @@ see red flag with some keywords & I wanted to avoid it.
 **What's with error handling?** This is not bullet-proof solution. Many errors are shown, but don't expect miracles.
 
 **Why not use anything ready?** All found projects were limited.
+
+**Which browsers?** Tested with desktop Firefox, Chrome/Chromium, Edge.
 
 # Input files
 
