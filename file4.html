@@ -3,10 +3,10 @@
 
 <head>
     <script>
-        //fixme: 1.number with last param false
-        //2.tooltip for indexes (arrayindex and arrayindex2 fixes; 
+        //fixme:
+        //1.tooltip for indexes (arrayindex and arrayindex2 fixes; 
         //select array should delete arrayindex?)
-        //4.multiple addremove for the same array
+        //2.multiple addremove for the same array
 
         const debug = true, //do you want debug in browser console?
             version = "250824";
@@ -740,10 +740,10 @@
                             const obj = findOutputObject(getAddReplace(outputDataParentPath,
                                 elementsToProcess[i][1], addReplace), true, false);
                             editorText += processEditorPart(elementsToProcess[i][2],
-                                elementToProcessName, obj.path + ".");
+                                inputDataParentPath, obj.path + ".");
                         } else {
                             editorText += processEditorPart(elementsToProcess[i][2],
-                                elementToProcessName, "");
+                                inputDataParentPath, "");
                         }
                         if (elementsToProcess[i].length == 4) {
                             editorText += "</span>";
@@ -911,7 +911,8 @@
                         //0 type, 1 path, 2 description, 3 default, 4 minimum, 5 maximum, 6 zero or step, 
                         //7 (optional) don't create elements
                         const pathValue = getPathValueToCheck(outputDataParentPath,
-                            elementsToProcess[i][1], elementsToProcess[i][3], addReplace, false);
+                            elementsToProcess[i][1], 
+                            elementsToProcess[i].length == 8?null:elementsToProcess[i][3], addReplace, false);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input";
@@ -933,6 +934,9 @@
                         if (pathValue.value != null) {
                             editorText += " value=" + pathValue.value;
                             title += ", default " + pathValue.value;
+                        } else if (elementsToProcess[i][3]!=null) {
+                           editorText += " value=" + elementsToProcess[i][3];
+                            title += ", default " + elementsToProcess[i][3];
                         }
                         editorText += " title='" + title + "'";
                         editorText += " oninput=editStringBoolNum(this.id,this.value,true,";
