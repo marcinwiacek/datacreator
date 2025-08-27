@@ -6,8 +6,7 @@
         //fixme:
         //1.tooltip for indexes (arrayindex and arrayindex2 fixes; 
         //select array should delete arrayindex?)
-        //2.multiple addremove for the same array
-
+      
         const debug = true, //do you want debug in browser console?
             version = "250824";
         document.title = "DataCreator (MIT license) " + version;
@@ -498,7 +497,7 @@
             const x = pathInInputDataWithIndex.split(".");
             const pathObj = x[x.length - 1].split(/[\[,\]]/);
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
-            const sectionObj = elementToProcess[2].split(".");
+            const sectionObj = elementToProcess[3].split(".");
             for (s in sectionObj) {
                 processEditorPart(sectionObj[s],
                     pathInInputDataWithIndex, outputDataParentPath);
@@ -518,7 +517,7 @@
             }
         }
 
-        function addArrayStruct(outputDataParentPath, pathInInputData, def) {
+        function addArrayStruct(outputDataParentPath, pathInInputData, parent, def) {
             if (debug) {
                 console.log("addArrayStruct '" + pathInInputData + "'");
                 console.log(selectAddReplace);
@@ -528,18 +527,18 @@
             const elementToProcess = inputData[pathObj[0]][pathObj[1]];
             if (debug) console.log(elementToProcess);
             var elementIndex = 0;
-            for (var i = 3; i < elementToProcess.length; i += 2) {
+            for (var i = 4; i < elementToProcess.length; i += 2) {
                 if (elementToProcess[i + 1] == def &&
-                    document.getElementById(pathInInputData + "(" + i + ").x") == null) {
+                    document.getElementById(parent + "(" + i + ").y") == null) {
                     elementIndex = i;
                     break;
                 }
             }
             if (elementIndex == 0) {
-                alert('Not possible. Maximal ' + ((elementToProcess.length - 3) / 2) +
+                alert('Not possible. Maximal ' + ((elementToProcess.length - 4) / 2) +
                     ' elements in element ' + pathInInputData);
             } else {
-                const newID = pathInInputData + "(" + elementIndex + ")";
+                const newID = parent + "(" + elementIndex + ")";
 
                 //first create new menu section
                 var newSpanSpan = document.createElement('span');
@@ -601,7 +600,7 @@
         function processExtraArrayElements() {
             processing = "processExtraArrayElements";
             for (var z in addArray) {
-                addArrayStruct(addArray[z].parentPathInJson, addArray[z].editorPath, true);
+                addArrayStruct(addArray[z].parentPathInJson, addArray[z].editorPath, addArray[z].parent, true);
             }
             addArray = [];
         }
@@ -705,21 +704,22 @@
                         editorText += "</span>";
                     } else if (elementsToProcess[i][0] == "adddelete") {
                         //array with adding/removing elements
-                        //0 type, 1 description, 2 section delete,
-                        //(3 section add, 4 section can delete)...
+                        //0 type, 1 description, 2 parent, 3 section delete,
+                        //(4 section add, 5 section can delete)...
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
                         editorText += "<input type=button value='Add'";
                         editorText += " name='" + elementToProcessName + "'";
                         editorText += " onclick=addArrayStruct('" + outputDataParentPath + "'," +
-                            "'" + elementToProcessName + "',false);>";
+                            "'" + elementToProcessName + "','"+elementsToProcess[i][2]+"',false);>";
                         editorText += "<span id='" + elementToProcessName + "' class=full></span>";
                         //add sections, which cannot be later deleted
-                        for (var j = 3; j < elementsToProcess[i].length; j += 2) {
+                        for (var j = 4; j < elementsToProcess[i].length; j += 2) {
                             if (elementsToProcess[i][j + 1] == true) {
                                 var ret = {};
                                 ret.editorPath = elementToProcessName;
                                 ret.parentPathInJson = outputDataParentPath;
+                                ret.parent = elementsToProcess[i][2];
                                 addArray.push(ret);
                             }
                         }
@@ -867,10 +867,15 @@
                         //0 type, 1 path, 2 (optional) name
                         const pathList = elementsToProcess[i][1].split(",");
                         for (p in pathList) {
+                            if ( (elementsToProcess[i].length == 3 && addReplace[elementsToProcess[i][2]]==null) ||
+                            (elementsToProcess[i].length != 3 && 
+                               getAddReplace(outputDataParentPath, pathList[p], addReplace).includes("[]") &&
+                                addReplace[getAddReplace(outputDataParentPath, pathList[p], addReplace)] == null)) {
                             obj = findOutputObject(outputDataParentPath + pathList[p], true, false);
                             addReplace[elementsToProcess[i].length == 3 ?
                                 elementsToProcess[i][2] :
                                 getAddReplace(outputDataParentPath, pathList[p], addReplace)] = obj.path;
+                                }
                         }
                         if (debug) {
                             console.log("addReplace");
