@@ -1,4 +1,4 @@
-Project with tool for easy creating data JSON files (in future maybe also XML & others) using JSON definitions with info about fields, data format, dependiencies, etc.
+Experimental project with tool for easy creating data JSON files (in future maybe also XML & others) using JSON definitions with info about fields, data format, dependiencies, etc.
 
 This should be better than existing formats, for example [OpenAPI Specification](https://swagger.io/specification/).
 
