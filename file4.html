@@ -6,7 +6,7 @@
         //fixme:
         //1.tooltip for indexes (arrayindex and arrayindex2 fixes; 
         //select array should delete arrayindex?)
-      
+
         const debug = true, //do you want debug in browser console?
             version = "250824";
         document.title = "DataCreator (MIT license) " + version;
@@ -711,7 +711,7 @@
                         editorText += "<input type=button value='Add'";
                         editorText += " name='" + elementToProcessName + "'";
                         editorText += " onclick=addArrayStruct('" + outputDataParentPath + "'," +
-                            "'" + elementToProcessName + "','"+elementsToProcess[i][2]+"',false);>";
+                            "'" + elementToProcessName + "','" + elementsToProcess[i][2] + "',false);>";
                         editorText += "<span id='" + elementToProcessName + "' class=full></span>";
                         //add sections, which cannot be later deleted
                         for (var j = 4; j < elementsToProcess[i].length; j += 2) {
@@ -867,15 +867,15 @@
                         //0 type, 1 path, 2 (optional) name
                         const pathList = elementsToProcess[i][1].split(",");
                         for (p in pathList) {
-                            if ( (elementsToProcess[i].length == 3 && addReplace[elementsToProcess[i][2]]==null) ||
-                            (elementsToProcess[i].length != 3 && 
-                               getAddReplace(outputDataParentPath, pathList[p], addReplace).includes("[]") &&
-                                addReplace[getAddReplace(outputDataParentPath, pathList[p], addReplace)] == null)) {
-                            obj = findOutputObject(outputDataParentPath + pathList[p], true, false);
-                            addReplace[elementsToProcess[i].length == 3 ?
-                                elementsToProcess[i][2] :
-                                getAddReplace(outputDataParentPath, pathList[p], addReplace)] = obj.path;
-                                }
+                            if ((elementsToProcess[i].length == 3 && addReplace[elementsToProcess[i][2]] == null) ||
+                                (elementsToProcess[i].length != 3 &&
+                                    getAddReplace(outputDataParentPath, pathList[p], addReplace).includes("[]") &&
+                                    addReplace[getAddReplace(outputDataParentPath, pathList[p], addReplace)] == null)) {
+                                obj = findOutputObject(outputDataParentPath + pathList[p], true, false);
+                                addReplace[elementsToProcess[i].length == 3 ?
+                                    elementsToProcess[i][2] :
+                                    getAddReplace(outputDataParentPath, pathList[p], addReplace)] = obj.path;
+                            }
                         }
                         if (debug) {
                             console.log("addReplace");
@@ -916,8 +916,8 @@
                         //0 type, 1 path, 2 description, 3 default, 4 minimum, 5 maximum, 6 zero or step, 
                         //7 (optional) don't create elements
                         const pathValue = getPathValueToCheck(outputDataParentPath,
-                            elementsToProcess[i][1], 
-                            elementsToProcess[i].length == 8?null:elementsToProcess[i][3], addReplace, false);
+                            elementsToProcess[i][1],
+                            elementsToProcess[i].length == 8 ? null : elementsToProcess[i][3], addReplace, false);
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][2] + "</label>";
                         editorText += "<input";
@@ -939,8 +939,8 @@
                         if (pathValue.value != null) {
                             editorText += " value=" + pathValue.value;
                             title += ", default " + pathValue.value;
-                        } else if (elementsToProcess[i][3]!=null) {
-                           editorText += " value=" + elementsToProcess[i][3];
+                        } else if (elementsToProcess[i][3] != null) {
+                            editorText += " value=" + elementsToProcess[i][3];
                             title += ", default " + elementsToProcess[i][3];
                         }
                         editorText += " title='" + title + "'";
