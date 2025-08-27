@@ -8,7 +8,7 @@
         //select array should delete arrayindex?)
 
         const debug = true, //do you want debug in browser console?
-            version = "250824";
+            version = "250827";
         document.title = "DataCreator (MIT license) " + version;
     </script>
     <meta charset="utf-8">
@@ -567,7 +567,7 @@
                     newDelButton.addEventListener('click', function(event) {
                         if (confirm("Continue?")) {
                             deleteArrayStruct(this.id.slice(0, -2), this.attributes["name"]["nodeValue"],
-                            this.attributes["name2"]["nodeValue"]);
+                                this.attributes["name2"]["nodeValue"]);
                         }
                     });
                     newDelButton.innerText = "Delete";
@@ -603,7 +603,7 @@
         function processExtraArrayElements() {
             processing = "processExtraArrayElements";
             for (var z in addArray) {
-                addArrayStruct(addArray[z].parentPathInJson, addArray[z].editorPath, 
+                addArrayStruct(addArray[z].parentPathInJson, addArray[z].editorPath,
                     addArray[z].parent, addArray[z].default);
             }
             addArray = [];
@@ -719,8 +719,8 @@
                         editorText += "<span id='" + elementToProcessName + "' class=full></span>";
                         //add sections, which cannot be later deleted
                         for (var j = 4; j < elementsToProcess[i].length; j += 2) {
-                            if (elementsToProcess[i][j + 1] == true || 
-                                selectAddReplace[elementsToProcess[i][2]+"("+j+")"]!=null) {
+                            if (elementsToProcess[i][j + 1] == true ||
+                                selectAddReplace[elementsToProcess[i][2] + "(" + j + ")"] != null) {
                                 var ret = {};
                                 ret.editorPath = elementToProcessName;
                                 ret.parentPathInJson = outputDataParentPath;

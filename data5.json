@@ -45,7 +45,7 @@
                 ["separator", "example 9 - combo"],
                 ["index", "example09.index1toselect", "array index1 to select", "example09_array1[]"],
 		["index", "example09.index2toselect", "array index2 to select", "example09_array2[]"],
-                ["adddelete", "extra array", "example9_delete", "example9_add", true, "example9_add2", false, "example9_add2", false,"example9_add2", false]
+                ["adddelete", "extra array", "abcdefgh", "example9_delete", "example9_add", true, "example9_add2", false, "example9_add2", false,"example9_add2", false]
 	 ],
 
 	 "comment":"example 2 and 3",
