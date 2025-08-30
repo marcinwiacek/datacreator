@@ -361,7 +361,7 @@
         }
 
         //called after selecting value in select
-        function editSelect(pathInInputData, value, outputDataParentPath) {
+        function editSelect(pathInInputData, value, inputDataParentPath, outputDataParentPath) {
             if (debug) {
                 console.log("editSelect '" + pathInInputData + "' '" + value + "'");
                 console.log(selectAddReplace);
@@ -375,7 +375,7 @@
                     var retVal = "";
                     const sectionObj = elementToProcess[j + 1].split(".");
                     for (s in sectionObj) {
-                        retVal += processEditorPart(sectionObj[s], pathInInputData, outputDataParentPath);
+                        retVal += processEditorPart(sectionObj[s], inputDataParentPath, outputDataParentPath);
                     }
                     document.getElementById(pathInInputData + "_span").innerHTML = retVal;
                     processExtraArrayElements();
@@ -682,15 +682,17 @@
                     if (debug) {
                         console.log(processing);
                     }
-                    if (elementsToProcess[i][0] == "select") {
+                    if (elementsToProcess[i][0] == "select" || elementsToProcess[i][0] == "selectup") {
                         //option menu. Can do something extra during changing to concrete value.
                         //0 type, 1 description, 2 default, (3 name, 4 section for processing)...
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
-                        editorText += "<select name='" + elementToProcessName + "'";
+                        editorText += "<select name='";
+                        editorText += (elementsToProcess[i][0] == "select"?elementToProcessName:inputDataParentPath) + "'";
                         editorText += " id='" + elementToProcessName + "'";
                         editorText += " title='Default " + elementsToProcess[i][2] + "'";
-                        editorText += " onchange=editSelect(this.id,this.value,'" + outputDataParentPath + "');>";
+                        editorText += " onchange=editSelect(this.id,this.value,";
+                        editorText += "this.attributes[\"name\"][\"nodeValue\"],'" + outputDataParentPath + "');>";
                         for (var j = 3; j < elementsToProcess[i].length; j = j + 2) {
                             editorText += "<option value='" + elementsToProcess[i][j] + "'";
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) editorText += " selected";
@@ -701,7 +703,8 @@
                         for (var j = 3; j < elementsToProcess[i].length; j += 2) {
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) {
                                 editorText += processEditorPart(elementsToProcess[i][j + 1],
-                                    elementToProcessName, outputDataParentPath);
+                                    (elementsToProcess[i][0] == "select"?elementToProcessName:inputDataParentPath),
+                                    outputDataParentPath);
                             }
                         }
                         editorText += "</span>";

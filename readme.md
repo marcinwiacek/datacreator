@@ -155,7 +155,15 @@ Field with menu for one selection. 4th parameter is defining default value, late
 
     ["multi", "example01.arr[]", "You can more", 1, 2, "good", true, "excellent", false, "perfect", true],
 
-Field with many selections possible. As you can see, we need to define array here (2nd parameter), we have also minimal and maximal number of selected elements and after every element need to say, whether is selected by default or not. In output file we save it in array.
+Field with many selections possible. As you can see, we need to define array here (2nd parameter), we have also minimal and maximal number of selected elements and after every element need to say, whether is selected by default or not. In output file we save it into array.
+
+## delete
+
+    ["delete","second_example09_array1[],first_example09_array1[],example09_array2[]"]
+
+**Delete** element will not show any error, when path doesn't exist.
+
+Nice, isn't it?
 
 # Dynamic creating and referencing to array indexes
 
@@ -199,7 +207,7 @@ In second parameter we show, where we save selected index in output JSON. 3rd pa
 
 This version is taking created index number from array pointed by third parameter and is saving it into path provided by 2nd parameter.
 
-# Link for other sections
+# Link to other sections
 
 ## link
 
@@ -221,11 +229,21 @@ First **link** element above will not change anything in paths from **linksectio
 
 **link** element can have (optionally) third parameter string. When it's given, everything inside will be put into expandable/collapsable section.
 
+## select, selectup
+
+    ["select", "option1", "yes", "yes", "option18_yes", "no", "option18_no"]
+
+Another usefull option - we create single selection for user and execute concrete sections after changing value. 3rd parameter shows default value,
+after it we define pair of values and executed sections.
+
+Sections will have new **addreplace** values - if you want to include them
+into parent use **selectup** instead of **select**
+
 # Arrays with multiple data set
 
-## adddelete, delete
+## adddelete
 
-    ["adddelete", "extra array", "example9_delete", "example9_add", true, "example9_add2", true]
+    ["adddelete", "extra array", "id", "example9_delete", "example9_add", true, "example9_add2", true]
 
 We create for user menu with **Add** / **Remove** buttons. True values defines, that both sections will be created during opening (they will not have **Remove** button in the end). When user click **Remove** button, we will call section from 3rd parameter.
 
@@ -234,11 +252,5 @@ Notes:
 1. you can put infinite number of add sections (every with true/false of course).
 
 2. all replacements done with **addreplace** from add section will be available in delete section. For deleting them from output JSON you can use **delete** element.
-
-    ["delete","second_example09_array1[],first_example09_array1[],example09_array2[]"]
-
-**Delete** element will not show any error, when path doesn't exist.
-
-Nice, isn't it?
 
 ![Editor example 15.07.2025](screen.png)
