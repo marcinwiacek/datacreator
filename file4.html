@@ -478,7 +478,7 @@
                                     .innerHTML = "<font color=red>Needs some value</font>";
                             }
                         } else if (obj[j].attributes["name"]["nodeValue"].startsWith(pathObj.join(".") + "[")) {
-                            //update indexes of existing elements in the array                           
+                            //update indexes of existing elements in the array
                             pathObj2 = obj[j].attributes["name"]["nodeValue"].split(".");
                             var info2 = pathObj2[pathObj.length - 1].split(/[\[,\]]/);
                             if (debug) console.log(" potential update 2 " + Number(info2[1]) + " " + Number(info[1]));
