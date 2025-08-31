@@ -73,7 +73,7 @@
 	 	["addreplace","example06_array2[],example06_array1[]"],
 	        ["const","example06_array1[].x[].testvalue,example06_array2[].testvalue","option1_yes"],
 	        ["string", "example06_array1[].x[].str", "str", "option1", 0, 0, ""],
-	        ["index", "index1", "example06_array1[]"]
+	        ["index", "example06_array1[].index61", "example06_array1[]"]
 	 ],
 	 "option1_no": [
 	        ["delete", "example06_array2[],example06_array1[]"]
@@ -85,7 +85,8 @@
 	 	["addreplace","example06_array2[],example06_array1[]"],
 	        ["const","example06_array1[].testvalue,example06_array2[].testvalue","option2_yes"],
 	        ["string", "example06_array1[].str", "str1", "option2", 0, 0, ""],
-		["index", "index2", "example06_array2[]"]
+	           ["index", "example06_array1[].index61", "example06_array1[]"],
+		["index", "example06_array2[].index2", "example06_array2[]"]
 	 ],
 	 "option2_no": [
 	        ["delete", "example06_array2[],example06_array1[]"]
