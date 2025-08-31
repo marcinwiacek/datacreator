@@ -440,32 +440,32 @@
                 document.getElementsByTagName("select"),
                 document.getElementsByTagName("span"),
                 document.getElementsByTagName("button")
-            ];           
+            ];
             for (var jj in obj0) {
                 obj = obj0[jj];
                 for (var j in obj) {
-                 console.log("comparing with "+pathObj.join(".")+" "+obj[j].id+" "+
-                    (obj[j].attributes && obj[j].attributes["name"]?obj[j].attributes["name"]["nodeValue"]:""));
-                 //update indexes of existing elements in the array
+                    console.log("comparing with " + pathObj.join(".") + " " + obj[j].id + " " +
+                        (obj[j].attributes && obj[j].attributes["name"] ? obj[j].attributes["name"]["nodeValue"] : ""));
+                    //update indexes of existing elements in the array
                     if (obj[j].id != null && obj[j].id.startsWith(pathObj.join("."))) {
                         pathObj2 = obj[j].id.split(".");
                         var info2 = pathObj2[pathObj.length - 1].split(/[\[,\]]/);
-                           console.log(" potential update "+ Number(info2[1]) +" "+Number(info[1]));                           
-                         if (Number(info2[1]) > Number(info[1])) {
-                             var i = Number(info2[1]);
-                             pathObj2[pathObj.length - 1] = info2[0] + "[" + (i - 1) + "]";
-                              console.log(" updating "+ obj[j].id +" to "+ pathObj2.join("."));                                           
-                             obj[j].id = pathObj2.join(".");
-                              
-                      	}
+                        console.log(" potential update " + Number(info2[1]) + " " + Number(info[1]));
+                        if (Number(info2[1]) > Number(info[1])) {
+                            var i = Number(info2[1]);
+                            pathObj2[pathObj.length - 1] = info2[0] + "[" + (i - 1) + "]";
+                            console.log(" updating " + obj[j].id + " to " + pathObj2.join("."));
+                            obj[j].id = pathObj2.join(".");
 
-		    }
+                        }
+
+                    }
                     //remove value from select with array index
                     if (obj[j].attributes && obj[j].attributes["name"]) {
                         if (obj[j].attributes["name"]["nodeValue"] == pathObj.join(".") + "[]") {
                             if (debug) console.log(obj[j]);
                             console.log("updating select");
-                         //remove highest value
+                            //remove highest value
                             toDelete = -1;
                             toDeleteValue = 0;
                             for (var jjj = 0; jjj < obj[j].length; jjj++) {
@@ -481,28 +481,28 @@
                                 document.getElementById(obj[j].id + "_error")
                                     .innerHTML = "<font color=red>Needs some value</font>";
                             }
-                         } else if (obj[j].attributes["name"]["nodeValue"].startsWith( pathObj.join(".") + "[")) {
-                    //update indexes of existing elements in the array                           
+                        } else if (obj[j].attributes["name"]["nodeValue"].startsWith(pathObj.join(".") + "[")) {
+                            //update indexes of existing elements in the array                           
                             pathObj2 = obj[j].attributes["name"]["nodeValue"].split(".");
-                        var info2 = pathObj2[pathObj.length - 1].split(/[\[,\]]/);
-                           console.log(" potential update 2 "+ Number(info2[1]) +" "+Number(info[1]));                           
-                        
-                        if (Number(info2[1]) > Number(info[1])) {
-                            var i = Number(info2[1]);
-                            pathObj2[pathObj.length - 1] = info2[0] + "[" + (i - 1) + "]";
-                            obj[j].setAttribute("name", pathObj2.join("."));
-                            //update json value for array indexes
-                            if (obj[j].id) {
-                            console.log(" making update");
-                                var obj2 = findOutputObject(pathObj2.join("."), false, false);
-                                if (obj2 && obj2.obj) {
-                                    obj2.obj[obj2.lastPathElement] = Number(i - 1);
+                            var info2 = pathObj2[pathObj.length - 1].split(/[\[,\]]/);
+                            console.log(" potential update 2 " + Number(info2[1]) + " " + Number(info[1]));
+
+                            if (Number(info2[1]) > Number(info[1])) {
+                                var i = Number(info2[1]);
+                                pathObj2[pathObj.length - 1] = info2[0] + "[" + (i - 1) + "]";
+                                obj[j].setAttribute("name", pathObj2.join("."));
+                                //update json value for array indexes
+                                if (obj[j].id) {
+                                    console.log(" making update");
+                                    var obj2 = findOutputObject(pathObj2.join("."), false, false);
+                                    if (obj2 && obj2.obj) {
+                                        obj2.obj[obj2.lastPathElement] = Number(i - 1);
+                                    }
                                 }
                             }
+
                         }
-                            
-                            }
-                            }                   
+                    }
                 }
             }
             showFormattedOutputJson();
@@ -707,7 +707,7 @@
                         editorText += "<span class=full>";
                         editorText += "<label>" + elementsToProcess[i][1] + "</label>";
                         editorText += "<select name='";
-                        editorText += (elementsToProcess[i][0] == "select"?elementToProcessName:inputDataParentPath) + "'";
+                        editorText += (elementsToProcess[i][0] == "select" ? elementToProcessName : inputDataParentPath) + "'";
                         editorText += " id='" + elementToProcessName + "'";
                         editorText += " title='Default " + elementsToProcess[i][2] + "'";
                         editorText += " onchange=editSelect(this.id,this.value,";
@@ -722,7 +722,7 @@
                         for (var j = 3; j < elementsToProcess[i].length; j += 2) {
                             if (elementsToProcess[i][2] == elementsToProcess[i][j]) {
                                 editorText += processEditorPart(elementsToProcess[i][j + 1],
-                                    (elementsToProcess[i][0] == "select"?elementToProcessName:inputDataParentPath),
+                                    (elementsToProcess[i][0] == "select" ? elementToProcessName : inputDataParentPath),
                                     outputDataParentPath);
                             }
                         }
@@ -779,18 +779,18 @@
                         }
                     } else if (elementsToProcess[i][0] == "index") {
                         //field with index of existing "other array": 0 type, 1 field inside "other array"
-                      /*  if (elementsToProcess[i].length == 2) {
-                            const obj = findOutputObject(getAddReplace(outputDataParentPath,
-                                elementsToProcess[i][1], addReplace), true, false);
-                            const info = obj.path.split(".");
-                            const info2 = info[info.length - 2].split(/[\[,\]]/);
-                            obj.obj[obj.lastPathElement] = Number(info2[1]);
-                            var x = obj.path.split(".");
-                            x = x.pop();
-                            editorText += "<span name=arrayindex id='" +
-                                (Array.isArray(x) ? x.join(".") : x) + "'></span>";
-                        } else 
-                        */
+                        /*  if (elementsToProcess[i].length == 2) {
+                              const obj = findOutputObject(getAddReplace(outputDataParentPath,
+                                  elementsToProcess[i][1], addReplace), true, false);
+                              const info = obj.path.split(".");
+                              const info2 = info[info.length - 2].split(/[\[,\]]/);
+                              obj.obj[obj.lastPathElement] = Number(info2[1]);
+                              var x = obj.path.split(".");
+                              x = x.pop();
+                              editorText += "<span name=arrayindex id='" +
+                                  (Array.isArray(x) ? x.join(".") : x) + "'></span>";
+                          } else 
+                          */
                         if (elementsToProcess[i].length == 3) {
                             //field with index of existing "other array": 0 type, 1 field path,
                             //2 "other array" path
@@ -806,7 +806,7 @@
                             }
                             const info = obj2.lastPathElement.split(/[\[,\]]/);
                             obj.obj[obj.lastPathElement] = Number(info[1]);
-                            editorText += "<span name2=arrayindex2 name='" + obj2.path + "'";                          
+                            editorText += "<span name2=arrayindex2 name='" + obj2.path + "'";
                             editorText += " id='" + obj.path + "'></span>"; //fixme
                         } else {
                             //field with "other array" index (for selecting): 
