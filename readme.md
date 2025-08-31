@@ -203,7 +203,7 @@ In second parameter we show, where we save selected index in output JSON. 3rd pa
 
 	["addreplace","first_example09_array1[]"]
 
-	["index", "index2", "first_example09_array1[]"]
+	["index", "first_example09_array1[].index2", "first_example09_array1[]"]
 
 This version is taking created index number from array pointed by third parameter and is saving it into path provided by 2nd parameter.
 

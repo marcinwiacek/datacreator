@@ -3,12 +3,8 @@
 
 <head>
     <script>
-        //fixme:
-        //1.tooltip for indexes (arrayindex and arrayindex2 fixes; 
-        //select array should delete arrayindex?)
-
-        const debug = true, //do you want debug in browser console?
-            version = "250827";
+        const debug = false, //do you want debug in browser console?
+            version = "250831";
         document.title = "DataCreator (MIT license) " + version;
     </script>
     <meta charset="utf-8">
@@ -169,8 +165,10 @@
                         if (returnWholeArray) {
                             retVal.obj = obj;
                             retVal.lastPathElement = info[0];
-                            console.log("array return");
-                            console.log(retVal);
+                            if (debug) {
+                               console.log("array return");
+                               console.log(retVal);
+                            }
                             return retVal;
                         }
                         //we create new one
@@ -444,28 +442,26 @@
             for (var jj in obj0) {
                 obj = obj0[jj];
                 for (var j in obj) {
-                    console.log("comparing with " + pathObj.join(".") + " " + obj[j].id + " " +
+                    if (debug) { 
+                        console.log("comparing with " + pathObj.join(".") + " " + obj[j].id + " " +
                         (obj[j].attributes && obj[j].attributes["name"] ? obj[j].attributes["name"]["nodeValue"] : ""));
+                    }
                     //update indexes of existing elements in the array
                     if (obj[j].id != null && obj[j].id.startsWith(pathObj.join("."))) {
                         pathObj2 = obj[j].id.split(".");
                         var info2 = pathObj2[pathObj.length - 1].split(/[\[,\]]/);
-                        console.log(" potential update " + Number(info2[1]) + " " + Number(info[1]));
+                        if (debug) console.log(" potential update " + Number(info2[1]) + " " + Number(info[1]));
                         if (Number(info2[1]) > Number(info[1])) {
                             var i = Number(info2[1]);
                             pathObj2[pathObj.length - 1] = info2[0] + "[" + (i - 1) + "]";
-                            console.log(" updating " + obj[j].id + " to " + pathObj2.join("."));
+                            if (debug) console.log(" updating " + obj[j].id + " to " + pathObj2.join("."));
                             obj[j].id = pathObj2.join(".");
-
                         }
-
-                    }
-                    //remove value from select with array index
+                    }                    
                     if (obj[j].attributes && obj[j].attributes["name"]) {
                         if (obj[j].attributes["name"]["nodeValue"] == pathObj.join(".") + "[]") {
-                            if (debug) console.log(obj[j]);
-                            console.log("updating select");
-                            //remove highest value
+                            //remove highest value from select with array index
+                            if (debug) console.log("updating select "+obj[j]);
                             toDelete = -1;
                             toDeleteValue = 0;
                             for (var jjj = 0; jjj < obj[j].length; jjj++) {
@@ -485,22 +481,20 @@
                             //update indexes of existing elements in the array                           
                             pathObj2 = obj[j].attributes["name"]["nodeValue"].split(".");
                             var info2 = pathObj2[pathObj.length - 1].split(/[\[,\]]/);
-                            console.log(" potential update 2 " + Number(info2[1]) + " " + Number(info[1]));
-
+                            if (debug) console.log(" potential update 2 " + Number(info2[1]) + " " + Number(info[1]));
                             if (Number(info2[1]) > Number(info[1])) {
                                 var i = Number(info2[1]);
                                 pathObj2[pathObj.length - 1] = info2[0] + "[" + (i - 1) + "]";
                                 obj[j].setAttribute("name", pathObj2.join("."));
                                 //update json value for array indexes
                                 if (obj[j].id) {
-                                    console.log(" making update");
-                                    var obj2 = findOutputObject(pathObj2.join("."), false, false);
-                                    if (obj2 && obj2.obj) {
+                                    if (debug) console.log(" making update to the "+obj[j].id+ " with value "+Number(i - 1));
+                                    var obj2 = findOutputObject(obj[j].id, false, false);
+                                    if (obj2 && obj2.obj) {                                        
                                         obj2.obj[obj2.lastPathElement] = Number(i - 1);
                                     }
                                 }
                             }
-
                         }
                     }
                 }
@@ -777,20 +771,7 @@
                             editorText += "</span>";
                             editorText += "</span>";
                         }
-                    } else if (elementsToProcess[i][0] == "index") {
-                        //field with index of existing "other array": 0 type, 1 field inside "other array"
-                        /*  if (elementsToProcess[i].length == 2) {
-                              const obj = findOutputObject(getAddReplace(outputDataParentPath,
-                                  elementsToProcess[i][1], addReplace), true, false);
-                              const info = obj.path.split(".");
-                              const info2 = info[info.length - 2].split(/[\[,\]]/);
-                              obj.obj[obj.lastPathElement] = Number(info2[1]);
-                              var x = obj.path.split(".");
-                              x = x.pop();
-                              editorText += "<span name=arrayindex id='" +
-                                  (Array.isArray(x) ? x.join(".") : x) + "'></span>";
-                          } else 
-                          */
+                    } else if (elementsToProcess[i][0] == "index") {                       
                         if (elementsToProcess[i].length == 3) {
                             //field with index of existing "other array": 0 type, 1 field path,
                             //2 "other array" path
@@ -1108,8 +1089,8 @@
             if (debug) {
                 console.log("processEditorPart end '" + inputDataSectionPathToProcess + "' '" +
                     inputDataParentPath + "' '" + outputDataParentPath + "'");
-            }
-            console.log(selectAddReplace);
+                console.log(selectAddReplace);
+            }           
             return editorText;
         }
 

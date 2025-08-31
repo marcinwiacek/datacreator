@@ -2,7 +2,7 @@
 	"info": [
 	    "Example file (MIT license) for DataCreator project (MIT license) from GitHub",
 	    "You can create complicated JSON files with user friendly menu",
-	    "Version 20250827"
+	    "Version 20250831"
 	],
 	"start": [
 		["separator", "example 1 - different edit types"],
