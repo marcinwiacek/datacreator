@@ -166,8 +166,8 @@
                             retVal.obj = obj;
                             retVal.lastPathElement = info[0];
                             if (debug) {
-                               console.log("array return");
-                               console.log(retVal);
+                                console.log("array return");
+                                console.log(retVal);
                             }
                             return retVal;
                         }
@@ -442,9 +442,9 @@
             for (var jj in obj0) {
                 obj = obj0[jj];
                 for (var j in obj) {
-                    if (debug) { 
+                    if (debug) {
                         console.log("comparing with " + pathObj.join(".") + " " + obj[j].id + " " +
-                        (obj[j].attributes && obj[j].attributes["name"] ? obj[j].attributes["name"]["nodeValue"] : ""));
+                            (obj[j].attributes && obj[j].attributes["name"] ? obj[j].attributes["name"]["nodeValue"] : ""));
                     }
                     //update indexes of existing elements in the array
                     if (obj[j].id != null && obj[j].id.startsWith(pathObj.join("."))) {
@@ -457,11 +457,11 @@
                             if (debug) console.log(" updating " + obj[j].id + " to " + pathObj2.join("."));
                             obj[j].id = pathObj2.join(".");
                         }
-                    }                    
+                    }
                     if (obj[j].attributes && obj[j].attributes["name"]) {
                         if (obj[j].attributes["name"]["nodeValue"] == pathObj.join(".") + "[]") {
                             //remove highest value from select with array index
-                            if (debug) console.log("updating select "+obj[j]);
+                            if (debug) console.log("updating select " + obj[j]);
                             toDelete = -1;
                             toDeleteValue = 0;
                             for (var jjj = 0; jjj < obj[j].length; jjj++) {
@@ -488,9 +488,9 @@
                                 obj[j].setAttribute("name", pathObj2.join("."));
                                 //update json value for array indexes
                                 if (obj[j].id) {
-                                    if (debug) console.log(" making update to the "+obj[j].id+ " with value "+Number(i - 1));
+                                    if (debug) console.log(" making update to the " + obj[j].id + " with value " + Number(i - 1));
                                     var obj2 = findOutputObject(obj[j].id, false, false);
-                                    if (obj2 && obj2.obj) {                                        
+                                    if (obj2 && obj2.obj) {
                                         obj2.obj[obj2.lastPathElement] = Number(i - 1);
                                     }
                                 }
@@ -771,7 +771,7 @@
                             editorText += "</span>";
                             editorText += "</span>";
                         }
-                    } else if (elementsToProcess[i][0] == "index") {                       
+                    } else if (elementsToProcess[i][0] == "index") {
                         if (elementsToProcess[i].length == 3) {
                             //field with index of existing "other array": 0 type, 1 field path,
                             //2 "other array" path
@@ -1090,7 +1090,7 @@
                 console.log("processEditorPart end '" + inputDataSectionPathToProcess + "' '" +
                     inputDataParentPath + "' '" + outputDataParentPath + "'");
                 console.log(selectAddReplace);
-            }           
+            }
             return editorText;
         }
 
