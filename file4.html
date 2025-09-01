@@ -4,7 +4,7 @@
 <head>
     <script>
         const debug = false, //do you want debug in browser console?
-            version = "250831";
+            version = "250901";
         document.title = "DataCreator (MIT license) " + version;
     </script>
     <meta charset="utf-8">
@@ -255,17 +255,6 @@
         }
 
         function getReplaceNameFromPathInInputData(pathInInputData) {
-            //example: e[1](2).e[2].e[3] gives e[1](2)
-            //e[1](2).e[2](4).e[3] gives e[1](2)(4)
-            /*var retVal = "";
-            const x = pathInInputData.split(".");
-            for (var s in x) {
-                const pathObj3 = x[s].split(/[\(,\)]/);
-                if (pathObj3.length > 1) retVal += "(" + pathObj3[1] + ")";
-            }
-            const pathObj2 = x[0].split(/[\[,\]]/);
-            return pathObj2[0] + "[" + pathObj2[1] + "]" + retVal;
-            */
             return pathInInputData;
         }
 
@@ -388,7 +377,6 @@
             }
         }
 
-        //todo delete elements outside (with $.)
         function deleteArrayElement(pathInOutputData) {
             if (debug) console.log("Delete array alement " + pathInOutputData);
             var obj = findOutputObject(pathInOutputData, false, false);
@@ -458,6 +446,18 @@
                             obj[j].id = pathObj2.join(".");
                         }
                     }
+                    if (obj[j].attributes && obj[j].attributes["name3"] &&
+                        obj[j].attributes["name3"]["nodeValue"].startsWith(pathObj.join("."))) {
+                        pathObj2 = obj[j].attributes["name3"]["nodeValue"].split(".");
+                        var info2 = pathObj2[pathObj.length - 1].split(/[\[,\]]/);
+                        if (debug) console.log(" potential update " + Number(info2[1]) + " " + Number(info[1]));
+                        if (Number(info2[1]) > Number(info[1])) {
+                            var i = Number(info2[1]);
+                            pathObj2[pathObj.length - 1] = info2[0] + "[" + (i - 1) + "]";
+                            if (debug) console.log(" updating3 " + obj[j].id + " to " + pathObj2.join("."));
+                            obj[j].setAttribute("name3", pathObj2.join("."));
+                        }
+                    }
                     if (obj[j].attributes && obj[j].attributes["name"]) {
                         if (obj[j].attributes["name"]["nodeValue"] == pathObj.join(".") + "[]") {
                             //remove highest value from select with array index
@@ -487,9 +487,9 @@
                                 pathObj2[pathObj.length - 1] = info2[0] + "[" + (i - 1) + "]";
                                 obj[j].setAttribute("name", pathObj2.join("."));
                                 //update json value for array indexes
-                                if (obj[j].id) {
+                                if (obj[j].attributes && obj[j].attributes["name3"]) {
                                     if (debug) console.log(" making update to the " + obj[j].id + " with value " + Number(i - 1));
-                                    var obj2 = findOutputObject(obj[j].id, false, false);
+                                    var obj2 = findOutputObject(obj[j].attributes["name3"]["nodeValue"], false, false);
                                     if (obj2 && obj2.obj) {
                                         obj2.obj[obj2.lastPathElement] = Number(i - 1);
                                     }
@@ -788,7 +788,7 @@
                             const info = obj2.lastPathElement.split(/[\[,\]]/);
                             obj.obj[obj.lastPathElement] = Number(info[1]);
                             editorText += "<span name2=arrayindex2 name='" + obj2.path + "'";
-                            editorText += " id='" + obj.path + "'></span>"; //fixme
+                            editorText += " name3='" + obj.path + "'></span>";
                         } else {
                             //field with "other array" index (for selecting): 
                             //0 type, 1 path, 2 description, 3 "other array" path

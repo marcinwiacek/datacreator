@@ -1,6 +1,9 @@
-Experimental project with tool for easy creating data JSON files (in future maybe also XML & others) using JSON definitions with info about fields, data format, dependiencies, etc.
+Engine for easy creating user menus giving ability for creating
+complicated JSON files.
 
-This should be better than existing formats, for example [OpenAPI Specification](https://swagger.io/specification/).
+Currently it's using JSON definitions with info about fields, data format,
+dependiencies, etc. (much better and deeper than existing formats,
+for example [OpenAPI Specification](https://swagger.io/specification/)).
 
 # Q&A
 
@@ -25,6 +28,8 @@ see red flag with some keywords & I wanted to avoid it.
 **Why not use anything ready?** All found projects were limited.
 
 **Which browsers?** Tested with desktop Firefox, Chrome/Chromium, Edge.
+
+**Will it cover creating XML files?** Maybe.
 
 # Input files
 
